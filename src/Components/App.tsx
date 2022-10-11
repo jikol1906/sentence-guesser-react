@@ -128,6 +128,8 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       
       try {
         const res = await fetch(`/.netlify/functions/translate?sentence=${sentenceInputRef.current?.value!}`);
+        console.log(res);
+        
         const json = await res.json();
         setTranslatedSentence(json.translation.trim().split(" ") as string[])
         setOriginalSentence(sentenceInputRef.current?.value!)
@@ -238,19 +240,19 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   }
 
   return (
-    <div className="min-h-screen bg-blue-900 flex py-32 px-5">
+    <div className="relative min-h-screen bg-blue-900 flex py-32 px-5">
       <div className="max-w-5xl mx-auto flex-1 text-white space-y-14">
+        <h1 className="text-5xl tracking-wider text-center">Sentence Guesser</h1>
         {enteringSentence ?        
-          <form id="sentenceform" onSubmit={translate}>
-            <input required placeholder="Enter sentence to translate..." ref={sentenceInputRef} className="block p-2 w-full outline-none bg-transparent m-auto border-b-2 " type="text" name="" id="" />
+          <form id="sentenceform" onSubmit={translate} className="space-y-8 grid">
+            <input required placeholder="Enter sentence to translate..." ref={sentenceInputRef} className="p-2 w-full outline-none bg-transparent m-auto border-b-2 " type="text" name="" id="" />
+            <Button  type="submit" >Translate sentence</Button>
           </form>
           :
           <p className="text-xl">{originalSentence}</p>
         }
         <div className="grid md:grid-flow-col gap-4 md:justify-start">
-          {enteringSentence ? 
-            <Button  type="submit" form="sentenceform" >Translate sentence</Button>
-            :
+          {!enteringSentence &&
             <>            
               <Button onClick={removeAllWrongLetters}>Remove all wrong</Button>
               <Button onClick={tryNewSentence} >Try new sentence</Button>
@@ -287,6 +289,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
           ))}
         </div>
       </div>
+      <p className="absolute bottom-4 text-xs left-4 text-white">Made by Boris Grunwald</p>
     </div>
   );
 };
