@@ -175,9 +175,6 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     }
   }
 
-  const goToPreviousInput = (fromWord:number, fromLetter:number) => {
-
-  }
 
   const inputIsDisabled = (wordNum: number,letterNum: number) => {
     return inputRefs.current[wordNum][letterNum].current?.disabled
@@ -245,7 +242,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       <div className="max-w-5xl mx-auto flex-1 text-white space-y-14">
         {enteringSentence ?        
           <form id="sentenceform" onSubmit={translate}>
-            <input required placeholder="Enter sentence..." ref={sentenceInputRef} className="block p-2 w-full outline-none bg-transparent m-auto border-b-2 " type="text" name="" id="" />
+            <input required placeholder="Enter sentence to translate..." ref={sentenceInputRef} className="block p-2 w-full outline-none bg-transparent m-auto border-b-2 " type="text" name="" id="" />
           </form>
           :
           <p className="text-xl">{originalSentence}</p>
