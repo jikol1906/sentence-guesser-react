@@ -1,6 +1,8 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
+import { useLocalStorage } from "usehooks-ts";
+import useShowHelperModal from "../hooks/useShowHelperModal";
 import {LetterInformation} from '../types'
 import { languageRegexes, randomIntFromInterval } from "../Utils";
 import Button from "./Button";
@@ -14,12 +16,14 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const [translatedSentence,setTranslatedSentence] = useImmer<string[]>([])
   const [originalSentence, setOriginalSentence] = useState("");
   const [enteringSentence,setEnteringSentence] = useState(true);
-  const [showHelperModal,setShowHelperModal] = useState(true);
+  const [showHelperModal] = useShowHelperModal();
   const [isLoading,setIsLoading] = useState(false);
 
   /**Refs for the letter inputs.  */
   const inputRefs = useRef<React.RefObject<HTMLInputElement>[][]>([]);
   const sentenceInputRef = useRef<HTMLInputElement>(null)
+
+  
 
   //Update letterinformation when enteredSentence changes
   useEffect(() => {
@@ -228,7 +232,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     <div className="relative min-h-screen bg-blue-900 flex py-32 px-5">
       <div className="max-w-5xl mx-auto flex-1 text-white space-y-14">
         <h1 className="text-5xl tracking-wider text-center">Sentence Guesser</h1>
-        <HelperDialog onCloseClicked={setShowHelperModal} isOpen={showHelperModal}>
+        <HelperDialog isOpen={showHelperModal}>
           <p>
           Sentence Guesser works by taking an English sentence that you provide, translating it to German with DeepL, then returning it to you in the form of a fill-in-the-blanks exercise.
           </p>
