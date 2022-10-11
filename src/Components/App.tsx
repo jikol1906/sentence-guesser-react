@@ -4,6 +4,7 @@ import { useImmer } from "use-immer";
 import {LetterInformation} from '../types'
 import { languageRegexes, randomIntFromInterval } from "../Utils";
 import Button from "./Button";
+import HelperDialog from "./HelperDialog";
 
 interface ITest2Props {}
 
@@ -12,6 +13,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const [translatedSentence,setTranslatedSentence] = useImmer<string[]>([])
   const [originalSentence, setOriginalSentence] = useState("");
   const [enteringSentence,setEnteringSentence] = useState(true);
+  const [showHelperModal,setShowHelperModal] = useState(false);
 
   /**Refs for the letter inputs.  */
   const inputRefs = useRef<React.RefObject<HTMLInputElement>[][]>([]);
@@ -243,10 +245,21 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     <div className="relative min-h-screen bg-blue-900 flex py-32 px-5">
       <div className="max-w-5xl mx-auto flex-1 text-white space-y-14">
         <h1 className="text-5xl tracking-wider text-center">Sentence Guesser</h1>
+        <HelperDialog onCloseClicked={setShowHelperModal} isOpen={showHelperModal}>
+          <p>
+          Sentence Guesser works by taking an English sentence that you provide, translating it to German with DeepL, then returning it to you in the form of a fill-in-the-blanks exercise.
+          </p>
+          <p>
+          Try to enter a sentence and see if you can fill in the missing letters yourself!
+          </p>
+        </HelperDialog>
+        
         {enteringSentence ?        
           <form id="sentenceform" onSubmit={translate} className="space-y-8 grid">
             <input required placeholder="Enter sentence to translate..." ref={sentenceInputRef} className="p-2 w-full outline-none bg-transparent m-auto border-b-2 " type="text" name="" id="" />
+            <div className="justify-self-center">
             <Button  type="submit" >Translate sentence</Button>
+            </div>
           </form>
           :
           <p className="text-xl">{originalSentence}</p>
@@ -289,7 +302,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
           ))}
         </div>
       </div>
-      <p className="absolute bottom-4 text-xs left-4 text-white">Made by Boris Grunwald</p>
+      <p className="absolute bottom-4 text-xs left-4 text-white opacity-75">Made by Boris Grunwald</p>
     </div>
   );
 };
