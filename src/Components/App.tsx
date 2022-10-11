@@ -7,7 +7,7 @@ import Button from "./Button";
 
 interface ITest2Props {}
 
-const Test2: React.FunctionComponent<ITest2Props> = (props) => {
+const App: React.FunctionComponent<ITest2Props> = (props) => {
   const [letterInformation, setLetterInformation] = useImmer<LetterInformation[][]>([]);
   const [translatedSentence,setTranslatedSentence] = useImmer<string[]>([])
   const [originalSentence, setOriginalSentence] = useState("");
@@ -293,4 +293,4 @@ const Test2: React.FunctionComponent<ITest2Props> = (props) => {
   );
 };
 
-export default Test2;
+export default App;
