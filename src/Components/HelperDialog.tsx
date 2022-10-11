@@ -20,7 +20,7 @@ const HelperDialog: React.FunctionComponent<IHelperDialogProps> = ({
     
 
   return (
-    <Modal overlayClassName="fixed inset-0 bg-black/75" isOpen={isOpen} className="bg-blue-800 absolute md:inset-x-60 top-1/2 -translate-y-1/2 text-white p-8 text-center rounded-md">
+    <Modal overlayClassName="fixed inset-0 bg-black/75" isOpen={isOpen} className="bg-blue-800 absolute inset-x-11 md:inset-x-60 top-1/2 -translate-y-1/2 text-white p-8 text-center rounded-md">
         <div className="space-y-8">
         {children}
         <Button onClick={_ => onCloseClicked(false)}>Close</Button>
