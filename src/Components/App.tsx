@@ -125,18 +125,19 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
   const translate = async (e:React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      const apiKey = "e5186a96-bbab-6ff2-5a0e-fb315161d0d6:fx" //Your Deepl api key;
-      const res = await fetch(
-        `https://api-free.deepl.com/v2/translate?auth_key=${apiKey}&text=${encodeURIComponent(
-          sentenceInputRef.current?.value!
-        )}&target_lang=de&formality=less`
-      );
-    
-      const json = await res.json();
-      setTranslatedSentence(json.translations[0].text.trim().split(" ") as string[])
-      setOriginalSentence(sentenceInputRef.current?.value!)
-      // setEnteredSentence("I hope that this works".trim().split(" "))
-      setEnteringSentence(false)
+      
+      try {
+        const res = await fetch(`/.netlify/functions/translate?sentence=${sentenceInputRef.current?.value!}`);
+        const json = await res.json();
+        setTranslatedSentence(json.translation.trim().split(" ") as string[])
+        setOriginalSentence(sentenceInputRef.current?.value!)
+        // setEnteredSentence("I hope that this works".trim().split(" "))
+        setEnteringSentence(false)
+      } catch (error) {
+        console.log(error);
+        
+      }
+      
     
       
     
