@@ -9,7 +9,7 @@ exports.handler = async function (event, context) {
       }&text=${encodeURIComponent(sentence)}&target_lang=de&formality=less`
     );
 
-    console.log(response);
+
     return {
       statusCode: 200,
       body: JSON.stringify({ translation: response.data.translations[0].text }),

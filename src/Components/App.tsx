@@ -52,7 +52,6 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     if(enteringSentence) {
       sentenceInputRef.current?.select()
     } else {
-      console.log("current",inputRefs.current[0][0]);
       
       inputRefs.current[0][0].current?.select()
     }
@@ -113,7 +112,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       
       try {
         const res = await fetch(`/.netlify/functions/translate?sentence=${sentenceInputRef.current?.value!}`);
-        console.log(res);
+        
         
         const json = await res.json();
         setTranslatedSentence(json.translation.trim().split(" ") as string[])
@@ -121,7 +120,6 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         // setEnteredSentence("I hope that this works".trim().split(" "))
         setEnteringSentence(false)
       } catch (error) {
-        console.log(error);
         
       }
 
