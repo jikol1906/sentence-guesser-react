@@ -18,6 +18,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const [enteringSentence,setEnteringSentence] = useState(true);
   const [showHelperModal] = useShowHelperModal();
   const [isLoading,setIsLoading] = useState(false);
+console.log(showHelperModal);
 
   /**Refs for the letter inputs.  */
   const inputRefs = useRef<React.RefObject<HTMLInputElement>[][]>([]);
