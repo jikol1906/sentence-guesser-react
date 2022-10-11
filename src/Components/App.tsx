@@ -5,6 +5,7 @@ import {LetterInformation} from '../types'
 import { languageRegexes, randomIntFromInterval } from "../Utils";
 import Button from "./Button";
 import HelperDialog from "./HelperDialog";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface ITest2Props {}
 
@@ -13,7 +14,8 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const [translatedSentence,setTranslatedSentence] = useImmer<string[]>([])
   const [originalSentence, setOriginalSentence] = useState("");
   const [enteringSentence,setEnteringSentence] = useState(true);
-  const [showHelperModal,setShowHelperModal] = useState(false);
+  const [showHelperModal,setShowHelperModal] = useState(true);
+  const [isLoading,setIsLoading] = useState(false);
 
   /**Refs for the letter inputs.  */
   const inputRefs = useRef<React.RefObject<HTMLInputElement>[][]>([]);
@@ -56,26 +58,6 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     }
   },[enteringSentence,letterInformation])
 
-
-  // useEffect(() => {
-
-  //   // async function translate(text:string) {
-  //   //   const apiKey = "e5186a96-bbab-6ff2-5a0e-fb315161d0d6:fx" //Your Deepl api key;
-  //   //   const res = await fetch(
-  //   //     `https://api-free.deepl.com/v2/translate?auth_key=${apiKey}&text=${encodeURIComponent(
-  //   //       text
-  //   //     )}&target_lang=de&formality=less`
-  //   //   );
-    
-  //   //   const json = await res.json();
-  //   //   return json.translations[0].text.trim().split(" ") as string[];
-  //   // }
-  //   // translate("a thing that is added or attached to something larger or more important").then(res => {
-  //   //   setEnteredSentence(res)
-  //   // })
-
-  //   setEnteredSentence("In order to ensure that you can deploy this to your own site, go ahead and use the use this template button in order to create this repo inside of your own account".trim().split(" "))
-  // },[])
 
   const onKeyUp = (e:React.KeyboardEvent<HTMLInputElement>,
     wordNum: number,
@@ -126,6 +108,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   }
 
   const translate = async (e:React.FormEvent<HTMLFormElement>) => {
+      setIsLoading(true)
       e.preventDefault()
       
       try {
@@ -141,6 +124,8 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         console.log(error);
         
       }
+
+      setIsLoading(false)
       
     
       
@@ -274,6 +259,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
           }
         </div>
         <div className="font-mono">
+        {isLoading && <LoadingSpinner/>}
         {letterInformation.length > 0 &&
           letterInformation.map((s, i) => (
             <div key={i} className="inline-grid px-3 py-3 md:py-7 md:px-4">
