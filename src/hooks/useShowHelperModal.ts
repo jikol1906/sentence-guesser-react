@@ -5,8 +5,8 @@ const useShowHelperModal = () => {
     const [numberofvisits,setNumberofvisits] = useLocalStorage("numberofvisits",0)
     
     useEffect(() => {
-        setNumberofvisits(numberofvisits+1)
-    },[numberofvisits,setNumberofvisits])
+        setNumberofvisits(prev => prev+1)
+    },[setNumberofvisits])
 
     
     
