@@ -70,9 +70,9 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     const isBackspace = e.key === 'Backspace'
     
     if(isBackspace) {
-      const [prevWord,prevLetter] = getNextPreviousAvailableInput(wordNum,letterNum)
-      clearInput(prevWord,prevLetter)
-      selectInput(prevWord,prevLetter)
+      const [wordToSelect,letterToSelect] = getNextPreviousAvailableInput(wordNum,letterNum)
+      clearInput(wordToSelect,letterToSelect)
+      selectInput(wordToSelect,letterToSelect)
 
     } 
 
@@ -101,7 +101,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   ) => {
     const value = e.currentTarget.value;
       setLetterInformation(draft => {
-        draft[wordNum][letterNum].inputLetter = value.toLowerCase()
+        draft[wordNum][letterNum].inputLetter = value
         draft[wordNum][letterNum].inputTouched = true
       })
       if(languageRegexes['german'].test(value)) {
@@ -119,14 +119,14 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       e.preventDefault()
       
       try {
-        // const res = await fetch(`/.netlify/functions/translate?sentence=${sentenceInputRef.current?.value!}`);
+        const res = await fetch(`/.netlify/functions/translate?sentence=${sentenceInputRef.current?.value!}`);
         
         
-        // const json = await res.json();
-        // setTranslatedSentence(json.translation.trim().split(" ") as string[])
-        // setOriginalSentence(sentenceInputRef.current?.value!)
+        const json = await res.json();
+        setTranslatedSentence(json.translation.trim().split(" ") as string[])
         setOriginalSentence(sentenceInputRef.current?.value!)
-        setTranslatedSentence(`This is a Sentence with some Capitalized words`.trim().replace(/\n/g,"").split(" "))
+        // setOriginalSentence(sentenceInputRef.current?.value!)
+        // setTranslatedSentence(`This is a Sentence with some Capitalized words`.trim().replace(/\n/g,"").split(" "))
         setEnteringSentence(false)
       } catch (error) {
         
@@ -267,7 +267,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
             </div>
           </form>
           :
-          <p className="text-xl">{originalSentence}</p>
+          <p className="text-xl sticky top-4 bg-blue-900">{originalSentence}</p>
         }
         <div className="grid md:grid-flow-col gap-4 md:justify-start">
           {!enteringSentence &&
@@ -295,10 +295,10 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
                   onInput={(e) => onInput(e, i, j)}
                   onKeyUp={e => onKeyUp(e,i,j)}
                   ref={inputRefs.current[i][j]}
-                  disabled={letter === inputLetter}
+                  disabled={letter.toLocaleLowerCase() === inputLetter.toLocaleLowerCase()}
                   className={[
                     "w-[1ch] outline-none text-base sm:text-2xl md:text-3xl pb-1 bg-transparent rounded-none disabled:opacity-100",
-                    isPunctuation ? "" : "border-b-2 border-solid "+((!inputTouched ? "border-white" : (letter === inputLetter ? "border-green-300":"border-red-500")))
+                    isPunctuation ? "" : "border-b-2 border-solid "+((!inputTouched ? "border-white" : (letter.toLocaleLowerCase() === inputLetter.toLocaleLowerCase() ? "border-green-300":"border-red-500")))
                 ].join(" ")}
                 />
               ))}
