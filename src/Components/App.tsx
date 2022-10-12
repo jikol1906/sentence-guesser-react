@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
-import { useLocalStorage } from "usehooks-ts";
 import useShowHelperModal from "../hooks/useShowHelperModal";
 import {LetterInformation} from '../types'
 import { languageRegexes, randomIntFromInterval } from "../Utils";

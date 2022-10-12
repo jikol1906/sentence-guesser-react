@@ -1,15 +1,17 @@
 import { useEffect } from "react"
-import { useIsMounted, useLocalStorage } from "usehooks-ts"
+import { useLocalStorage } from "usehooks-ts"
 
-export default () => {
+const useShowHelperModal = () => {
     const [numberofvisits,setNumberofvisits] = useLocalStorage("numberofvisits",0)
     
     useEffect(() => {
         setNumberofvisits(numberofvisits+1)
-    },[])
+    },[numberofvisits,setNumberofvisits])
 
     
     
 
     return [numberofvisits < 1]
 }
+
+export default useShowHelperModal;
