@@ -18,7 +18,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const [enteringSentence,setEnteringSentence] = useState(true);
   const [showHelperModal] = useShowHelperModal();
   const [isLoading,setIsLoading] = useState(false);
-console.log(showHelperModal);
+
 
   /**Refs for the letter inputs.  */
   const inputRefs = useRef<React.RefObject<HTMLInputElement>[][]>([]);
@@ -55,13 +55,14 @@ console.log(showHelperModal);
 
   useEffect(() => {
     if(enteringSentence) {
-      sentenceInputRef.current?.select()
-    } else {
-      
-      inputRefs.current[0][0].current?.select()
-    }
-  },[enteringSentence,letterInformation])
+      sentenceInputRef.current?.focus()
+    } else {  
+      setTimeout(()=> {
+        inputRefs.current[0][0].current?.focus()
 
+      },10)
+    }
+  },[enteringSentence])
 
   const onKeyUp = (e:React.KeyboardEvent<HTMLInputElement>,
     wordNum: number,
@@ -116,13 +117,14 @@ console.log(showHelperModal);
       e.preventDefault()
       
       try {
-        const res = await fetch(`/.netlify/functions/translate?sentence=${sentenceInputRef.current?.value!}`);
+        // const res = await fetch(`/.netlify/functions/translate?sentence=${sentenceInputRef.current?.value!}`);
         
         
-        const json = await res.json();
-        setTranslatedSentence(json.translation.trim().split(" ") as string[])
+        // const json = await res.json();
+        // setTranslatedSentence(json.translation.trim().split(" ") as string[])
+        // setOriginalSentence(sentenceInputRef.current?.value!)
         setOriginalSentence(sentenceInputRef.current?.value!)
-        // setEnteredSentence("I hope that this works".trim().split(" "))
+        setTranslatedSentence(`This is a Sentence with some Capitalized words`.trim().replace(/\n/g,"").split(" "))
         setEnteringSentence(false)
       } catch (error) {
         
@@ -174,7 +176,7 @@ console.log(showHelperModal);
 
   
   const selectInput = (wordNum: number,letterNum: number) => {
-    return inputRefs.current[wordNum][letterNum].current?.select()
+    return inputRefs.current[wordNum][letterNum].current?.focus()
   }
 
 
@@ -232,7 +234,7 @@ console.log(showHelperModal);
   return (
     <div className="relative min-h-screen bg-blue-900 flex py-32 px-5">
       <div className="max-w-5xl mx-auto flex-1 text-white space-y-14">
-        <h1 className="text-5xl tracking-wider text-center">Sentence Guesser</h1>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl tracking-wider text-center">Sentence Guesser</h1>
         <HelperDialog isOpen={showHelperModal}>
           <p>
           Sentence Guesser works by taking an English sentence that you provide, translating it to German with DeepL, then returning it to you in the form of a fill-in-the-blanks exercise.
