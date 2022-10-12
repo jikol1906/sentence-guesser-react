@@ -68,10 +68,12 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     wordNum: number,
     letterNum: number) => {
     const isBackspace = e.key === 'Backspace'
-    const inputIsEmpty = e.currentTarget.value === ''
     
-    if(isBackspace && inputIsEmpty) {
-      selectNextPreviousAvailableInput(wordNum,letterNum)
+    if(isBackspace) {
+      const [prevWord,prevLetter] = getNextPreviousAvailableInput(wordNum,letterNum)
+      clearInput(prevWord,prevLetter)
+      selectInput(prevWord,prevLetter)
+
     } 
 
   }
@@ -156,17 +158,21 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     
   }
 
-  const selectNextPreviousAvailableInput = (fromWord:number, fromLetter:number) => {
+  const getNextPreviousAvailableInput = (fromWord:number, fromLetter:number) => {
     if(!isFirstLetterofFirstWord(fromWord,fromLetter)) {
       let [previousWord, previousLetter] = getPreviousLetterInput(fromWord,fromLetter)
 
       while(inputIsDisabled(previousWord,previousLetter)) {
-        if(isFirstLetterofFirstWord(previousWord,previousLetter)) {return}
+        if(isFirstLetterofFirstWord(previousWord,previousLetter)) {return [fromWord,fromLetter]}
         [previousWord, previousLetter] = getPreviousLetterInput(previousWord,previousLetter)
       }
 
-      selectInput(previousWord, previousLetter)
-    }
+      return [previousWord, previousLetter]
+    } 
+
+      return [fromWord,fromLetter]
+    
+
   }
 
 
@@ -216,6 +222,15 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
   const isFirstLetterofFirstWord = (wordNumber:number,letterNumber:number) => {
     return wordNumber === 0 && letterNumber === 0;
+  }
+
+
+  const clearInput = (wordNumber:number,letterNumber:number) => {
+
+      setLetterInformation(draft => {
+        draft[wordNumber][letterNumber].inputLetter = ''
+      })
+    
   }
 
   const removeAllWrongLetters = () => {
