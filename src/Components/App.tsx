@@ -228,6 +228,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
       setLetterInformation(draft => {
         draft[wordNumber][letterNumber].inputLetter = ''
+        draft[wordNumber][letterNumber].inputTouched = false
       })
     
   }
