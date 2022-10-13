@@ -249,7 +249,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   return (
     <div className="relative min-h-screen bg-slate-800  flex py-32 px-5">
       <div className="max-w-5xl m-auto flex-1 text-white space-y-14">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl tracking-wider text-center">Sentence Guesser</h1>
+        {enteringSentence && <h1 className="text-3xl sm:text-4xl md:text-5xl tracking-widest text-center uppercase">Sentence Guesser</h1>}
         <HelperDialog isOpen={showHelperModal}>
           <p>
           Sentence Guesser works by taking an English sentence that you provide, translating it to German with DeepL, then returning it to you in the form of a fill-in-the-blanks exercise.
