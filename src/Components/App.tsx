@@ -252,7 +252,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         {enteringSentence && <h1 className="text-3xl sm:text-4xl md:text-5xl tracking-widest text-center uppercase">Sentence Guesser</h1>}
         <HelperDialog isOpen={showHelperModal}>
           <p>
-          Sentence Guesser works by taking an English sentence that you provide, translating it to German with DeepL, then returning it to you in the form of a fill-in-the-blanks exercise.
+          Sentence Guesser works by taking an English sentence that you provide, translating it to German with DeepL, then returning it to you in the form of a fill-in-the-blanks exercise. If you get stuck, you can reveal a single letter every time you press "reveal" under a word.
           </p>
           <p>
           Try to enter a sentence and see if you can fill in the missing letters yourself!
@@ -288,7 +288,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         {letterInformation.length > 0 &&
           letterInformation.map((s, i) => (
             <div key={i} className="inline-grid px-3 py-3 md:py-7 md:px-4">
-              <div className="space-x-2">
+              <div className="space-x-1">
               {s.map(({inputLetter,letter,inputTouched,isPunctuation}, j) => (
                 <input
                   type="text"
