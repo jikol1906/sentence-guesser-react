@@ -8,8 +8,8 @@ const Button: React.FunctionComponent<IButtonProps> = ({
 }) => {
   return <button className="
     text-white
-    bg-blue-700
-    hover:bg-blue-800
+    bg-slate-700
+    hover:bg-slate-800
     focus:ring-4 
     focus:ring-blue-300 
     font-medium 
@@ -19,10 +19,10 @@ const Button: React.FunctionComponent<IButtonProps> = ({
     py-2.5 
     disabled:opacity-60
     disabled:cursor-not-allowed
-    dark:bg-blue-600 
-    dark:hover:bg-blue-700 
+    dark:bg-slate-600
+    dark:hover:bg-slate-700
     focus:outline-none 
-    dark:focus:ring-blue-800" {...props}>{children}</button>;
+    dark:focus:ring-slate-800" {...props}>{children}</button>;
 };
 
 export default Button;

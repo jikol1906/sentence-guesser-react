@@ -247,8 +247,8 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   }
 
   return (
-    <div className="relative min-h-screen bg-blue-900 flex py-32 px-5">
-      <div className="max-w-5xl mx-auto flex-1 text-white space-y-14">
+    <div className="relative min-h-screen bg-slate-800  flex py-32 px-5">
+      <div className="max-w-5xl m-auto flex-1 text-white space-y-14">
         <h1 className="text-3xl sm:text-4xl md:text-5xl tracking-wider text-center">Sentence Guesser</h1>
         <HelperDialog isOpen={showHelperModal}>
           <p>
@@ -267,7 +267,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
             </div>
           </form>
           :
-          <p className="text-xl sticky top-4 bg-blue-900">{originalSentence}</p>
+          <p className="text-xl sticky top-4 bg-slate-800">{originalSentence}</p>
         }
         <div className="grid md:grid-flow-col gap-4 md:justify-start">
           {!enteringSentence &&
