@@ -308,7 +308,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
           ))}
         </div>
       </div>
-      <p className="absolute bottom-4 text-xs left-4 text-white opacity-75">Made by Boris Grunwald</p>
+      <p className="absolute bottom-4 text-xs left-4 text-white opacity-75">Made by <a href="https://borisgrunwald.me" className="underline">Boris Grunwald</a></p>
     </div>
   );
 };
