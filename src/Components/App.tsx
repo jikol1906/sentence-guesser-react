@@ -267,7 +267,12 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
             </div>
           </form>
           :
-          <p className="text-xl sticky top-4 bg-slate-800">{originalSentence}</p>
+          <> 
+          <div className="">
+            <p className="mb-2 font-bold">You entered the sentence:</p>
+            <p className="text-xl sticky top-4 bg-slate-800">{originalSentence}</p>
+          </div>
+          </>
         }
         <div className="grid md:grid-flow-col gap-4 md:justify-start">
           {!enteringSentence &&
