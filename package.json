@@ -15,6 +15,7 @@
     "@types/react-redux": "^7.1.16",
     "@types/uuid": "^8.3.4",
     "deepl-node": "^1.7.1",
+    "lambda-rate-limiter": "^3.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-modal": "^3.15.1",

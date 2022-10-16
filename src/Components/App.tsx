@@ -121,7 +121,10 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         const res = await fetch(`/.netlify/functions/translate?sentence=${sentenceInputRef.current?.value!}`);
         
         if (!res.ok) {
-          const message = `An error has occured: ${res.status} ${res.statusText}`;
+          let message = `An error has occured: ${res.status} ${res.statusText}`;
+          if(res.status === 429) {
+            message = 'You can at most translate one sentence per minute.'
+          }
           throw new Error(message);
         }
         

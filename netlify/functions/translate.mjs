@@ -1,8 +1,24 @@
 import * as deepl from 'deepl-node';
+import limiter from 'lambda-rate-limiter';
+
+const rateLimiter = limiter({
+  interval:60000
+});
 
 
+
+// ({
+//   interval: 60*1000
+// }).check;
 
 const handler = async (event, context) => {
+
+  try {
+    await rateLimiter.check(2,event.headers["client-ip"])
+  } catch(err) {
+    return {statusCode:429}
+  }
+
   try {
 
     const authKey = process.env.DEEPL_API_KEY;
