@@ -6,6 +6,7 @@ import {LetterInformation} from '../types'
 import { Language, languageRegexes, randomIntFromInterval } from "../Utils";
 import Button from "./Button";
 import HelperDialog from "./HelperDialog";
+import LetterInput from "./LetterInput";
 import LoadingSpinner from "./LoadingSpinner";
 import TranslateForm from "./TranslateForm";
 
@@ -285,12 +286,8 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
             <div key={i} className="inline-grid px-3 py-3 md:py-7 md:px-4">
               <div className="space-x-1">
               {s.map(({inputLetter,letter,inputTouched,isPunctuation}, j) => (
-                <input
-                  type="text"
-                  autoCorrect="off" 
-                  autoCapitalize="off" //Prevent auto capitalize on mobile devices
+                <LetterInput
                   key={`${j}${i}`} //Should be ok to use indexes as keys since order of inputs doesn't change
-                  maxLength={1} 
                   value={inputLetter}
                   onInput={(e) => onInput(e, i, j)}
                   onKeyUp={e => onKeyUp(e,i,j)}
