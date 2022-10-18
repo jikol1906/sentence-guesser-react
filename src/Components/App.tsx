@@ -53,14 +53,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     setLetterInformation(letterInformationArr);
   }, [setLetterInformation,translatedSentence]);
 
-  useEffect(() => {
-    if(!enteringSentence) {
-      setTimeout(()=> {
-        inputRefs.current[0][0].current?.focus()
 
-      },10)
-    }
-  },[enteringSentence])
 
   const onKeyUp = (e:React.KeyboardEvent<HTMLInputElement>,
     wordNum: number,
@@ -302,6 +295,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
                   onInput={(e) => onInput(e, i, j)}
                   onKeyUp={e => onKeyUp(e,i,j)}
                   ref={inputRefs.current[i][j]}
+                  autoFocus={i === 0 && j === 0} //Autofocus first letter input
                   disabled={letter.toLocaleLowerCase() === inputLetter.toLocaleLowerCase()}
                   className={[
                     "w-[1ch] outline-none text-base sm:text-2xl md:text-3xl pb-1 bg-transparent rounded-none disabled:opacity-100",
