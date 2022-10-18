@@ -16,7 +16,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const [translatedSentence,setTranslatedSentence] = useImmer<string[]>([])
   const [originalSentence, setOriginalSentence] = useState("");
   const [enteringSentence,setEnteringSentence] = useState(true);
-  const [languageToTranslateInto, setLanguageToTranslateInto] = useState<Language>("german")
+  const [languageToTranslateInto] = useState<Language>("german")
   const [showHelperModal] = useShowHelperModal();
   const [isLoading,setIsLoading] = useState(false);
 
@@ -51,7 +51,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     });
 
     setLetterInformation(letterInformationArr);
-  }, [setLetterInformation,translatedSentence]);
+  }, [setLetterInformation,translatedSentence,languageToTranslateInto]);
 
 
 
@@ -288,13 +288,13 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
                 <input
                   type="text"
                   autoCorrect="off" 
-                  autoCapitalize="off"
-                  key={`${j}${i}`}
+                  autoCapitalize="off" //Prevent auto capitalize on mobile devices
+                  key={`${j}${i}`} //Should be ok to use indexes as keys since order of inputs doesn't change
                   maxLength={1} 
                   value={inputLetter}
                   onInput={(e) => onInput(e, i, j)}
                   onKeyUp={e => onKeyUp(e,i,j)}
-                  ref={inputRefs.current[i][j]}
+                  ref={inputRefs.current[i][j]} //Add inputref to each individual input
                   autoFocus={i === 0 && j === 0} //Autofocus first letter input
                   disabled={letter.toLocaleLowerCase() === inputLetter.toLocaleLowerCase()}
                   className={[
