@@ -7,6 +7,7 @@ import { Language, languageRegexes, randomIntFromInterval } from "../Utils";
 import Button from "./Button";
 import HelperDialog from "./HelperDialog";
 import LoadingSpinner from "./LoadingSpinner";
+import TranslateForm from "./TranslateForm";
 
 interface ITest2Props {}
 
@@ -22,7 +23,6 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
   /**Refs for the letter inputs.  */
   const inputRefs = useRef<React.RefObject<HTMLInputElement>[][]>([]);
-  const sentenceInputRef = useRef<HTMLInputElement>(null)
 
   
 
@@ -54,9 +54,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   }, [setLetterInformation,translatedSentence]);
 
   useEffect(() => {
-    if(enteringSentence) {
-      sentenceInputRef.current?.focus()
-    } else {  
+    if(!enteringSentence) {
       setTimeout(()=> {
         inputRefs.current[0][0].current?.focus()
 
@@ -117,9 +115,13 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const translate = async (e:React.FormEvent<HTMLFormElement>) => {
       setIsLoading(true)
       e.preventDefault()
+      const formData = new FormData(e.currentTarget)
+      const translationInputText = formData.get("test")
+      
+      
       
       try {
-        const res = await fetch(`/.netlify/functions/translate?sentence=${sentenceInputRef.current?.value!}`);
+        const res = await fetch(`/.netlify/functions/translate?sentence=${translationInputText}`);
         
         if (!res.ok) {
           const message = `An error has occured: ${res.status} ${res.statusText}`;
@@ -128,7 +130,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         
         const json = await res.json();
         setTranslatedSentence(json.translation.trim().split(" ") as string[])
-        setOriginalSentence(sentenceInputRef.current?.value!)
+        setOriginalSentence(translationInputText?.toString()!)
         // setOriginalSentence(sentenceInputRef.current?.value!)
         // setTranslatedSentence(`This is a Sentence with some Capitalized words`.trim().replace(/\n/g,"").split(" "))
         setEnteringSentence(false)
@@ -265,12 +267,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         </HelperDialog>
         
         {enteringSentence ?        
-          <form id="sentenceform" onSubmit={translate} className="space-y-8 grid">
-            <input required placeholder="Enter sentence to translate..." ref={sentenceInputRef} className="p-2 w-full outline-none bg-transparent m-auto border-b-2 rounded-none" type="text" name="" id="" />
-            <div className="justify-self-center">
-            <Button  type="submit" >Translate sentence</Button>
-            </div>
-          </form>
+          <TranslateForm onSubmit={translate}/>
           :
           <> 
           <div className="">
