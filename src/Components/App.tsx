@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
 import useShowHelperModal from "../hooks/useShowHelperModal";
 import {LetterInformation} from '../types'
-import { languageRegexes, randomIntFromInterval } from "../Utils";
+import { Language, languageRegexes, randomIntFromInterval } from "../Utils";
 import Button from "./Button";
 import HelperDialog from "./HelperDialog";
 import LoadingSpinner from "./LoadingSpinner";
@@ -15,6 +15,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const [translatedSentence,setTranslatedSentence] = useImmer<string[]>([])
   const [originalSentence, setOriginalSentence] = useState("");
   const [enteringSentence,setEnteringSentence] = useState(true);
+  const [languageToTranslateInto, setLanguageToTranslateInto] = useState<Language>("german")
   const [showHelperModal] = useShowHelperModal();
   const [isLoading,setIsLoading] = useState(false);
 
@@ -35,7 +36,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       const letterInformation : LetterInformation[] = [];
       s.split("").forEach((l) => {
         arr.push(React.createRef());
-        const isPunctuation = !languageRegexes['german'].test(l)
+        const isPunctuation = !languageRegexes[languageToTranslateInto].test(l)
         letterInformation.push({
           letter:l.toLowerCase(),
           //If character is not a letter (meaning it is punctuation), then it should be revealed.
@@ -103,7 +104,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         draft[wordNum][letterNum].inputLetter = value
         draft[wordNum][letterNum].inputTouched = true
       })
-      if(languageRegexes['german'].test(value)) {
+      if(languageRegexes[languageToTranslateInto].test(value)) {
         selectNextAvailableInput(wordNum,letterNum)
       }
   };
