@@ -8,6 +8,7 @@ import Button from "./Button";
 import HelperDialog from "./HelperDialog";
 import LetterInput from "./LetterInput";
 import LoadingSpinner from "./LoadingSpinner";
+import SentenceGuesserHeader from "./SentenceGuesserHeader";
 import TranslateForm from "./TranslateForm";
 
 interface ITest2Props {}
@@ -250,7 +251,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   return (
     <div className="relative min-h-screen bg-slate-800  flex py-32 px-5">
       <div className="max-w-5xl m-auto flex-1 text-white space-y-14">
-        {enteringSentence && <h1 className="text-3xl sm:text-4xl md:text-5xl tracking-widest text-center uppercase">Sentence Guesser</h1>}
+        {enteringSentence && <SentenceGuesserHeader/>}
         <HelperDialog isOpen={showHelperModal}>
           <p>
           Sentence Guesser works by taking an English sentence that you provide, translating it to German with DeepL, then returning it to you in the form of a fill-in-the-blanks exercise. If you get stuck, you can reveal a single letter every time you press "reveal" under a word.
