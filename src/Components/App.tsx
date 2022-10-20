@@ -1,11 +1,9 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
-import useShowHelperModal from "../hooks/useShowHelperModal";
 import {LetterInformation} from '../types'
 import { Language, languageRegexes, randomIntFromInterval } from "../Utils";
 import Button from "./Button";
-import HelperDialog from "./HelperDialog";
 import LetterInput from "./LetterInput";
 import LoadingSpinner from "./LoadingSpinner";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
@@ -19,7 +17,6 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const [originalSentence, setOriginalSentence] = useState("");
   const [enteringSentence,setEnteringSentence] = useState(true);
   const [languageToTranslateInto] = useState<Language>("german")
-  const [showHelperModal] = useShowHelperModal();
   const [isLoading,setIsLoading] = useState(false);
 
 
@@ -251,16 +248,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   return (
     <div className="relative min-h-screen bg-slate-800  flex py-32 px-5">
       <div className="max-w-5xl m-auto flex-1 text-white space-y-14">
-        {enteringSentence && <SentenceGuesserHeader/>}
-        <HelperDialog isOpen={showHelperModal}>
-          <p>
-          Sentence Guesser works by taking an English sentence that you provide, translating it to German with DeepL, then returning it to you in the form of a fill-in-the-blanks exercise. If you get stuck, you can reveal a single letter every time you press "reveal" under a word.
-          </p>
-          <p>
-          Try to enter a sentence and see if you can fill in the missing letters yourself!
-          </p>
-        </HelperDialog>
-        
+        {enteringSentence && <SentenceGuesserHeader/>}        
         {enteringSentence ?        
           <TranslateForm onSubmit={translate}/>
           :
