@@ -1,5 +1,6 @@
 import * as React from "react";
 import Button from "./Button";
+import { ModalCtx } from "./ModalProvider";
 
 interface ITranslateFormProps
   extends React.FormHTMLAttributes<HTMLFormElement> {}
@@ -7,6 +8,25 @@ interface ITranslateFormProps
 const TranslateForm: React.FunctionComponent<ITranslateFormProps> = ({
   onSubmit,
 }) => {
+
+    const {handleModal} = React.useContext(ModalCtx)
+
+    const onHelpClicked = () => {
+        handleModal(
+          <div className="space-y-4 mb-4">
+            <p>
+              Sentence Guesser works by taking an English sentence that you provide,
+              translating it to German with DeepL, then returning it to you in the
+              form of a fill-in-the-blanks exercise. If you get stuck, you can
+              reveal a single letter every time you press "reveal" under a word.
+            </p>
+            <p>
+              Try to enter a sentence and see if you can fill in the missing letters
+              yourself!
+            </p>
+          </div>
+        );
+      }
 
   return (
     <form onSubmit={onSubmit} className="space-y-8 grid">
@@ -19,8 +39,9 @@ const TranslateForm: React.FunctionComponent<ITranslateFormProps> = ({
         id=""
         autoFocus={true}
       />
-      <div className="justify-self-center">
+      <div className="justify-self-center space-x-3">
         <Button type="submit">Translate sentence</Button>
+        <Button type="button" onClick={onHelpClicked}>Help</Button>
       </div>
     </form>
   );
