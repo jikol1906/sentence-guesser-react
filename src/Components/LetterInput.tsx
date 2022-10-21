@@ -15,7 +15,7 @@ const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLet
       type="text"
       autoCorrect="off"
       maxLength={1}
-      pattern={correctLetter}
+      pattern={`[${correctLetter.toLowerCase()}${correctLetter.toUpperCase()}]`}
       data-correct-letter={correctLetter}
       required
       autoFocus={wordNum === 0 && letterNum === 0} //Autofocus first letter input
