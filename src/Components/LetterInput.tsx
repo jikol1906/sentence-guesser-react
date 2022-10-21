@@ -6,12 +6,13 @@ interface ILetterInputProps
     correctLetter : string;
   }
 
-const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>((props,ref) => {
+const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLetter,...props},ref) => {
   return (
     <input
       type="text"
       autoCorrect="off"
       maxLength={1}
+      pattern={correctLetter}
       autoCapitalize="off" //Prevent auto capitalize on mobile devices
       ref={ref}
       {...props}
