@@ -11,7 +11,7 @@ ReactModal.setAppElement("#root")
 const Modal: React.FunctionComponent<IModalProps> = () => {
     const {closeModal, modalContent,modal} = React.useContext(ModalCtx);
 
-  return <ReactModal shouldCloseOnOverlayClick onRequestClose={() => closeModal()} overlayClassName="fixed inset-0 bg-black/75" className="bg-slate-800 absolute outline-none inset-x-11 md:inset-x-60 top-1/2 -translate-y-1/2 text-white p-8 text-center rounded-md" isOpen={modal}>
+  return <ReactModal shouldCloseOnOverlayClick onRequestClose={() => closeModal()} overlayClassName="fixed inset-0 bg-black/75 flex items-center justify-center px-4 sm:px-7" className="bg-slate-800 outline-none text-white p-5 md:p-8 text-center max-w-5xl rounded-md" isOpen={modal}>
     {modalContent}
     <Button onClick={() => closeModal()}>Close</Button>
   </ReactModal>;
