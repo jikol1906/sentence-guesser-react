@@ -96,16 +96,18 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       
       
       try {
-        const res = await fetch(`/.netlify/functions/translate?sentence=${translationInputText}`);
+        // const res = await fetch(`/.netlify/functions/translate?sentence=${translationInputText}`);
         
-        if (!res.ok) {
-          const message = `An error has occured: ${res.status} ${res.statusText}`;
-          throw new Error(message);
-        }
+        // if (!res.ok) {
+        //   const message = `An error has occured: ${res.status} ${res.statusText}`;
+        //   throw new Error(message);
+        // }
         
-        const json = await res.json();
-        setTranslatedSentence(json.translation.trim().split(" ") as string[])
+        // const json = await res.json();
+        // setTranslatedSentence(json.translation.trim().split(" ") as string[])
+        // setOriginalSentence(translationInputText?.toString()!)
         setOriginalSentence(translationInputText?.toString()!)
+        setTranslatedSentence(`This is a Sentence with some Capitalized words`.trim().replace(/\n/g,"").split(" "))
         setEnteringSentence(false)
       } catch (error) {
         alert(error)
