@@ -245,6 +245,8 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
   return (
     <div className="relative min-h-screen bg-slate-800  flex py-32 px-5">
+      {isLoading ? <LoadingSpinner/> :
+      <>
       <div className="max-w-5xl m-auto flex-1 text-white space-y-14">
         {enteringSentence && <SentenceGuesserHeader/>}        
         {enteringSentence ?        
@@ -257,7 +259,6 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
           </div>
           </>
         }
-        {isLoading && <LoadingSpinner/>}
         {!enteringSentence && <>
         <div className="grid md:grid-flow-col gap-4 md:justify-start">
           
@@ -296,6 +297,8 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
       </div>
       <p className="absolute bottom-4 text-xs left-4 text-white opacity-75">Made by <a href="https://borisgrunwald.me" className="underline">Boris Grunwald</a></p>
+      </>
+      }
     </div>
   );
 };
