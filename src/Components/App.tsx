@@ -257,14 +257,14 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
           </div>
           </>
         }
+        {!enteringSentence && <>
         <div className="grid md:grid-flow-col gap-4 md:justify-start">
-          {!enteringSentence &&
+          
             <>            
               <Button onClick={removeAllWrongLetters}>Remove all wrong</Button>
               <Button onClick={tryNewSentence} >Try new sentence</Button>
             </>
 
-          }
         </div>
         <div className="font-mono">
         {isLoading && <LoadingSpinner/>}
@@ -292,6 +292,9 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
             </div>
           ))}
         </div>
+        </>
+        }
+
       </div>
       <p className="absolute bottom-4 text-xs left-4 text-white opacity-75">Made by <a href="https://borisgrunwald.me" className="underline">Boris Grunwald</a></p>
     </div>
