@@ -2,7 +2,9 @@ import * as React from "react";
 import { forwardRef } from "react";
 
 interface ILetterInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+    correctLetter : string;
+  }
 
 const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>((props,ref) => {
   return (

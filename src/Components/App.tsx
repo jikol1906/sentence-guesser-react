@@ -280,6 +280,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
                   onKeyUp={e => onKeyUp(e,i,j)}
                   ref={inputRefs.current[i][j]} //Add inputref to each individual input
                   autoFocus={i === 0 && j === 0} //Autofocus first letter input
+                  correctLetter={letter.toLocaleLowerCase()}
                   disabled={letter.toLocaleLowerCase() === inputLetter.toLocaleLowerCase()}
                   className={[
                     "w-[1ch] outline-none text-base sm:text-2xl md:text-3xl pb-1 bg-transparent rounded-none disabled:opacity-100",
