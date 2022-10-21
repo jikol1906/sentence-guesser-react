@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 
-export default () => {
+const  useModal = () => {
   let [modal, setModal] = React.useState(false);
   let [modalContent, setModalContent] = React.useState<ReactElement|null>(null);
 
@@ -16,3 +16,6 @@ export default () => {
 
   return { modal, handleModal, modalContent,closeModal };
 };
+
+
+export default useModal

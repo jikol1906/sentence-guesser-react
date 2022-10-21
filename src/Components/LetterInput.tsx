@@ -1,5 +1,5 @@
 import * as React from "react";
-import { forwardRef, useState } from "react";
+import { forwardRef } from "react";
 
 interface ILetterInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
