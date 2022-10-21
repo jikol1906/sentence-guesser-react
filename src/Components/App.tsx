@@ -73,8 +73,13 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const revealRandLetter = (wordNumber:number) => { 
     
     const inputsWithWrongLetters = inputRefs.current[wordNumber].filter(i => !i.current!.checkValidity())
-    const inputToReveal = inputsWithWrongLetters[randomIntFromInterval(0,inputsWithWrongLetters.length-1)]
-    inputToReveal.current!.value = inputToReveal.current!.getAttribute("data-correct-letter")!
+    if(inputsWithWrongLetters.length > 0) {
+      const inputToReveal = inputsWithWrongLetters[randomIntFromInterval(0,inputsWithWrongLetters.length-1)]
+      inputToReveal.current!.value = inputToReveal.current!.getAttribute("data-correct-letter")!
+      if(document.activeElement === inputToReveal.current) {
+        inputToReveal.current!.blur()
+      }
+    }
 
   }
 
