@@ -76,6 +76,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     if(inputsWithWrongLetters.length > 0) {
       const inputToReveal = inputsWithWrongLetters[randomIntFromInterval(0,inputsWithWrongLetters.length-1)]
       inputToReveal.current!.value = inputToReveal.current!.getAttribute("data-correct-letter")!
+      inputToReveal.current!.disabled = true;
       if(document.activeElement === inputToReveal.current) {
         inputToReveal.current!.blur()
       }
