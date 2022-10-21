@@ -1,8 +1,7 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
-import {LetterInformation} from '../types'
-import { Language, languageRegexes, randomIntFromInterval } from "../Utils";
+import {  isCharacter, Language, languageRegexes, randomIntFromInterval } from "../Utils";
 import Button from "./Button";
 import LetterInput from "./LetterInput";
 import LoadingSpinner from "./LoadingSpinner";
@@ -12,7 +11,7 @@ import TranslateForm from "./TranslateForm";
 interface ITest2Props {}
 
 const App: React.FunctionComponent<ITest2Props> = (props) => {
-  const [letterInformation, setLetterInformation] = useImmer<LetterInformation[][]>([]);
+  const [letterInformation, setLetterInformation] = useImmer<string[][]>([]);
   const [translatedSentence,setTranslatedSentence] = useImmer<string[]>([])
   const [originalSentence, setOriginalSentence] = useState("");
   const [enteringSentence,setEnteringSentence] = useState(true);
@@ -28,21 +27,16 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   //Update letterinformation when enteredSentence changes
   useEffect(() => {
     
-    const letterInformationArr : LetterInformation[][] = [];
+    const letterInformationArr : string[][] = [];
     inputRefs.current = []
     translatedSentence.forEach((s) => {
       const arr: React.RefObject<HTMLInputElement>[] = [];
-      const letterInformation : LetterInformation[] = [];
+      const letterInformation : string[] = [];
       s.split("").forEach((l) => {
-        arr.push(React.createRef());
-        const isPunctuation = !languageRegexes[languageToTranslateInto].test(l)
-        letterInformation.push({
-          letter:l.toLowerCase(),
-          //If character is not a letter (meaning it is punctuation), then it should be revealed.
-          inputLetter : isPunctuation ? l:"",
-          isPunctuation,
-          inputTouched:false
-        })
+        if(isCharacter(l,languageToTranslateInto)) {
+          arr.push(React.createRef());
+        }
+          letterInformation.push(l)
       });
       letterInformationArr.push(letterInformation)
       inputRefs.current.push(arr);
@@ -72,16 +66,12 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
    * Reveals one random letter of the specified word
    * @param wordNumber - index of the word which will have one letter revealed.
    */
-  const revealRandLetter = (wordNumber:number) => {  
-      setLetterInformation(draft => {
-        const wrongLetters = draft[wordNumber].filter(({letter,inputLetter}) => letter !== inputLetter)
-        
-        if(wrongLetters.length > 0) {
-          const hiddenLetterToReveal = wrongLetters[randomIntFromInterval(0,wrongLetters.length-1)]
-          hiddenLetterToReveal.inputLetter = hiddenLetterToReveal.letter
-          hiddenLetterToReveal.inputTouched = true
-        }
-      })
+  const revealRandLetter = (wordNumber:number) => { 
+    
+    const inputsWithWrongLetters = inputRefs.current[wordNumber].filter(i => !i.current!.checkValidity())
+    const inputToReveal = inputsWithWrongLetters[randomIntFromInterval(0,inputsWithWrongLetters.length-1)]
+    inputToReveal.current!.value = inputToReveal.current!.pattern 
+
   }
 
   const onInput = (
@@ -90,6 +80,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     letterNum: number
   ) => {
     const value = e.currentTarget.value;
+      //Disable inputs with correct value, no point in being able to delete correct words
       if(e.currentTarget.pattern === value) {
         e.currentTarget.disabled = true;
       }
@@ -197,18 +188,18 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
   const getPreviousLetterInput = (fromWord:number,fromLetter:number) : [previousWord:number,previousLetter:number] => {
     if (fromLetter === 0) {
-      return [fromWord - 1,letterInformation[fromWord-1].length-1]
+      return [fromWord - 1,inputRefs.current![fromWord-1].length-1]
     } else {
       return [fromWord,fromLetter-1]
     }
   }
 
   const isLastLetterOfWord = (wordNumber:number,letterNumber:number) => {
-    return letterInformation[wordNumber].length - 1 === letterNumber;
+    return inputRefs.current[wordNumber]!.length - 1 === letterNumber;
   }
 
   const isLastWord = (wordNumber:number) => {
-    return letterInformation.length - 1 === wordNumber
+    return inputRefs.current!.length - 1 === wordNumber
   }
 
   const isLastLetterOfLastWord= (wordNumber:number,letterNumber:number) => {
@@ -222,23 +213,18 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
   const clearInput = (wordNumber:number,letterNumber:number) => {
 
-      setLetterInformation(draft => {
-        draft[wordNumber][letterNumber].inputLetter = ''
-        draft[wordNumber][letterNumber].inputTouched = false
-      })
+      inputRefs.current[wordNumber][letterNumber].current!.value = ''
     
   }
 
   const removeAllWrongLetters = () => {
-    setLetterInformation(draft => {
-      draft.forEach(l =>
-        l.forEach(i => {
-          if(i.inputLetter !== i.letter) {
-            i.inputLetter = ''
-            i.inputTouched = false
-          }
-        })
-      )
+
+    inputRefs.current.forEach(word => {
+      word.forEach(letterInput => {
+        if(!letterInput.current!.checkValidity()) {
+          letterInput.current!.value = ''
+        }
+      })
     })
   }
 
@@ -270,24 +256,21 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         {letterInformation.length > 0 &&
           letterInformation.map((s, i) => (
             <div key={i} className="inline-grid px-3 py-3 md:py-7 md:px-4">
-              <div className="space-x-1">
-              {s.map(({inputLetter,letter,inputTouched,isPunctuation}, j) => (
+              <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
+              {s.map((s, j) => (
+                isCharacter(s,languageToTranslateInto) ?
                 <LetterInput
                   key={`${j}${i}`} //Should be ok to use indexes as keys since order of inputs doesn't change
-                  value={inputLetter}
                   wordNum={i}
                   letterNum={j}
                   handleInput={onInput}
                   onKeyUp={e => onKeyUp(e,i,j)}
                   ref={inputRefs.current[i][j]} //Add inputref to each individual input
                   autoFocus={i === 0 && j === 0} //Autofocus first letter input
-                  correctLetter={letter.toLocaleLowerCase()}
-                  disabled={letter.toLocaleLowerCase() === inputLetter.toLocaleLowerCase()}
-                  className={[
-                    "w-[1ch] outline-none text-base sm:text-2xl md:text-3xl pb-1 bg-transparent rounded-none disabled:opacity-100",
-                    isPunctuation ? "" : "border-b-2 border-solid "+((!inputTouched ? "border-white" : (letter.toLocaleLowerCase() === inputLetter.toLocaleLowerCase() ? "border-green-300":"border-red-500")))
-                ].join(" ")}
+                  correctLetter={s}
                 />
+                :
+                <span key={`${j}${i}`}>{s}</span>
               ))}
               </div>
               <button onMouseDown={e => e.preventDefault()} onClick={e => revealRandLetter(i)} className="mt-4 text-xs opacity-40 hover:opacity-100">Reveal</button>
