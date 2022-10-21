@@ -6,7 +6,7 @@ const LoadingSpinner: React.FunctionComponent<ILoadingSpinnerProps> = (
   props
 ) => {
   return (
-    <div role="status" className="flex justify-center">
+    <div role="status" className="flex justify-center m-auto">
       <svg
         aria-hidden="true"
         className="mr-2 w-16 h-16 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"

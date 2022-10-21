@@ -10,3 +10,6 @@ export const languageRegexes = {
 
 export type Language = keyof typeof languageRegexes;
 
+export function isCharacter(character:string,lang:Language) {
+  return languageRegexes[lang].test(character)
+}

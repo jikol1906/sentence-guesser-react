@@ -1,11 +1,8 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
-// import useShowHelperModal from "../hooks/useShowHelperModal";
-import {LetterInformation} from '../types'
-import { Language, languageRegexes, randomIntFromInterval } from "../Utils";
+import {  isCharacter, Language, languageRegexes, randomIntFromInterval } from "../Utils";
 import Button from "./Button";
-// import HelperDialog from "./HelperDialog";
 import LetterInput from "./LetterInput";
 import LoadingSpinner from "./LoadingSpinner";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
@@ -14,12 +11,11 @@ import TranslateForm from "./TranslateForm";
 interface ITest2Props {}
 
 const App: React.FunctionComponent<ITest2Props> = (props) => {
-  const [letterInformation, setLetterInformation] = useImmer<LetterInformation[][]>([]);
+  const [words, setWords] = useState<string[][]>([]);
   const [translatedSentence,setTranslatedSentence] = useImmer<string[]>([])
   const [originalSentence, setOriginalSentence] = useState("");
   const [enteringSentence,setEnteringSentence] = useState(true);
   const [languageToTranslateInto] = useState<Language>("german")
-  // const [showHelperModal] = useShowHelperModal();
   const [isLoading,setIsLoading] = useState(false);
 
 
@@ -31,38 +27,37 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   //Update letterinformation when enteredSentence changes
   useEffect(() => {
     
-    const letterInformationArr : LetterInformation[][] = [];
+    const letterInformationArr : string[][] = [];
     inputRefs.current = []
     translatedSentence.forEach((s) => {
       const arr: React.RefObject<HTMLInputElement>[] = [];
-      const letterInformation : LetterInformation[] = [];
+      const letterInformation : string[] = [];
       s.split("").forEach((l) => {
-        arr.push(React.createRef());
-        const isPunctuation = !languageRegexes[languageToTranslateInto].test(l)
-        letterInformation.push({
-          letter:l.toLowerCase(),
-          //If character is not a letter (meaning it is punctuation), then it should be revealed.
-          inputLetter : isPunctuation ? l:"",
-          isPunctuation,
-          inputTouched:false
-        })
+        //Only create refs for characters and not for other symbols like punctuation
+        if(isCharacter(l,languageToTranslateInto)) {
+          arr.push(React.createRef());
+        }
+          letterInformation.push(l)
       });
       letterInformationArr.push(letterInformation)
       inputRefs.current.push(arr);
 
     });
 
-    setLetterInformation(letterInformationArr);
-  }, [setLetterInformation,translatedSentence,languageToTranslateInto]);
+    setWords(letterInformationArr);
+  }, [setWords,translatedSentence,languageToTranslateInto]);
 
 
-
+  /*Only solution I could find to delete the character from the current input and 
+  go to the previously available input was to check for Backspace or Delete with onKeyUp event. 
+  onKeyDown and onKeyPressed are called before the character from the current input is deleted 
+   */
   const onKeyUp = (e:React.KeyboardEvent<HTMLInputElement>,
     wordNum: number,
     letterNum: number) => {
-    const isBackspace = e.key === 'Backspace'
+    const isBackspaceOrDelete = e.key === 'Backspace' || e.key === 'Delete'
     
-    if(isBackspace) {
+    if(isBackspaceOrDelete) {
       const [wordToSelect,letterToSelect] = getNextPreviousAvailableInput(wordNum,letterNum)
       clearInput(wordToSelect,letterToSelect)
       selectInput(wordToSelect,letterToSelect)
@@ -75,16 +70,18 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
    * Reveals one random letter of the specified word
    * @param wordNumber - index of the word which will have one letter revealed.
    */
-  const revealRandLetter = (wordNumber:number) => {  
-      setLetterInformation(draft => {
-        const wrongLetters = draft[wordNumber].filter(({letter,inputLetter}) => letter !== inputLetter)
-        
-        if(wrongLetters.length > 0) {
-          const hiddenLetterToReveal = wrongLetters[randomIntFromInterval(0,wrongLetters.length-1)]
-          hiddenLetterToReveal.inputLetter = hiddenLetterToReveal.letter
-          hiddenLetterToReveal.inputTouched = true
-        }
-      })
+  const revealRandLetter = (wordNumber:number) => { 
+    
+    const inputsWithWrongLetters = inputRefs.current[wordNumber].filter(i => !i.current!.checkValidity())
+    if(inputsWithWrongLetters.length > 0) {
+      const inputToReveal = inputsWithWrongLetters[randomIntFromInterval(0,inputsWithWrongLetters.length-1)]
+      inputToReveal.current!.value = inputToReveal.current!.getAttribute("data-correct-letter")!
+      inputToReveal.current!.disabled = true;
+      if(document.activeElement === inputToReveal.current) {
+        inputToReveal.current!.blur()
+      }
+    }
+
   }
 
   const onInput = (
@@ -93,17 +90,17 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     letterNum: number
   ) => {
     const value = e.currentTarget.value;
-      setLetterInformation(draft => {
-        draft[wordNum][letterNum].inputLetter = value
-        draft[wordNum][letterNum].inputTouched = true
-      })
+      //Disable inputs with correct value, no point in being able to delete correct words
+      if(e.currentTarget.getAttribute("data-correct-letter")!.toLowerCase() === value.toLowerCase()) {
+        e.currentTarget.disabled = true;
+      }
       if(languageRegexes[languageToTranslateInto].test(value)) {
         selectNextAvailableInput(wordNum,letterNum)
       }
   };
 
   const tryNewSentence = () => {
-    setLetterInformation([])
+    setWords([])
     setEnteringSentence(true)
   }
 
@@ -126,8 +123,6 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         const json = await res.json();
         setTranslatedSentence(json.translation.trim().split(" ") as string[])
         setOriginalSentence(translationInputText?.toString()!)
-        // setOriginalSentence(sentenceInputRef.current?.value!)
-        // setTranslatedSentence(`This is a Sentence with some Capitalized words`.trim().replace(/\n/g,"").split(" "))
         setEnteringSentence(false)
       } catch (error) {
         alert(error)
@@ -201,20 +196,26 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     }
   }
 
+    /**
+   * Return the word and letter index of the previous letter input (the input to the left)
+   * @param fromWord - the word to start from 
+   * @param fromLetter - the letter of the word to start from
+   * @returns Tuple containing the previous word and letter indexes
+   */
   const getPreviousLetterInput = (fromWord:number,fromLetter:number) : [previousWord:number,previousLetter:number] => {
     if (fromLetter === 0) {
-      return [fromWord - 1,letterInformation[fromWord-1].length-1]
+      return [fromWord - 1,inputRefs.current![fromWord-1].length-1]
     } else {
       return [fromWord,fromLetter-1]
     }
   }
 
   const isLastLetterOfWord = (wordNumber:number,letterNumber:number) => {
-    return letterInformation[wordNumber].length - 1 === letterNumber;
+    return inputRefs.current[wordNumber]!.length - 1 === letterNumber;
   }
 
   const isLastWord = (wordNumber:number) => {
-    return letterInformation.length - 1 === wordNumber
+    return inputRefs.current!.length - 1 === wordNumber
   }
 
   const isLastLetterOfLastWord= (wordNumber:number,letterNumber:number) => {
@@ -228,39 +229,27 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
   const clearInput = (wordNumber:number,letterNumber:number) => {
 
-      setLetterInformation(draft => {
-        draft[wordNumber][letterNumber].inputLetter = ''
-        draft[wordNumber][letterNumber].inputTouched = false
-      })
+      inputRefs.current[wordNumber][letterNumber].current!.value = ''
     
   }
 
   const removeAllWrongLetters = () => {
-    setLetterInformation(draft => {
-      draft.forEach(l =>
-        l.forEach(i => {
-          if(i.inputLetter !== i.letter) {
-            i.inputLetter = ''
-            i.inputTouched = false
-          }
-        })
-      )
+
+    inputRefs.current.forEach(word => {
+      word.forEach(letterInput => {
+        if(!letterInput.current!.checkValidity()) {
+          letterInput.current!.value = ''
+        }
+      })
     })
   }
 
   return (
     <div className="relative min-h-screen bg-slate-800  flex py-32 px-5">
+      {isLoading ? <LoadingSpinner/> :
+      <>
       <div className="max-w-5xl m-auto flex-1 text-white space-y-14">
-        {enteringSentence && <SentenceGuesserHeader/>}
-        {/* <HelperDialog isOpen={showHelperModal}>
-          <p>
-          Sentence Guesser works by taking an English sentence that you provide, translating it to German with DeepL, then returning it to you in the form of a fill-in-the-blanks exercise. If you get stuck, you can reveal a single letter every time you press "reveal" under a word.
-          </p>
-          <p>
-          Try to enter a sentence and see if you can fill in the missing letters yourself!
-          </p>
-        </HelperDialog> */}
-        
+        {enteringSentence && <SentenceGuesserHeader/>}        
         {enteringSentence ?        
           <TranslateForm onSubmit={translate}/>
           :
@@ -271,43 +260,46 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
           </div>
           </>
         }
+        {!enteringSentence && <>
         <div className="grid md:grid-flow-col gap-4 md:justify-start">
-          {!enteringSentence &&
+          
             <>            
               <Button onClick={removeAllWrongLetters}>Remove all wrong</Button>
               <Button onClick={tryNewSentence} >Try new sentence</Button>
             </>
 
-          }
         </div>
         <div className="font-mono">
-        {isLoading && <LoadingSpinner/>}
-        {letterInformation.length > 0 &&
-          letterInformation.map((s, i) => (
+        {words.length > 0 &&
+          words.map((s, i) => (
             <div key={i} className="inline-grid px-3 py-3 md:py-7 md:px-4">
-              <div className="space-x-1">
-              {s.map(({inputLetter,letter,inputTouched,isPunctuation}, j) => (
+              <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
+              {s.map((s, j) => (
+                isCharacter(s,languageToTranslateInto) ?
                 <LetterInput
                   key={`${j}${i}`} //Should be ok to use indexes as keys since order of inputs doesn't change
-                  value={inputLetter}
-                  onInput={(e) => onInput(e, i, j)}
+                  wordNum={i}
+                  letterNum={j}
+                  onInput={e => onInput(e,i,j)}
                   onKeyUp={e => onKeyUp(e,i,j)}
                   ref={inputRefs.current[i][j]} //Add inputref to each individual input
-                  autoFocus={i === 0 && j === 0} //Autofocus first letter input
-                  disabled={letter.toLocaleLowerCase() === inputLetter.toLocaleLowerCase()}
-                  className={[
-                    "w-[1ch] outline-none text-base sm:text-2xl md:text-3xl pb-1 bg-transparent rounded-none disabled:opacity-100",
-                    isPunctuation ? "" : "border-b-2 border-solid "+((!inputTouched ? "border-white" : (letter.toLocaleLowerCase() === inputLetter.toLocaleLowerCase() ? "border-green-300":"border-red-500")))
-                ].join(" ")}
+                  correctLetter={s}
                 />
+                :
+                <span key={`${j}${i}`}>{s}</span> //Just render a span with the non character
               ))}
               </div>
               <button onMouseDown={e => e.preventDefault()} onClick={e => revealRandLetter(i)} className="mt-4 text-xs opacity-40 hover:opacity-100">Reveal</button>
             </div>
           ))}
         </div>
+        </>
+        }
+
       </div>
       <p className="absolute bottom-4 text-xs left-4 text-white opacity-75">Made by <a href="https://borisgrunwald.me" className="underline">Boris Grunwald</a></p>
+      </>
+      }
     </div>
   );
 };

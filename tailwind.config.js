@@ -7,10 +7,10 @@ module.exports = {
         mono: ['"Roboto Mono"', "monospace"],
       },
       animation: {
-        cursorBlink: "cursorBlink 0.6s step-end 15 forwards, reveal 5s forwards",
+        typewriterReveal: "typewriterReveal 0.6s step-end 15 forwards, reveal 5s forwards",
       },
       keyframes: {
-        cursorBlink: {
+        typewriterReveal: {
           "0%,100%": { borderLeftColor: "transparent" },
           "50%": { borderLeftColor: "theme(colors.white)" },
         },
@@ -27,7 +27,7 @@ module.exports = {
             animationTimingFunction: "steps(6)",
             left: 'calc(100% / 16 * 6)',
           },
-          "60%": {
+          "80%": {
             animationTimingFunction: "steps(4)",
             left: 'calc(100% / 16 * 12)',
           },
