@@ -24,7 +24,7 @@ const SentenceGuesserHeader: React.FunctionComponent<
             <span> </span>
             {"guesser".split("").map((c,i)=><span key={i} className="border-b-[2px] pb-2 border-b-white">{c}</span>)}
         </h1>
-        {!didRunAnimation && <span className="absolute top-0 right-0 h-[1em] bg-slate-800 border-l-2 border-l-white animate-cursorBlink"></span>}
+        {!didRunAnimation && <span className="absolute top-0 right-0 h-[1em] bg-slate-800 border-l-2 border-l-white animate-typewriterReveal"></span>}
       </div>
     </div>
   );
