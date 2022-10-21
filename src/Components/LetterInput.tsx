@@ -6,18 +6,9 @@ interface ILetterInputProps
     correctLetter : string;
     wordNum:number;
     letterNum:number;
-    handleInput:(e: React.FormEvent<HTMLInputElement>, wordNum: number, letterNum: number) => void;
   }
 
-const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLetter,wordNum,letterNum,handleInput,...props},ref) => {
-
-
-  const [enteredLetter, setEnteredLetter] = useState("");
-
-  const onInput = (e: React.FormEvent<HTMLInputElement>) => {
-    setEnteredLetter(e.currentTarget.value)
-    handleInput(e,wordNum,letterNum)
-  }
+const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLetter,wordNum,letterNum,...props},ref) => {
 
   return (
     <input
@@ -25,8 +16,10 @@ const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLet
       autoCorrect="off"
       maxLength={1}
       pattern={correctLetter}
+      data-correct-letter={correctLetter}
       required
-      placeholder="?"
+      autoFocus={wordNum === 0 && letterNum === 0} //Autofocus first letter input
+      placeholder=" "
       autoCapitalize="off" //Prevent auto capitalize on mobile devices
       ref={ref}
       className={
@@ -42,8 +35,7 @@ const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLet
       [&:not(:placeholder-shown)]:border-green-500
       [&:not(:placeholder-shown)]:invalid:border-red-500`}
       {...props}
-      onInput={onInput}
-      value={enteredLetter}
+
     />
   );
 });

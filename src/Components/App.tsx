@@ -11,7 +11,7 @@ import TranslateForm from "./TranslateForm";
 interface ITest2Props {}
 
 const App: React.FunctionComponent<ITest2Props> = (props) => {
-  const [letterInformation, setLetterInformation] = useImmer<string[][]>([]);
+  const [words, setWords] = useState<string[][]>([]);
   const [translatedSentence,setTranslatedSentence] = useImmer<string[]>([])
   const [originalSentence, setOriginalSentence] = useState("");
   const [enteringSentence,setEnteringSentence] = useState(true);
@@ -33,6 +33,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       const arr: React.RefObject<HTMLInputElement>[] = [];
       const letterInformation : string[] = [];
       s.split("").forEach((l) => {
+        //Only create refs for characters and not for other symbols like punctuation
         if(isCharacter(l,languageToTranslateInto)) {
           arr.push(React.createRef());
         }
@@ -43,17 +44,20 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
     });
 
-    setLetterInformation(letterInformationArr);
-  }, [setLetterInformation,translatedSentence,languageToTranslateInto]);
+    setWords(letterInformationArr);
+  }, [setWords,translatedSentence,languageToTranslateInto]);
 
 
-
+  /*Only solution I could find to delete the character from the current input and 
+  go to the previously available input was to check for Backspace or Delete with onKeyUp event. 
+  onKeyDown and onKeyPressed are called before the character from the current input is deleted 
+   */
   const onKeyUp = (e:React.KeyboardEvent<HTMLInputElement>,
     wordNum: number,
     letterNum: number) => {
-    const isBackspace = e.key === 'Backspace'
+    const isBackspaceOrDelete = e.key === 'Backspace' || e.key === 'Delete'
     
-    if(isBackspace) {
+    if(isBackspaceOrDelete) {
       const [wordToSelect,letterToSelect] = getNextPreviousAvailableInput(wordNum,letterNum)
       clearInput(wordToSelect,letterToSelect)
       selectInput(wordToSelect,letterToSelect)
@@ -70,7 +74,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     
     const inputsWithWrongLetters = inputRefs.current[wordNumber].filter(i => !i.current!.checkValidity())
     const inputToReveal = inputsWithWrongLetters[randomIntFromInterval(0,inputsWithWrongLetters.length-1)]
-    inputToReveal.current!.value = inputToReveal.current!.pattern 
+    inputToReveal.current!.value = inputToReveal.current!.getAttribute("data-correct-letter")!
 
   }
 
@@ -81,7 +85,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   ) => {
     const value = e.currentTarget.value;
       //Disable inputs with correct value, no point in being able to delete correct words
-      if(e.currentTarget.pattern === value) {
+      if(e.currentTarget.getAttribute("data-correct-letter")! === value) {
         e.currentTarget.disabled = true;
       }
       if(languageRegexes[languageToTranslateInto].test(value)) {
@@ -90,7 +94,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   };
 
   const tryNewSentence = () => {
-    setLetterInformation([])
+    setWords([])
     setEnteringSentence(true)
   }
 
@@ -186,6 +190,12 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     }
   }
 
+    /**
+   * Return the word and letter index of the previous letter input (the input to the left)
+   * @param fromWord - the word to start from 
+   * @param fromLetter - the letter of the word to start from
+   * @returns Tuple containing the previous word and letter indexes
+   */
   const getPreviousLetterInput = (fromWord:number,fromLetter:number) : [previousWord:number,previousLetter:number] => {
     if (fromLetter === 0) {
       return [fromWord - 1,inputRefs.current![fromWord-1].length-1]
@@ -253,8 +263,8 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         </div>
         <div className="font-mono">
         {isLoading && <LoadingSpinner/>}
-        {letterInformation.length > 0 &&
-          letterInformation.map((s, i) => (
+        {words.length > 0 &&
+          words.map((s, i) => (
             <div key={i} className="inline-grid px-3 py-3 md:py-7 md:px-4">
               <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
               {s.map((s, j) => (
@@ -263,14 +273,13 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
                   key={`${j}${i}`} //Should be ok to use indexes as keys since order of inputs doesn't change
                   wordNum={i}
                   letterNum={j}
-                  handleInput={onInput}
+                  onInput={e => onInput(e,i,j)}
                   onKeyUp={e => onKeyUp(e,i,j)}
                   ref={inputRefs.current[i][j]} //Add inputref to each individual input
-                  autoFocus={i === 0 && j === 0} //Autofocus first letter input
                   correctLetter={s}
                 />
                 :
-                <span key={`${j}${i}`}>{s}</span>
+                <span key={`${j}${i}`}>{s}</span> //Just render a span with the non character
               ))}
               </div>
               <button onMouseDown={e => e.preventDefault()} onClick={e => revealRandLetter(i)} className="mt-4 text-xs opacity-40 hover:opacity-100">Reveal</button>
