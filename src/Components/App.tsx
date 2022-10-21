@@ -123,8 +123,6 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         const json = await res.json();
         setTranslatedSentence(json.translation.trim().split(" ") as string[])
         setOriginalSentence(translationInputText?.toString()!)
-        // setOriginalSentence(sentenceInputRef.current?.value!)
-        // setTranslatedSentence(`This is a Sentence with some Capitalized words`.trim().replace(/\n/g,"").split(" "))
         setEnteringSentence(false)
       } catch (error) {
         alert(error)
