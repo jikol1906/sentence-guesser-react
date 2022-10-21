@@ -39,7 +39,7 @@ const TranslateForm: React.FunctionComponent<ITranslateFormProps> = ({
         id=""
         autoFocus={true}
       />
-      <div className="justify-self-center space-x-3">
+      <div className="grid md:grid-flow-col gap-4 md:justify-self-center">
         <Button type="submit">Translate sentence</Button>
         <Button type="button" onClick={onHelpClicked}>Help</Button>
       </div>
