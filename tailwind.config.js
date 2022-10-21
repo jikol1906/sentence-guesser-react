@@ -27,7 +27,7 @@ module.exports = {
             animationTimingFunction: "steps(6)",
             left: 'calc(100% / 16 * 6)',
           },
-          "60%": {
+          "80%": {
             animationTimingFunction: "steps(4)",
             left: 'calc(100% / 16 * 12)',
           },
