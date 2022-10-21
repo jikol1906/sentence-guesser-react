@@ -257,6 +257,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
           </div>
           </>
         }
+        {isLoading && <LoadingSpinner/>}
         {!enteringSentence && <>
         <div className="grid md:grid-flow-col gap-4 md:justify-start">
           
@@ -267,7 +268,6 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
         </div>
         <div className="font-mono">
-        {isLoading && <LoadingSpinner/>}
         {words.length > 0 &&
           words.map((s, i) => (
             <div key={i} className="inline-grid px-3 py-3 md:py-7 md:px-4">
