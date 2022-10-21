@@ -90,10 +90,9 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     letterNum: number
   ) => {
     const value = e.currentTarget.value;
-      setLetterInformation(draft => {
-        draft[wordNum][letterNum].inputLetter = value
-        draft[wordNum][letterNum].inputTouched = true
-      })
+      if(e.currentTarget.pattern === value) {
+        e.currentTarget.disabled = true;
+      }
       if(languageRegexes[languageToTranslateInto].test(value)) {
         selectNextAvailableInput(wordNum,letterNum)
       }
@@ -276,7 +275,9 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
                 <LetterInput
                   key={`${j}${i}`} //Should be ok to use indexes as keys since order of inputs doesn't change
                   value={inputLetter}
-                  onInput={(e) => onInput(e, i, j)}
+                  wordNum={i}
+                  letterNum={j}
+                  handleInput={onInput}
                   onKeyUp={e => onKeyUp(e,i,j)}
                   ref={inputRefs.current[i][j]} //Add inputref to each individual input
                   autoFocus={i === 0 && j === 0} //Autofocus first letter input
