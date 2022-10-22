@@ -88,7 +88,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   ) => {
     const value = e.currentTarget.value;
       //Disable inputs with correct value, no point in being able to delete correct words
-      if(e.currentTarget.getAttribute("data-correct-letter")!.toLowerCase() === value.toLowerCase()) {
+      if(e.currentTarget.checkValidity()) {
         e.currentTarget.disabled = true;
       }
       if(languageRegexes[languageToTranslateInto].test(value)) {
