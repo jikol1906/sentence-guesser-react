@@ -33,10 +33,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       const arr: React.RefObject<HTMLInputElement>[] = [];
       const letterInformation : string[] = [];
       s.split("").forEach((l) => {
-        //Only create refs for characters and not for other symbols like punctuation
-        if(isCharacter(l,languageToTranslateInto)) {
-          arr.push(React.createRef());
-        }
+          arr.push(React.createRef()); // Create a ref for all letter inputs, so that we can programatically advance to the next or previous input
           letterInformation.push(l)
       });
       letterInformationArr.push(letterInformation)
@@ -275,18 +272,16 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
             <div key={i} className="inline-grid px-3 py-3 md:py-7 md:px-4">
               <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
               {s.map((s, j) => (
-                isCharacter(s,languageToTranslateInto) ?
                 <LetterInput
                   key={`${j}${i}`} //Should be ok to use indexes as keys since order of inputs doesn't change
                   wordNum={i}
                   letterNum={j}
+                  isNonCharacter={!isCharacter(s,languageToTranslateInto)}
                   onInput={e => onInput(e,i,j)}
                   onKeyUp={e => onKeyUp(e,i,j)}
                   ref={inputRefs.current[i][j]} //Add inputref to each individual input
                   correctLetter={s}
                 />
-                :
-                <span key={`${j}${i}`}>{s}</span> //Just render a span with the non character
               ))}
               </div>
               <button onMouseDown={e => e.preventDefault()} onClick={e => revealRandLetter(i)} className="mt-4 text-xs opacity-40 hover:opacity-100">Reveal</button>

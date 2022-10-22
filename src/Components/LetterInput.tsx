@@ -6,9 +6,14 @@ interface ILetterInputProps
     correctLetter : string;
     wordNum:number;
     letterNum:number;
+    isNonCharacter:boolean
   }
 
-const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLetter,wordNum,letterNum,...props},ref) => {
+const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLetter,wordNum,letterNum,isNonCharacter,...props},ref) => {
+
+  const value = isNonCharacter ?  {
+    value:correctLetter
+  } : {}
 
   return (
     <input
@@ -22,6 +27,8 @@ const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLet
       placeholder=" "
       autoCapitalize="off" //Prevent auto capitalize on mobile devices
       ref={ref}
+      disabled={isNonCharacter}
+      {...value} // only show non characters
       className={
         `w-[1ch]
         outline-none
@@ -30,10 +37,16 @@ const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLet
         rounded-none
         disabled:opacity-100
         placeholder:opacity-[.08]
-        border-b-2 border-solid
-      border-white
-      [&:not(:placeholder-shown)]:border-green-500
-      [&:not(:placeholder-shown)]:invalid:border-red-500`}
+        ${!isNonCharacter ? `
+        border-b-2 
+        border-solid
+        border-white
+        [&:not(:placeholder-shown)]:border-green-500
+        [&:not(:placeholder-shown)]:invalid:border-red-500`
+        : 
+        "border-none"
+        }
+        `}
       {...props}
 
     />
