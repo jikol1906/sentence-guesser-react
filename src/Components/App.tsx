@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
-import {  Language, languageRegexes } from "../Utils";
+import {  Language, languageRegexes, SentenceGuesserConfig } from "../Utils";
 import Button from "./Button";
 import Word from "./Word";
 import LoadingSpinner from "./LoadingSpinner";
@@ -17,7 +17,10 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const [originalSentence, setOriginalSentence] = useState("");
   const [enteringSentence,setEnteringSentence] = useState(true);
   const [languageToTranslateInto] = useState<Language>("german")
-  const [showBorderOnEmptyInput, setShowBorderOnEmptyInput] = useState(true);
+  const [{showBorderOnEmptyInput,oneLetterAtATimeMode}, setSentenceGuesserConfig] = useImmer<SentenceGuesserConfig>({
+    oneLetterAtATimeMode:false,
+    showBorderOnEmptyInput:false,
+  });
   const [isLoading,setIsLoading] = useState(false);
 
 
@@ -234,7 +237,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       <div className="max-w-5xl m-auto flex-1 text-white space-y-14">
         {enteringSentence && <SentenceGuesserHeader/>}        
         {enteringSentence ?        
-          <TranslateForm onSubmit={translate} showBorderOnEmptyInput={showBorderOnEmptyInput} setShowBorderOnEmptyInput={setShowBorderOnEmptyInput}/>
+          <TranslateForm onSubmit={translate} showBorderOnEmptyInput={showBorderOnEmptyInput} setSentenceGuesserConfig={setSentenceGuesserConfig}/>
           :
           <> 
           <div className="">
@@ -249,7 +252,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
             <>            
               <Button onClick={removeAllWrongLetters}>Remove all wrong</Button>
               <Button onClick={tryNewSentence} >Try new sentence</Button>
-              <Switch checked={showBorderOnEmptyInput} onChange={_ => setShowBorderOnEmptyInput(prev => !prev)}>Show empty letters</Switch>
+              <Switch checked={showBorderOnEmptyInput} onChange={_ => setSentenceGuesserConfig(prev => {prev.showBorderOnEmptyInput = !prev.showBorderOnEmptyInput})}>Show empty letters</Switch>
             </>
 
         </div>

@@ -1,16 +1,18 @@
 import * as React from "react";
+import { Updater } from "use-immer";
+import { SentenceGuesserConfig } from "../Utils";
 import Button from "./Button";
 import { ModalCtx } from "./ModalProvider";
 import Switch from "./Switch";
 
 interface ITranslateFormProps
   extends React.FormHTMLAttributes<HTMLFormElement> {
-    setShowBorderOnEmptyInput:React.Dispatch<React.SetStateAction<boolean>>
+    setSentenceGuesserConfig:Updater<SentenceGuesserConfig>
     showBorderOnEmptyInput:boolean
   }
 
 const TranslateForm: React.FunctionComponent<ITranslateFormProps> = ({
-  setShowBorderOnEmptyInput,
+  setSentenceGuesserConfig,
   showBorderOnEmptyInput,
   onSubmit,
 }) => {
@@ -48,7 +50,7 @@ const TranslateForm: React.FunctionComponent<ITranslateFormProps> = ({
       <div className="grid md:grid-flow-col gap-4 md:justify-self-center">
         <Button type="submit">Translate sentence</Button>
         <Button type="button" onClick={onHelpClicked}>Help</Button>
-        <Switch checked={showBorderOnEmptyInput} onChange={_ => setShowBorderOnEmptyInput(prev => !prev)}>Show empty letters</Switch>
+        <Switch checked={showBorderOnEmptyInput} onChange={_ => setSentenceGuesserConfig(prev => {prev.showBorderOnEmptyInput = !prev.showBorderOnEmptyInput})}>Show empty letters</Switch>
       </div>
     </form>
   );
