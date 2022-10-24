@@ -272,7 +272,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         <div className="font-mono">
         {words.length > 0 &&
           words.map((s, i) => (
-            <div key={i} className="inline-grid pb-3 pr-3 md:pb-7 md:pr-10">
+            <div key={i} className="inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop" style={{'--animation-delay':`${i*0.02}s`} as React.CSSProperties}>
               <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
               {s.map((s, j) => (
                 <LetterInput
