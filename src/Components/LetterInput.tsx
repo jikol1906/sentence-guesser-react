@@ -33,6 +33,8 @@ const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLet
       className={
         `w-[1ch]
         outline-none
+        transition-all
+        duration-100
         pb-1
         bg-transparent
         rounded-none
