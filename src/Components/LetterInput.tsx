@@ -4,13 +4,13 @@ import { forwardRef } from "react";
 interface ILetterInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
     correctLetter : string;
-    wordNum:number;
-    letterNum:number;
+    
+    
     isNonCharacter:boolean;
     showBorderOnEmptyInput:boolean
   }
 
-const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLetter,wordNum,letterNum,isNonCharacter,showBorderOnEmptyInput,...props},ref) => {
+const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLetter,isNonCharacter,showBorderOnEmptyInput,...props},ref) => {
 
   const value = isNonCharacter ?  {
     value:correctLetter
@@ -24,7 +24,6 @@ const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLet
       pattern={`[${correctLetter.toLowerCase()}${correctLetter.toUpperCase()}]`}
       data-correct-letter={correctLetter}
       required
-      autoFocus={wordNum === 0 && letterNum === 0} //Autofocus first letter input
       placeholder=" "
       autoCapitalize="off" //Prevent auto capitalize on mobile devices
       ref={ref}

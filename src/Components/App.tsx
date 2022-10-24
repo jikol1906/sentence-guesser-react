@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
 import {  isCharacter, Language, languageRegexes, randomIntFromInterval } from "../Utils";
 import Button from "./Button";
+import Word from "./Word";
 import LetterInput from "./LetterInput";
 import LoadingSpinner from "./LoadingSpinner";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
@@ -272,24 +273,15 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         <div className="font-mono">
         {words.length > 0 &&
           words.map((s, i) => (
-            <div key={i} className="inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop" style={{'--animation-delay':`${i*0.02}s`} as React.CSSProperties}>
-              <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
-              {s.map((s, j) => (
-                <LetterInput
-                  key={`${j}${i}`} //Should be ok to use indexes as keys since order of inputs doesn't change
-                  wordNum={i}
-                  letterNum={j}
-                  isNonCharacter={!isCharacter(s,languageToTranslateInto)}
-                  onInput={e => onInput(e,i,j)}
-                  onKeyUp={e => onKeyUp(e,i,j)}
-                  showBorderOnEmptyInput={showBorderOnEmptyInput}
-                  ref={inputRefs.current[i][j]} //Add inputref to each individual input
-                  correctLetter={s}
-                />
-              ))}
-              </div>
-              <button onMouseDown={e => e.preventDefault()} onClick={e => revealRandLetter(i)} className="mt-4 text-xs opacity-40 hover:opacity-100">Reveal</button>
-            </div>
+            <Word 
+            wordNum={i} 
+            key={i} 
+            word={s} 
+            letterRefs={inputRefs.current[i]} 
+            languageToTranslateInto={languageToTranslateInto} 
+            showBorderOnEmptyInput={showBorderOnEmptyInput} 
+            onLetterInput={onInput} 
+            onLetterKeyUp={onKeyUp}/>
           ))}
         </div>
         </>
