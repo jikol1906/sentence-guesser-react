@@ -1,5 +1,5 @@
 import * as React from "react";
-import { isCharacter, Language } from "../Utils";
+import { isCharacter, Language, randomIntFromInterval } from "../Utils";
 import LetterInput from "./LetterInput";
 
 interface IWordProps {
@@ -21,6 +21,25 @@ const Word: React.FunctionComponent<IWordProps> = ({
   word,
   letterRefs
 }) => {
+
+    /**
+   * Reveals one random letter of the specified word
+   * @param wordNumber - index of the word which will have one letter revealed.
+   */
+     const revealRandLetter = () => { 
+    
+      const inputsWithWrongLetters = letterRefs.filter(i => !i.current!.checkValidity())
+      if(inputsWithWrongLetters.length > 0) {
+        const inputToReveal = inputsWithWrongLetters[randomIntFromInterval(0,inputsWithWrongLetters.length-1)]
+        inputToReveal.current!.value = inputToReveal.current!.getAttribute("data-correct-letter")!
+        inputToReveal.current!.disabled = true;
+        if(document.activeElement === inputToReveal.current) {
+          inputToReveal.current!.blur()
+        }
+      }
+  
+    }
+
 
   return (
     <div
@@ -45,6 +64,7 @@ const Word: React.FunctionComponent<IWordProps> = ({
       </div>
       <button
         onMouseDown={(e) => e.preventDefault()}
+        onClick={revealRandLetter}
         className="mt-4 text-xs opacity-40 hover:opacity-100"
       >
         Reveal

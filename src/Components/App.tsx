@@ -1,10 +1,9 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
-import {  isCharacter, Language, languageRegexes, randomIntFromInterval } from "../Utils";
+import {  Language, languageRegexes } from "../Utils";
 import Button from "./Button";
 import Word from "./Word";
-import LetterInput from "./LetterInput";
 import LoadingSpinner from "./LoadingSpinner";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
 import Switch from "./Switch";
@@ -66,23 +65,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
   }
 
-  /**
-   * Reveals one random letter of the specified word
-   * @param wordNumber - index of the word which will have one letter revealed.
-   */
-  const revealRandLetter = (wordNumber:number) => { 
-    
-    const inputsWithWrongLetters = inputRefs.current[wordNumber].filter(i => !i.current!.checkValidity())
-    if(inputsWithWrongLetters.length > 0) {
-      const inputToReveal = inputsWithWrongLetters[randomIntFromInterval(0,inputsWithWrongLetters.length-1)]
-      inputToReveal.current!.value = inputToReveal.current!.getAttribute("data-correct-letter")!
-      inputToReveal.current!.disabled = true;
-      if(document.activeElement === inputToReveal.current) {
-        inputToReveal.current!.blur()
-      }
-    }
 
-  }
 
   const onInput = (
     e: React.FormEvent<HTMLInputElement>,
