@@ -6,6 +6,7 @@ import Button from "./Button";
 import LetterInput from "./LetterInput";
 import LoadingSpinner from "./LoadingSpinner";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
+import Switch from "./Switch";
 import TranslateForm from "./TranslateForm";
 
 interface ITest2Props {}
@@ -16,6 +17,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const [originalSentence, setOriginalSentence] = useState("");
   const [enteringSentence,setEnteringSentence] = useState(true);
   const [languageToTranslateInto] = useState<Language>("german")
+  const [showBorderOnEmptyInput, setShowBorderOnEmptyInput] = useState(true);
   const [isLoading,setIsLoading] = useState(false);
 
 
@@ -248,7 +250,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       <div className="max-w-5xl m-auto flex-1 text-white space-y-14">
         {enteringSentence && <SentenceGuesserHeader/>}        
         {enteringSentence ?        
-          <TranslateForm onSubmit={translate}/>
+          <TranslateForm onSubmit={translate} showBorderOnEmptyInput={showBorderOnEmptyInput} setShowBorderOnEmptyInput={setShowBorderOnEmptyInput}/>
           :
           <> 
           <div className="">
@@ -263,6 +265,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
             <>            
               <Button onClick={removeAllWrongLetters}>Remove all wrong</Button>
               <Button onClick={tryNewSentence} >Try new sentence</Button>
+              <Switch checked={showBorderOnEmptyInput} onChange={_ => setShowBorderOnEmptyInput(prev => !prev)}>Show empty letters</Switch>
             </>
 
         </div>
@@ -279,6 +282,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
                   isNonCharacter={!isCharacter(s,languageToTranslateInto)}
                   onInput={e => onInput(e,i,j)}
                   onKeyUp={e => onKeyUp(e,i,j)}
+                  showBorderOnEmptyInput={showBorderOnEmptyInput}
                   ref={inputRefs.current[i][j]} //Add inputref to each individual input
                   correctLetter={s}
                 />

@@ -6,10 +6,11 @@ interface ILetterInputProps
     correctLetter : string;
     wordNum:number;
     letterNum:number;
-    isNonCharacter:boolean
+    isNonCharacter:boolean;
+    showBorderOnEmptyInput:boolean
   }
 
-const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLetter,wordNum,letterNum,isNonCharacter,...props},ref) => {
+const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLetter,wordNum,letterNum,isNonCharacter,showBorderOnEmptyInput,...props},ref) => {
 
   const value = isNonCharacter ?  {
     value:correctLetter
@@ -40,7 +41,7 @@ const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLet
         ${!isNonCharacter ? `
         border-b-2 
         border-solid
-        border-white
+        ${showBorderOnEmptyInput ? "border-white" : "border-transparent"}
         [&:not(:placeholder-shown)]:border-green-500
         [&:not(:placeholder-shown)]:invalid:border-red-500`
         : 

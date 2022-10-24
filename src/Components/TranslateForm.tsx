@@ -1,11 +1,17 @@
 import * as React from "react";
 import Button from "./Button";
 import { ModalCtx } from "./ModalProvider";
+import Switch from "./Switch";
 
 interface ITranslateFormProps
-  extends React.FormHTMLAttributes<HTMLFormElement> {}
+  extends React.FormHTMLAttributes<HTMLFormElement> {
+    setShowBorderOnEmptyInput:React.Dispatch<React.SetStateAction<boolean>>
+    showBorderOnEmptyInput:boolean
+  }
 
 const TranslateForm: React.FunctionComponent<ITranslateFormProps> = ({
+  setShowBorderOnEmptyInput,
+  showBorderOnEmptyInput,
   onSubmit,
 }) => {
 
@@ -42,6 +48,7 @@ const TranslateForm: React.FunctionComponent<ITranslateFormProps> = ({
       <div className="grid md:grid-flow-col gap-4 md:justify-self-center">
         <Button type="submit">Translate sentence</Button>
         <Button type="button" onClick={onHelpClicked}>Help</Button>
+        <Switch checked={showBorderOnEmptyInput} onChange={_ => setShowBorderOnEmptyInput(prev => !prev)}>Show empty letters</Switch>
       </div>
     </form>
   );
