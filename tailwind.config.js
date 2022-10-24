@@ -8,6 +8,7 @@ module.exports = {
       },
       animation: {
         typewriterReveal: "typewriterReveal 0.6s step-end 15 forwards, reveal 5s forwards",
+        fadeInTop: "fadeInTop 0.6s var(--animation-delay,0s) ease-in-out both"
       },
       keyframes: {
         typewriterReveal: {
@@ -35,6 +36,15 @@ module.exports = {
             left: '100%',
           },
         },
+        fadeInTop: {
+          "from": {
+            opacity: 0,
+            transform: "translateY(-10px)"
+          },
+          "to":{
+            opacity: 1
+          }
+        }
       },
     },
   },
