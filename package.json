@@ -31,6 +31,7 @@
     "start:dev": "netlify dev",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "e2e": "cypress open",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -53,6 +54,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.12",
+    "cypress": "^10.11.0",
     "netlify-cli": "^12.0.11",
     "postcss": "^8.4.16",
     "tailwindcss": "^3.1.8"
