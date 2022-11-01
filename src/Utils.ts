@@ -5,7 +5,8 @@ export function randomIntFromInterval(min:number, max:number) {
 
 
 export const languageRegexes = {
-  german: /[a-zA-ZäöüßÄÖÜẞ]/
+  german: /[a-zA-ZäöüßÄÖÜẞ]/,
+  spanish:/[^0-9a-zñáéíóúü]/i
 } as const
 
 export type Language = keyof typeof languageRegexes;
