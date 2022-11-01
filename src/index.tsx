@@ -5,6 +5,16 @@ import reportWebVitals from "./reportWebVitals";
 import App from "./Components/App";
 import { ModalProvider } from "./Components/ModalProvider";
 
+if (
+  typeof window !== "undefined" &&
+  process.env.NODE_ENV === "development"
+  // && /VIVID_ENABLED=true/.test(document.cookie)
+) {
+  import("vivid-studio").then((v) => v.run());
+  import("vivid-studio/style.css");
+}
+
+
 ReactDOM.render(
 
 
