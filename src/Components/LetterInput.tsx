@@ -1,4 +1,5 @@
 import * as React from "react";
+import clsx from 'clsx';
 import { forwardRef } from "react";
 
 interface ILetterInputProps
@@ -29,26 +30,23 @@ const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLet
       ref={ref}
       disabled={isNonCharacter}
       {...value} // only show non characters
-      className={
-        `w-[1ch]
-        outline-none
-        transition-all
-        duration-100
-        pb-1
-        bg-transparent
-        rounded-none
-        disabled:opacity-100
-        placeholder:opacity-[.08]
-        ${!isNonCharacter ? `
-        border-b-2 
-        border-solid
-        ${showBorderOnEmptyInput ? "border-white" : "border-transparent"}
-        [&:not(:placeholder-shown)]:border-green-500
-        [&:not(:placeholder-shown)]:invalid:border-red-500`
-        : 
-        "border-none"
-        }
-        `}
+        className={clsx(
+          "w-[1ch] pb-1",
+          "outline-none",
+          "transition-all duration-100",
+          "disabled:opacity-100 placeholder:opacity-[.08]",
+          "bg-transparent",
+          "rounded-none",
+          !isNonCharacter
+            ? clsx(
+                "border-b-2",
+                "border-solid",
+                showBorderOnEmptyInput ? "border-white" : "border-transparent",
+                "[&:not(:placeholder-shown)]:border-green-500",
+                "[&:not(:placeholder-shown)]:invalid:border-red-500"
+              )
+            : "border-none"
+        )}
       {...props}
 
     />
