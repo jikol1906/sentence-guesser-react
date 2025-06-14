@@ -1,6 +1,17 @@
 import * as deepl from 'deepl-node';
 
-
+const langToDeepLTargetLang = (lang) => {
+  switch (lang) {
+    case 'german':
+      return 'de';
+    case 'spanish':
+      return 'es';
+    case 'french':
+      return 'fr';
+    default:
+      return 'de';
+  }
+}
 
 const handler = async (event, context) => {
   try {
@@ -8,8 +19,9 @@ const handler = async (event, context) => {
     const authKey = process.env.DEEPL_API_KEY;
     const translator = new deepl.Translator(authKey);
 
-    const { sentence } = event.queryStringParameters;
-    const {text} = await translator.translateText(sentence,null,"de", {formality:'more'})
+    const { sentence, lang } = event.queryStringParameters;
+    const targetLang = langToDeepLTargetLang(lang);
+    const {text} = await translator.translateText(sentence,null,targetLang, {formality:'more'})
 
  
 

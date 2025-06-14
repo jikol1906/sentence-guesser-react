@@ -16,7 +16,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const [translatedSentence,setTranslatedSentence] = useImmer<string[]>([])
   const [originalSentence, setOriginalSentence] = useState("");
   const [enteringSentence,setEnteringSentence] = useState(true);
-  const [languageToTranslateInto] = useState<Language>("german")
+  const [languageToTranslateInto, setLanguageToTranslateInto] = useState<Language>("german")
   const [showBorderOnEmptyInput, setShowBorderOnEmptyInput] = useState(true);
   const [isLoading,setIsLoading] = useState(false);
 
@@ -112,7 +112,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       
       
       try {
-        const res = await fetch(`/.netlify/functions/translate?sentence=${translationInputText}`);
+        const res = await fetch(`/.netlify/functions/translate?sentence=${translationInputText}&lang=${languageToTranslateInto}`);
         
         if (!res.ok) {
           const message = `An error has occured: ${res.status} ${res.statusText}`;
@@ -135,7 +135,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   }
 
   /**
-   *  Select the next available letter input skipping all the disabled inputs until the next non disabled input or the last letter is reached
+   * Select the next available letter input skipping all the disabled inputs until the next non disabled input or the last letter is reached
    * @param fromWord - the word to start from 
    * @param fromLetter - the letter of the word to start from
    */
@@ -250,7 +250,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       <div className="max-w-5xl m-auto flex-1 text-white space-y-14">
         {enteringSentence && <SentenceGuesserHeader/>}        
         {enteringSentence ?        
-          <TranslateForm onSubmit={translate} showBorderOnEmptyInput={showBorderOnEmptyInput} setShowBorderOnEmptyInput={setShowBorderOnEmptyInput}/>
+          <TranslateForm onSubmit={translate} showBorderOnEmptyInput={showBorderOnEmptyInput} setShowBorderOnEmptyInput={setShowBorderOnEmptyInput} onLanguageChange={setLanguageToTranslateInto} selectedLanguage={languageToTranslateInto} />
           :
           <> 
           <div className="">
