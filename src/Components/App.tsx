@@ -1,13 +1,13 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
-import {  isCharacter, Language, languageRegexes, randomIntFromInterval } from "../Utils";
-import Button from "./Button";
-import LetterInput from "./LetterInput";
-import LoadingSpinner from "./LoadingSpinner";
+import {  Language, languageRegexes, randomIntFromInterval } from "../Utils";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
-import Switch from "./Switch";
 import TranslateForm from "./TranslateForm";
+import LoadingSpinner from "./LoadingSpinner";
+import Footer from "./Footer";
+import GameView from "./GameView";
+
 
 interface ITest2Props {}
 
@@ -24,11 +24,11 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   /**Refs for the letter inputs.  */
   const inputRefs = useRef<React.RefObject<HTMLInputElement>[][]>([]);
 
-  
+
 
   //Update letterinformation when enteredSentence changes
   useEffect(() => {
-    
+
     const letterInformationArr : string[][] = [];
     inputRefs.current = []
     translatedSentence.forEach((s) => {
@@ -47,21 +47,21 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   }, [setWords,translatedSentence,languageToTranslateInto]);
 
 
-  /*Only solution I could find to delete the character from the current input and 
-  go to the previously available input was to check for Backspace or Delete with onKeyUp event. 
-  onKeyDown and onKeyPressed are called before the character from the current input is deleted 
+  /*Only solution I could find to delete the character from the current input and
+  go to the previously available input was to check for Backspace or Delete with onKeyUp event.
+  onKeyDown and onKeyPressed are called before the character from the current input is deleted
    */
   const onKeyUp = (e:React.KeyboardEvent<HTMLInputElement>,
     wordNum: number,
     letterNum: number) => {
     const isBackspaceOrDelete = e.key === 'Backspace' || e.key === 'Delete'
-    
+
     if(isBackspaceOrDelete) {
       const [wordToSelect,letterToSelect] = getNextPreviousAvailableInput(wordNum,letterNum)
       clearInput(wordToSelect,letterToSelect)
       selectInput(wordToSelect,letterToSelect)
 
-    } 
+    }
 
   }
 
@@ -69,8 +69,8 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
    * Reveals one random letter of the specified word
    * @param wordNumber - index of the word which will have one letter revealed.
    */
-  const revealRandLetter = (wordNumber:number) => { 
-    
+  const revealRandLetter = (wordNumber:number) => {
+
     const inputsWithWrongLetters = inputRefs.current[wordNumber].filter(i => !i.current!.checkValidity())
     if(inputsWithWrongLetters.length > 0) {
       const inputToReveal = inputsWithWrongLetters[randomIntFromInterval(0,inputsWithWrongLetters.length-1)]
@@ -108,17 +108,15 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       e.preventDefault()
       const formData = new FormData(e.currentTarget)
       const translationInputText = formData.get("test")
-      
-      
-      
+
       try {
         const res = await fetch(`/.netlify/functions/translate?sentence=${translationInputText}&lang=${languageToTranslateInto}`);
-        
+
         if (!res.ok) {
           const message = `An error has occured: ${res.status} ${res.statusText}`;
           throw new Error(message);
         }
-        
+
         const json = await res.json();
         setTranslatedSentence(json.translation.trim().split(" ") as string[])
         setOriginalSentence(translationInputText?.toString()!)
@@ -128,29 +126,28 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       }
 
       setIsLoading(false)
-      
-    
-      
-    
+
+
+
   }
 
   /**
    * Select the next available letter input skipping all the disabled inputs until the next non disabled input or the last letter is reached
-   * @param fromWord - the word to start from 
+   * @param fromWord - the word to start from
    * @param fromLetter - the letter of the word to start from
    */
   const selectNextAvailableInput = (fromWord:number, fromLetter:number) => {
     if(!isLastLetterOfLastWord(fromWord,fromLetter)) {
       let [nextWordNumber,nextLetterNumber] = getNextLetterInput(fromWord,fromLetter)
-  
+
       while(inputIsDisabled(nextWordNumber,nextLetterNumber)) {
         if(isLastLetterOfLastWord(nextWordNumber,nextLetterNumber)) {return}
         [nextWordNumber,nextLetterNumber] = getNextLetterInput(nextWordNumber,nextLetterNumber)
       }
-  
+
       selectInput(nextWordNumber,nextLetterNumber)
     }
-    
+
   }
 
   const getNextPreviousAvailableInput = (fromWord:number, fromLetter:number) => {
@@ -163,10 +160,10 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       }
 
       return [previousWord, previousLetter]
-    } 
+    }
 
       return [fromWord,fromLetter]
-    
+
 
   }
 
@@ -175,7 +172,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     return inputRefs.current[wordNum][letterNum].current?.disabled
   }
 
-  
+
   const selectInput = (wordNum: number,letterNum: number) => {
     return inputRefs.current[wordNum][letterNum].current?.focus()
   }
@@ -183,7 +180,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
   /**
    * Return the word and letter index of the next letter input (the input to the right)
-   * @param fromWord - the word to start from 
+   * @param fromWord - the word to start from
    * @param fromLetter - the letter of the word to start from
    * @returns Tuple containing the next word and letter indexes
    */
@@ -197,7 +194,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
     /**
    * Return the word and letter index of the previous letter input (the input to the left)
-   * @param fromWord - the word to start from 
+   * @param fromWord - the word to start from
    * @param fromLetter - the letter of the word to start from
    * @returns Tuple containing the previous word and letter indexes
    */
@@ -229,7 +226,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
   const clearInput = (wordNumber:number,letterNumber:number) => {
 
       inputRefs.current[wordNumber][letterNumber].current!.value = ''
-    
+
   }
 
   const removeAllWrongLetters = () => {
@@ -248,55 +245,28 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       {isLoading ? <LoadingSpinner/> :
       <>
       <div className="max-w-5xl m-auto flex-1 text-white space-y-14">
-        {enteringSentence && <SentenceGuesserHeader/>}        
-        {enteringSentence ?        
-          <TranslateForm onSubmit={translate} showBorderOnEmptyInput={showBorderOnEmptyInput} setShowBorderOnEmptyInput={setShowBorderOnEmptyInput} onLanguageChange={setLanguageToTranslateInto} selectedLanguage={languageToTranslateInto} />
-          :
-          <> 
-          <div className="">
-            <p className="mb-2 font-bold">You entered the sentence:</p>
-            <p className="text-xl sticky top-4 bg-slate-800">{originalSentence}</p>
-          </div>
+        {enteringSentence ?
+          <>
+            <SentenceGuesserHeader/>
+            <TranslateForm onSubmit={translate} showBorderOnEmptyInput={showBorderOnEmptyInput} setShowBorderOnEmptyInput={setShowBorderOnEmptyInput} onLanguageChange={setLanguageToTranslateInto} selectedLanguage={languageToTranslateInto} />
           </>
+          :
+          <GameView
+            originalSentence={originalSentence}
+            words={words}
+            inputRefs={inputRefs.current}
+            languageToTranslateInto={languageToTranslateInto}
+            showBorderOnEmptyInput={showBorderOnEmptyInput}
+            onInput={onInput}
+            onKeyUp={onKeyUp}
+            onRevealLetter={revealRandLetter}
+            onRemoveAllWrong={removeAllWrongLetters}
+            onTryNewSentence={tryNewSentence}
+            onShowBorderChange={setShowBorderOnEmptyInput}
+          />
         }
-        {!enteringSentence && <>
-        <div className="grid md:grid-flow-col gap-4 md:justify-start">
-          
-            <>            
-              <Button onClick={removeAllWrongLetters}>Remove all wrong</Button>
-              <Button onClick={tryNewSentence} >Try new sentence</Button>
-              <Switch checked={showBorderOnEmptyInput} onChange={_ => setShowBorderOnEmptyInput(prev => !prev)}>Show empty letters</Switch>
-            </>
-
-        </div>
-        <div className="font-mono">
-        {words.length > 0 &&
-          words.map((s, i) => (
-            <div key={i} className="inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop" style={{'--animation-delay':`${i*0.02}s`} as React.CSSProperties}>
-              <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
-              {s.map((s, j) => (
-                <LetterInput
-                  key={`${j}${i}`} //Should be ok to use indexes as keys since order of inputs doesn't change
-                  wordNum={i}
-                  letterNum={j}
-                  isNonCharacter={!isCharacter(s,languageToTranslateInto)}
-                  onInput={e => onInput(e,i,j)}
-                  onKeyUp={e => onKeyUp(e,i,j)}
-                  showBorderOnEmptyInput={showBorderOnEmptyInput}
-                  ref={inputRefs.current[i][j]} //Add inputref to each individual input
-                  correctLetter={s}
-                />
-              ))}
-              </div>
-              <button onMouseDown={e => e.preventDefault()} onClick={e => revealRandLetter(i)} className="mt-4 text-xs opacity-40 hover:opacity-100">Reveal</button>
-            </div>
-          ))}
-        </div>
-        </>
-        }
-
       </div>
-      <p className="absolute bottom-4 text-xs left-4 text-white opacity-75">Made by <a href="https://borisgrunwald.me" className="underline">Boris Grunwald</a></p>
+      <Footer />
       </>
       }
     </div>
