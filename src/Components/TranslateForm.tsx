@@ -1,67 +1,51 @@
-import * as React from "react";
-import Button from "./Button";
-import { ModalCtx } from "./ModalProvider";
-import Switch from "./Switch";
-import { languageRegexes, Language } from "../Utils";
+import * as React from 'react';
+import { useState } from 'react';
+import { Language } from '../Utils';
+import Button from './Button';
+import HelperDialog from './HelperDialog';
 
-interface ITranslateFormProps
-  extends React.FormHTMLAttributes<HTMLFormElement> {
-    setShowBorderOnEmptyInput:React.Dispatch<React.SetStateAction<boolean>>;
-    showBorderOnEmptyInput:boolean;
-    onLanguageChange: (language: Language) => void;
-    selectedLanguage: Language;
-  }
+interface ITranslateFormProps {
+    onSubmit: (e:React.FormEvent<HTMLFormElement>) => void
+    selectedLanguage: Language
+    onLanguageChange:(lang:Language) => void
+    showBorderOnEmptyInput:boolean
+    setShowBorderOnEmptyInput:React.Dispatch<React.SetStateAction<boolean>>
+}
 
-const TranslateForm: React.FunctionComponent<ITranslateFormProps> = ({
-  setShowBorderOnEmptyInput,
-  showBorderOnEmptyInput,
-  onSubmit,
-  onLanguageChange,
-  selectedLanguage,
-}) => {
+const TranslateForm: React.FunctionComponent<ITranslateFormProps> = ({onSubmit,selectedLanguage,onLanguageChange, showBorderOnEmptyInput, setShowBorderOnEmptyInput}) => {
+    const [showHelp,setShowHelp] = useState(false);
 
-    const {handleModal} = React.useContext(ModalCtx)
 
-    const onHelpClicked = () => {
-        handleModal(
-          <div className="space-y-4 mb-4">
-            <p>
-              Sentence Guesser works by taking an English sentence that you provide,
-              translating it with DeepL, then returning it to you in the
-              form of a fill-in-the-blanks exercise. If you get stuck, you can
-              reveal a single letter every time you press "reveal" under a word.
-            </p>
-            <p>
-              Try to enter a sentence and see if you can fill in the missing letters
-              yourself!
-            </p>
-          </div>
-        );
-      }
+    const languages:Language[] = ["german","spanish","french"]
 
-  return (
-    <form onSubmit={onSubmit} className="space-y-8 grid">
-      <input
-        required
-        placeholder="Enter sentence to translate..."
-        className="p-2 w-full outline-none bg-transparent m-auto border-b-2 rounded-none"
-        type="text"
-        name="test"
-        id=""
-        autoFocus={true}
-      />
-      <div className="grid md:grid-flow-col gap-4 md:justify-self-center">
-        <Button type="submit">Translate sentence</Button>
-        <Button type="button" onClick={onHelpClicked}>Help</Button>
-        <Switch checked={showBorderOnEmptyInput} onChange={_ => setShowBorderOnEmptyInput(prev => !prev)}>Show empty letters</Switch>
-        <select name="language" id="language" value={selectedLanguage} onChange={(e) => onLanguageChange(e.target.value as Language)} className="bg-slate-700 text-white p-2 rounded">
-          {Object.keys(languageRegexes).map(lang => (
-            <option key={lang} value={lang}>{lang.charAt(0).toUpperCase() + lang.slice(1)}</option>
-          ))}
-        </select>
-      </div>
-    </form>
-  );
+    return (
+        <form onSubmit={onSubmit} className="grid gap-5">
+            <div className='flex items-center space-x-2'>
+                <p>Translate to:</p>
+                {languages.map(l => <Button type='button' key={l} onMouseDown={e => e.preventDefault()} onClick={() => onLanguageChange(l)} active={selectedLanguage === l}>{l}</Button>)}
+                <button onMouseDown={e => e.preventDefault()} onClick={() => setShowHelp(prev => !prev)} type="button" className='w-5 h-5 rounded-full bg-slate-600 flex justify-center items-center text-sm'>?</button>
+            </div>
+            <div className='relative'>
+                <textarea
+                    name="test"
+                    className={`block p-4 pl-10 w-full text-sm  bg-gray-700 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500 rounded-lg resize-none ${showBorderOnEmptyInput ? "border-red-600 border-2" : "border-transparent"}`}
+                    placeholder="Enter sentence to translate"
+                    required
+                    rows={4}
+                    onChange={(e) => {
+                        if (e.currentTarget.value.length > 0) {
+                            setShowBorderOnEmptyInput(false)
+                        }
+                    }}
+                />
+                <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                    <svg aria-hidden="true" className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+            </div>
+            <Button>Translate and start guessing</Button>
+            {showHelp && <HelperDialog onClose={() => setShowHelp(false)}/>}
+        </form>
+    );
 };
 
 export default TranslateForm;
