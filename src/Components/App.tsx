@@ -111,33 +111,37 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     const formData = new FormData(e.currentTarget);
     const translationInputText = formData.get("test");
   
-    try {
-      const res = await fetch(
-        `/.netlify/functions/translate`, // URL doesn't need query params
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            sentence: translationInputText,
-            lang: languageToTranslateInto,
-          }),
-        }
-      );
+    // try {
+    //   const res = await fetch(
+    //     `/.netlify/functions/translate`, // URL doesn't need query params
+    //     {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //       body: JSON.stringify({
+    //         sentence: translationInputText,
+    //         lang: languageToTranslateInto,
+    //       }),
+    //     }
+    //   );
   
-      if (!res.ok) {
-        const message = `An error has occured: ${res.status} ${res.statusText}`;
-        throw new Error(message);
-      }
+    //   if (!res.ok) {
+    //     const message = `An error has occured: ${res.status} ${res.statusText}`;
+    //     throw new Error(message);
+    //   }
   
-      const json = await res.json();
-      setTranslatedSentence(json.translation.trim().split(" ") as string[]);
-      setOriginalSentence(translationInputText?.toString()!);
-      setEnteringSentence(false);
-    } catch (error) {
-      alert(error);
-    }
+    //   const json = await res.json();
+    //   setTranslatedSentence(json.translation.trim().split(" ") as string[]);
+    //   setOriginalSentence(translationInputText?.toString()!);
+    //   setEnteringSentence(false);
+    // } catch (error) {
+    //   alert(error);
+    // }
+
+    setTranslatedSentence("Funktioniert es".split(" ") as string[]);
+    setOriginalSentence("Does it work");
+    setEnteringSentence(false);
   
     setIsLoading(false);
   };
