@@ -16,27 +16,38 @@ interface IGameViewProps {
     onRemoveAllWrong: () => void;
     onTryNewSentence: () => void;
     onShowBorderChange: (checked: boolean) => void;
-
 }
 
-const GameView: React.FunctionComponent<IGameViewProps> = (props) => {
+const GameView: React.FunctionComponent<IGameViewProps> = ({
+  originalSentence,
+  onRemoveAllWrong,
+  onTryNewSentence,
+  onShowBorderChange,
+  showBorderOnEmptyInput,
+  words,
+  inputRefs,
+  languageToTranslateInto,
+  onInput,
+  onKeyUp,
+  onRevealLetter,
+}) => {
   return (
     <>
-      <OriginalSentence originalSentence={props.originalSentence} />
+      <OriginalSentence originalSentence={originalSentence} />
       <ActionButtons
-        onRemoveAllWrong={props.onRemoveAllWrong}
-        onTryNewSentence={props.onTryNewSentence}
-        onShowBorderChange={props.onShowBorderChange}
-        showBorderOnEmptyInput={props.showBorderOnEmptyInput}
+        onRemoveAllWrong={onRemoveAllWrong}
+        onTryNewSentence={onTryNewSentence}
+        onShowBorderChange={onShowBorderChange}
+        showBorderOnEmptyInput={showBorderOnEmptyInput}
       />
       <SentenceGuesser
-        words={props.words}
-        inputRefs={props.inputRefs}
-        languageToTranslateInto={props.languageToTranslateInto}
-        showBorderOnEmptyInput={props.showBorderOnEmptyInput}
-        onInput={props.onInput}
-        onKeyUp={props.onKeyUp}
-        onRevealLetter={props.onRevealLetter}
+        words={words}
+        inputRefs={inputRefs}
+        languageToTranslateInto={languageToTranslateInto}
+        showBorderOnEmptyInput={showBorderOnEmptyInput}
+        onInput={onInput}
+        onKeyUp={onKeyUp}
+        onRevealLetter={onRevealLetter}
       />
     </>
   );
