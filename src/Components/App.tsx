@@ -110,17 +110,27 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const translationInputText = formData.get("test");
-
+  
     try {
       const res = await fetch(
-        `/.netlify/functions/translate?sentence=${translationInputText}&lang=${languageToTranslateInto}`
+        `/.netlify/functions/translate`, // URL doesn't need query params
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sentence: translationInputText,
+            lang: languageToTranslateInto,
+          }),
+        }
       );
-
+  
       if (!res.ok) {
         const message = `An error has occured: ${res.status} ${res.statusText}`;
         throw new Error(message);
       }
-
+  
       const json = await res.json();
       setTranslatedSentence(json.translation.trim().split(" ") as string[]);
       setOriginalSentence(translationInputText?.toString()!);
@@ -128,7 +138,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     } catch (error) {
       alert(error);
     }
-
+  
     setIsLoading(false);
   };
 

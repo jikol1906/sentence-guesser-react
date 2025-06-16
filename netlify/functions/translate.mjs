@@ -19,11 +19,10 @@ const handler = async (event, context) => {
     const authKey = process.env.DEEPL_API_KEY;
     const translator = new deepl.Translator(authKey);
 
-    const { sentence, lang } = event.queryStringParameters;
+    // Data is now in the body of the POST request
+    const { sentence, lang } = JSON.parse(event.body);
     const targetLang = langToDeepLTargetLang(lang);
     const {text} = await translator.translateText(sentence,null,targetLang, {formality:'more'})
-
- 
 
     return {
       statusCode: 200,
@@ -31,11 +30,10 @@ const handler = async (event, context) => {
     };
   } catch (err) {
     return {
-      statusCode: 404,
-      body: err.toString(),
+      statusCode: 500, // Using 500 for server-side errors is more conventional
+      body: JSON.stringify({ error: err.toString() }),
     };
   }
 };
-
 
 export {handler}
