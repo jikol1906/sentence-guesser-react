@@ -87,7 +87,7 @@ const HelperDialog: React.FC<HelperDialog> = ({ isOpen, onClose, children }) => 
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
-      className="backdrop:bg-black backdrop:bg-opacity-50 rounded-lg shadow-xl p-0 max-w-lg w-full"
+      className="backdrop:bg-black backdrop:bg-opacity-50 rounded-lg shadow-xl p-0 max-w-lg w-[90%]"
     >
       <div className="relative bg-white dark:bg-gray-800 rounded-lg">
          {/* Modal Content */}

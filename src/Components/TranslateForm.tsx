@@ -67,13 +67,16 @@ const TranslateForm: React.FunctionComponent<ITranslateFormProps> = ({
       <Button>Translate and start guessing</Button>
       {showHelp && (
         <HelperDialog isOpen={showHelp} onClose={() => setShowHelp(false)}>
-          <div className="text-white">
+          <div className="text-white space-y-4">
             <p>
               You enter a sentence and choose a language to translate it into.
               Then you have to guess the translated sentence by entering the
-              correct letters. Non-character letters are automatically filled in
-              for you. You can reveal a random letter of a word by pressing the
-              reveal button below the word.
+              correct letters.
+            </p>
+            <p>Non-character letters are automatically filled in for you.</p>
+            <p>
+              You can reveal a random letter of a word by pressing the reveal
+              button below the word.
             </p>
           </div>
         </HelperDialog>
