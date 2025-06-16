@@ -16,7 +16,6 @@ const TranslateForm: React.FunctionComponent<ITranslateFormProps> = ({
   onSubmit,
   selectedLanguage,
   onLanguageChange,
-  showBorderOnEmptyInput,
   setShowBorderOnEmptyInput,
 }) => {
   const [showHelp, setShowHelp] = useState(false);
@@ -49,19 +48,10 @@ const TranslateForm: React.FunctionComponent<ITranslateFormProps> = ({
       <div className="relative">
         <textarea
           name="test"
-          className={`block p-4 w-full text-sm  bg-gray-700 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500 rounded-lg resize-none ${
-            showBorderOnEmptyInput
-              ? "border-red-600 border-2"
-              : "border-transparent"
-          }`}
+          className={`block p-4 w-full text-sm  bg-gray-700 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500 rounded-lg resize-none`}
           placeholder="Enter sentence to translate"
           required
           rows={4}
-          onChange={(e) => {
-            if (e.currentTarget.value.length > 0) {
-              setShowBorderOnEmptyInput(false);
-            }
-          }}
         />
       </div>
       <Button>Translate and start guessing</Button>
