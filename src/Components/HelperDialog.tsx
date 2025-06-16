@@ -1,22 +1,109 @@
-import * as React from 'react';
+import React, { useState, useRef, useEffect, ReactNode } from 'react';
 
-interface IHelperDialogProps {
-    onClose: () => void
+// --- Icon Component for the Close Button ---
+// A simple functional component for the close icon.
+const CloseIcon: React.FC = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="h-6 w-6"
+  >
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+);
+
+// --- TypeScript Interface for Modal Props ---
+interface HelperDialog {
+  isOpen: boolean;
+  onClose: () => void;
+  children: ReactNode;
 }
 
-const HelperDialog: React.FunctionComponent<IHelperDialogProps> = (props) => {
+// --- Generic Modal Component ---
+// This component wraps the native HTML <dialog> element with TypeScript.
+const HelperDialog: React.FC<HelperDialog> = ({ isOpen, onClose, children }) => {
+  // Ref for the dialog element, with a specific TypeScript type.
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  // Effect to handle opening and closing the modal
+  useEffect(() => {
+    const dialogNode = dialogRef.current;
+    if (!dialogNode) return;
+
+    if (isOpen) {
+      // Show the modal if it's not already open
+      if (!dialogNode.open) {
+        dialogNode.showModal();
+      }
+    } else {
+      // Close the modal if it is open
+      if (dialogNode.open) {
+        dialogNode.close();
+      }
+    }
+  }, [isOpen]);
+
+  // Effect to handle closing the modal via the 'close' event (e.g., ESC key)
+  useEffect(() => {
+    const dialogNode = dialogRef.current;
+    if (!dialogNode) return;
+
+    // The 'close' event on a <dialog> doesn't need a specific handler type here,
+    // as it's a standard DOM event.
+    const handleClose = () => {
+      if (onClose) {
+        onClose();
+      }
+    };
+
+    dialogNode.addEventListener('close', handleClose);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      dialogNode.removeEventListener('close', handleClose);
+    };
+  }, [onClose]);
+
+  // Handle clicks on the dialog backdrop to close the modal
+  const handleBackdropClick = (event: React.MouseEvent<HTMLDialogElement>) => {
+    // Only close if the click is on the dialog element itself (the backdrop)
+    if (event.target === dialogRef.current) {
+        if (onClose) {
+            onClose();
+        }
+    }
+  };
+
+
   return (
-    <div className='fixed inset-0 bg-black/50 flex justify-center items-center'>
-        <div className='bg-slate-700 p-5 rounded-lg max-w-lg text-white space-y-3'>
-            <h2 className='text-xl font-bold'>How does it work?</h2>
-            <p>You enter a sentence and choose a language to translate it into.</p>
-            <p>Then you have to guess the translated sentence by entering the correct letters. Non-character letters are automatically filled in for you.</p>
-            <p>You can reveal a random letter of a word by pressing the reveal button below the word.</p>
-            <div className='text-right'>
-                <button onClick={props.onClose} className='bg-slate-600 px-4 py-2 rounded-lg hover:bg-slate-500'>Close</button>
-            </div>
+    <dialog
+      ref={dialogRef}
+      onClick={handleBackdropClick}
+      className="backdrop:bg-black backdrop:bg-opacity-50 rounded-lg shadow-xl p-0 max-w-lg w-full"
+    >
+      <div className="relative bg-white dark:bg-gray-800 rounded-lg">
+         {/* Modal Content */}
+        <div className="p-6 pr-10">
+            {children}
         </div>
-    </div>
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          aria-label="Close modal"
+          className="absolute top-2 right-2 p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+        >
+          <CloseIcon />
+        </button>
+      </div>
+    </dialog>
   );
 };
 
