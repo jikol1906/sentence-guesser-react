@@ -26,14 +26,14 @@ const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
   return (
     <div className="font-mono">
       {words.length > 0 &&
-        words.map((word, i) => (
+        lettersAndIndexes.map(({letters, indexes}, i) => (
           <div
             key={i}
             className="inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop"
             style={{ '--animation-delay': `${i * 0.02}s` } as React.CSSProperties}
           >
             <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
-              {word.map((letter, j) => (
+              {letters.map((letter, j) => (
                 <LetterInput
                   key={`${j}${i}`}
                   wordNum={i}
