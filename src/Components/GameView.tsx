@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Language } from '../Utils';
 import ActionButtons from './ActionButtons';
 import OriginalSentence from './OriginalSentence';
-import SentenceGuesser from './SentenceGuesser';
+import Paragraph from './Paragraph';
 
 interface IGameViewProps {
     originalSentence: string;
@@ -40,7 +40,7 @@ const GameView: React.FunctionComponent<IGameViewProps> = ({
         onShowBorderChange={onShowBorderChange}
         showBorderOnEmptyInput={showBorderOnEmptyInput}
       />
-      <SentenceGuesser
+      <Paragraph
         words={words}
         inputRefs={inputRefs}
         languageToTranslateInto={languageToTranslateInto}

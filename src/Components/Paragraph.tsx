@@ -12,7 +12,7 @@ interface ISentenceGuesserProps {
   onRevealLetter: (wordNumber: number) => void;
 }
 
-const SentenceGuesser: React.FunctionComponent<ISentenceGuesserProps> = ({
+const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
   words,
   inputRefs,
   languageToTranslateInto,
@@ -58,4 +58,4 @@ const SentenceGuesser: React.FunctionComponent<ISentenceGuesserProps> = ({
   );
 };
 
-export default SentenceGuesser;
+export default Paragraph;
