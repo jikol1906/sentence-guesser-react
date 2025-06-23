@@ -3,30 +3,17 @@ import { Language, isCharacter } from '../Utils';
 import LetterInput from './LetterInput';
 
 interface ISentenceGuesserProps {
-  words: string[][];
   lettersAndIndexes: { letters: string[]; indexes: number[] }[];
-  inputRefs: React.RefObject<HTMLInputElement>[][];
   languageToTranslateInto: Language;
-  showBorderOnEmptyInput: boolean;
-  onInput: (e: React.FormEvent<HTMLInputElement>, wordNum: number, letterNum: number) => void;
-  onKeyUp: (e: React.KeyboardEvent<HTMLInputElement>, wordNum: number, letterNum: number) => void;
-  onRevealLetter: (wordNumber: number) => void;
 }
 
 const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
-  words,
-  inputRefs,
   languageToTranslateInto,
-  showBorderOnEmptyInput,
-  onInput,
-  onKeyUp,
   lettersAndIndexes,
-  onRevealLetter,
 }) => {
   return (
     <div className="font-mono">
-      {words.length > 0 &&
-        lettersAndIndexes.map(({letters, indexes}, i) => (
+      {lettersAndIndexes.map(({letters, indexes}, i) => (
           <div
             key={i}
             className="inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop"
@@ -35,14 +22,9 @@ const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
             <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
               {letters.map((letter, j) => (
                 <LetterInput
-                  key={`${j}${i}`}
-                  wordNum={i}
-                  letterNum={j}
+                  key={indexes[j]}
+                  inputIndex={indexes[j]}
                   isNonCharacter={!isCharacter(letter, languageToTranslateInto)}
-                  onInput={(e) => onInput(e, i, j)}
-                  onKeyUp={(e) => onKeyUp(e, i, j)}
-                  showBorderOnEmptyInput={showBorderOnEmptyInput}
-                  ref={inputRefs[i][j]}
                   correctLetter={letter}
                 />
               ))}
@@ -55,7 +37,8 @@ const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
               Reveal
             </button>
           </div>
-        ))}
+        ))
+        }
     </div>
   );
 };

@@ -3,14 +3,20 @@ import { forwardRef } from "react";
 
 interface ILetterInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-    correctLetter : string;
-    wordNum:number;
-    letterNum:number;
-    isNonCharacter:boolean;
-    showBorderOnEmptyInput:boolean
+    inputIndex: number
+    isNonCharacter: boolean
+    correctLetter: string
   }
 
-const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLetter,wordNum,letterNum,isNonCharacter,showBorderOnEmptyInput,...props},ref) => {
+const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(  (
+  {
+    correctLetter,
+    isNonCharacter,
+    inputIndex,
+    ...props
+  },
+  ref
+) => {
 
   const value = isNonCharacter ?  {
     value:correctLetter
@@ -24,7 +30,7 @@ const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLet
       pattern={`[${correctLetter.toLowerCase()}${correctLetter.toUpperCase()}]`}
       data-correct-letter={correctLetter}
       required
-      autoFocus={wordNum === 0 && letterNum === 0} //Autofocus first letter input
+      autoFocus={inputIndex === 0} // Autofocus on the first input
       placeholder=" "
       autoCapitalize="off" //Prevent auto capitalize on mobile devices
       ref={ref}
@@ -43,7 +49,7 @@ const LetterInput =  forwardRef<HTMLInputElement,ILetterInputProps>(({correctLet
         ${!isNonCharacter ? `
         border-b-2 
         border-solid
-        ${showBorderOnEmptyInput ? "border-white" : "border-transparent"}
+        border-white
         [&:not(:placeholder-shown)]:border-green-500
         [&:not(:placeholder-shown)]:invalid:border-red-500`
         : 
