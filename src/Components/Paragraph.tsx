@@ -4,6 +4,7 @@ import LetterInput from './LetterInput';
 
 interface ISentenceGuesserProps {
   words: string[][];
+  lettersAndIndexes: { letters: string[]; indexes: number[] }[];
   inputRefs: React.RefObject<HTMLInputElement>[][];
   languageToTranslateInto: Language;
   showBorderOnEmptyInput: boolean;
@@ -19,6 +20,7 @@ const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
   showBorderOnEmptyInput,
   onInput,
   onKeyUp,
+  lettersAndIndexes,
   onRevealLetter,
 }) => {
   return (
