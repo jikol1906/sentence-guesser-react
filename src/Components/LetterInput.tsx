@@ -85,8 +85,6 @@ const LetterInput = ({
 
   return (
     <input
-      type="text"
-      autoCorrect="off"
       maxLength={1}
       pattern={`[${correctLetter.toLowerCase()}${correctLetter.toUpperCase()}]`}
       onInput={handleInputChange} // Handle input change to advance focus
@@ -95,8 +93,6 @@ const LetterInput = ({
       data-input-index={inputIndex} // Use data attribute to identify input
       required
       autoFocus={inputIndex === 0} // Autofocus on the first input
-      placeholder=" "
-      autoCapitalize="off" // Prevent auto capitalize on mobile devices
       disabled={isNonCharacter || revealed} // Disable input if it's a non-character or already revealed
       {...value} // only show non characters
       className={`
