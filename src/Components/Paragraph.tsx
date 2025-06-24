@@ -25,6 +25,13 @@ const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
   }
 
 
+  const updateRevealedIndexes = (inputIndex: number) => {
+    if (revealedIndexes.includes(inputIndex)) {
+      return; // Already revealed
+    }
+    setRevealedIndexes([...revealedIndexes, inputIndex]);
+  };
+
   return (
     <div className="font-mono">
       {lettersAndIndexes.map(({letters, indexes}, i) => (
@@ -37,6 +44,7 @@ const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
               {letters.map((letter, j) => (
                 <LetterInput
                   key={indexes[j]}
+                  onCorrectLetterEntered={(inputIndex: number) => updateRevealedIndexes(inputIndex)}
                   revealed={revealedIndexes.includes(indexes[j])}
                   inputIndex={indexes[j]}
                   isNonCharacter={!isCharacter(letter, languageToTranslateInto)}
