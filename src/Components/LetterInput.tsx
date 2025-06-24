@@ -83,6 +83,33 @@ const LetterInput = ({
     }
   };
 
+  const baseClasses = `
+    w-[1ch]
+    outline-none
+    transition-all
+    duration-100
+    pb-1
+    bg-transparent
+    rounded-none
+    disabled:opacity-100
+    placeholder:opacity-[.08]
+  `;
+
+  const characterClasses = `
+    border-b-2 
+    border-solid
+    border-white
+    [&:not(:placeholder-shown)]:border-green-500
+    [&:not(:placeholder-shown)]:invalid:border-red-500
+  `;
+
+  const nonCharacterClasses = "border-none";
+
+  const finalClasses = `
+    ${baseClasses}
+    ${!isNonCharacter ? characterClasses : nonCharacterClasses}
+  `;
+
   return (
     <input
       maxLength={1}
@@ -95,27 +122,7 @@ const LetterInput = ({
       autoFocus={inputIndex === 0} // Autofocus on the first input
       disabled={isNonCharacter || revealed} // Disable input if it's a non-character or already revealed
       {...value} // only show non characters
-      className={`
-        w-[1ch]
-        outline-none
-        transition-all
-        duration-100
-        pb-1
-        bg-transparent
-        rounded-none
-        disabled:opacity-100
-        placeholder:opacity-[.08]
-        ${
-          !isNonCharacter
-            ? `
-        border-b-2 
-        border-solid
-        border-white
-        [&:not(:placeholder-shown)]:border-green-500
-        [&:not(:placeholder-shown)]:invalid:border-red-500`
-            : "border-none"
-        }
-      `}
+      className={finalClasses}
       {...props}
     />
   );
