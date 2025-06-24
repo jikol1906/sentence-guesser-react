@@ -57,6 +57,10 @@ const LetterInput = ({
         `input[data-input-index="${inputIndex - 1}"]`
     ) as HTMLInputElement | null;
 
+    if(previousInput?.disabled) {
+      return; // Don't allow backspace if the previous input is disabled
+    }
+
     if (previousInput) {
       previousInput.focus();
       previousInput.value = ""; // Clear the previous input
