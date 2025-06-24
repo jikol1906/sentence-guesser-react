@@ -22,6 +22,11 @@ const LetterInput = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
 
+    //If correct value was entered, then disable the input
+    if (input.value.toLowerCase() === correctLetter.toLowerCase()) {
+      input.disabled = true;
+    }
+
     if (input.value.length === 1) {
       let nextInputIndex = inputIndex + 1;
       let nextInput: HTMLInputElement | null = null;
