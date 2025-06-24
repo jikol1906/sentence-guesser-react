@@ -41,13 +41,17 @@ const GameView: React.FunctionComponent<IGameViewProps> = ({
         showBorderOnEmptyInput={showBorderOnEmptyInput}
       />
       <Paragraph
-        words={words}
-        inputRefs={inputRefs}
+        lettersAndIndexes={[
+          {
+            letters: "example".split(''),
+            indexes: [0, 1, 2, 3, 4, 5, 6] // Example letters and indexes for demonstration
+          },
+          {
+            letters: "test".split(''),
+            indexes: [7, 8, 9, 10] // Another example
+          }
+        ]}
         languageToTranslateInto={languageToTranslateInto}
-        showBorderOnEmptyInput={showBorderOnEmptyInput}
-        onInput={onInput}
-        onKeyUp={onKeyUp}
-        onRevealLetter={onRevealLetter}
       />
     </>
   );

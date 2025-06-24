@@ -2,11 +2,12 @@ import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
 import { Language, languageRegexes, randomIntFromInterval } from "../Utils";
-import SentenceGuesserHeader from "./SentenceGuesserHeader";
-import TranslateForm from "./TranslateForm";
-import LoadingSpinner from "./LoadingSpinner";
 import Footer from "./Footer";
 import GameView from "./GameView";
+import LoadingSpinner from "./LoadingSpinner";
+import SentenceGuesserHeader from "./SentenceGuesserHeader";
+import TranslateForm from "./TranslateForm";
+import Paragraph from "./Paragraph";
 
 interface ITest2Props {}
 
@@ -110,14 +111,14 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const translationInputText = formData.get("test");
-  
+
     try {
       const res = await fetch(
         `/.netlify/functions/translate`, // URL doesn't need query params
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             sentence: translationInputText,
@@ -125,12 +126,12 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
           }),
         }
       );
-  
+
       if (!res.ok) {
         const message = `An error has occured: ${res.status} ${res.statusText}`;
         throw new Error(message);
       }
-  
+
       const json = await res.json();
       setTranslatedSentence(json.translation.trim().split(" ") as string[]);
       setOriginalSentence(translationInputText?.toString()!);
@@ -138,7 +139,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     } catch (error) {
       alert(error);
     }
-  
+
     setIsLoading(false);
   };
 
@@ -304,6 +305,48 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
                 onShowBorderChange={setShowBorderOnEmptyInput}
               />
             )}
+            <Paragraph
+                lettersAndIndexes={[
+                  {
+                    "letters": [
+                        "e",
+                        "x",
+                        "a",
+                        "m",
+                        "p",
+                        "l",
+                        "e"
+                    ],
+                    "indexes": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6
+                    ]
+                },
+                  {
+                    letters: "test".split(""),
+                    indexes: [7, 8, 9, 10], // Another example
+                  },
+                ]}
+                languageToTranslateInto={languageToTranslateInto}
+            />
+            <Paragraph
+              lettersAndIndexes={[
+                {
+                  letters: "hello".split(""),
+                  indexes: [11, 12, 13, 14, 15], // Example letters and indexes for demonstration
+                },
+                {
+                  letters: "world".split(""),
+                  indexes: [16, 17, 18, 19, 20], // Another example
+                },
+              ]}
+              languageToTranslateInto={languageToTranslateInto}
+            />
           </div>
           <Footer />
         </>
