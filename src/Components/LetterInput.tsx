@@ -51,24 +51,35 @@ const LetterInput = ({
     }
   };
 
-  // handle backspace to go back to the previous input and delete letter in the previous input if present
+  // Handle backspace to go back to the previous input and delete the letter in the previous input if present
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-
     if (e.key !== "Backspace") {
       return;
     }
 
-    const previousInput = document.querySelector(
-        `input[data-input-index="${inputIndex - 1}"]`
-    ) as HTMLInputElement | null;
+    const currentInput = e.target as HTMLInputElement;
 
-    if(previousInput?.disabled) {
-      return; // Don't allow backspace if the previous input is disabled
+    // If the current input has an incorrect letter, clear it and stop
+    if (currentInput.value && currentInput.value !== correctLetter) {
+      currentInput.value = ""; // Clear the incorrect letter
+      return;
     }
 
-    if (previousInput) {
-      previousInput.focus();
-      previousInput.value = ""; // Clear the previous input
+    // Otherwise, move to the previous input
+    let previousInputIndex = inputIndex - 1;
+    let previousInput: HTMLInputElement | null = null;
+
+    // Find the next available previous input that is not disabled
+    while (
+      (previousInput = document.querySelector(
+        `input[data-input-index="${previousInputIndex}"]`
+      ) as HTMLInputElement | null)
+    ) {
+      if (!previousInput.disabled) {
+        previousInput.focus();
+        break;
+      }
+      previousInputIndex--;
     }
   };
 
