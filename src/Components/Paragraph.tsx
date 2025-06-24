@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Language, isCharacter } from '../Utils';
 import LetterInput from './LetterInput';
+import { useState } from "react";
 
 interface ISentenceGuesserProps {
   lettersAndIndexes: { letters: string[]; indexes: number[] }[];
@@ -11,6 +12,19 @@ const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
   languageToTranslateInto,
   lettersAndIndexes,
 }) => {
+
+  const [revealedIndexes, setRevealedIndexes] = useState<number[]>([]);
+
+  const onRevealRandomLetter = (indexes: number[]) => {
+    const unrevealedIndexes = indexes.filter(index => !revealedIndexes.includes(index));
+    if (unrevealedIndexes.length === 0) {
+      return;
+    }
+    const randomIndex = Math.floor(Math.random() * unrevealedIndexes.length);
+    setRevealedIndexes([...revealedIndexes, unrevealedIndexes[randomIndex]]);
+  }
+
+
   return (
     <div className="font-mono">
       {lettersAndIndexes.map(({letters, indexes}, i) => (
@@ -23,6 +37,7 @@ const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
               {letters.map((letter, j) => (
                 <LetterInput
                   key={indexes[j]}
+                  revealed={revealedIndexes.includes(indexes[j])}
                   inputIndex={indexes[j]}
                   isNonCharacter={!isCharacter(letter, languageToTranslateInto)}
                   correctLetter={letter}
@@ -30,8 +45,7 @@ const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
               ))}
             </div>
             <button
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => onRevealLetter(i)}
+              onClick={() => onRevealRandomLetter(indexes)}
               className="mt-4 text-xs opacity-40 hover:opacity-100"
             >
               Reveal

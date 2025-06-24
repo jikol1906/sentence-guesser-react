@@ -3,6 +3,7 @@ import * as React from "react";
 interface ILetterInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   inputIndex: number;
+  revealed?: boolean;
   onCorrectLetterEntered: (inputIndex: number) => void;
   isNonCharacter: boolean;
   correctLetter: string;
@@ -13,12 +14,13 @@ const LetterInput = ({
   isNonCharacter,
   inputIndex,
   onCorrectLetterEntered,
+  revealed = false, 
   ...props
 }: ILetterInputProps) => {
 
 
 
-  const value = isNonCharacter ? { value: correctLetter } : {};
+  const value = (isNonCharacter || revealed) ? { value: correctLetter } : {};
 
   // Advance to the next input when the current input is filled, skipping inputs that already have a letter
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +86,7 @@ const LetterInput = ({
       autoFocus={inputIndex === 0} // Autofocus on the first input
       placeholder=" "
       autoCapitalize="off" // Prevent auto capitalize on mobile devices
-      disabled={isNonCharacter}
+      disabled={isNonCharacter || revealed} // Disable input if it's a non-character or already revealed
       {...value} // only show non characters
       className={`
         w-[1ch]
