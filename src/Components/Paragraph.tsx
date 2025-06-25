@@ -12,7 +12,7 @@ interface ISentenceGuesserProps {
 export type WordWithIndexes = {
   word: string[];
   indexes: number[];
-}
+};
 
 /**
  * Converts a sentence into an array of words, where each word is represented as an object
@@ -27,28 +27,33 @@ const convertSentenceToGuess = (sentence: string): WordWithIndexes[] => {
       word: [...word],
       indexes: Array.from({ length: word.length }, (_, i) => currIndex + i),
     };
-    currIndex += word.length
+    currIndex += word.length;
     return wordData;
   });
-}
+};
 
 const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
   languageToTranslateInto,
   paragraph,
   paragraphIndex,
 }) => {
+  const wordsWithIndexes = convertSentenceToGuess(paragraph.sentenceToGuess);
+  const lastLetterIndex =
+    paragraph.sentenceToGuess.replace(/ /g, "").length - 1;
+
   return (
     <div className="space-y-8">
       <div className="sticky text-lg top-7 p-4 bg-slate-600 z-10 rounded-md">
-        <p >{paragraph.sentenceToShow}</p>
+        <p>{paragraph.sentenceToShow}</p>
       </div>
-      {convertSentenceToGuess(paragraph.sentenceToGuess).map((wordData, i) => (
+      {wordsWithIndexes.map((wordData, i) => (
         <Word
           key={i}
           paragraphIndex={paragraphIndex}
           wordData={wordData}
           languageToTranslateInto={languageToTranslateInto}
           animationDelay={`${i * 0.02}s`}
+          
         />
       ))}
     </div>

@@ -31,6 +31,18 @@ const GameView: React.FunctionComponent<IGameViewProps> = ({
   showBorderOnEmptyInput,
   languageToTranslateInto,
 }) => {
+
+    const testData: ParagraphData[] = [
+      {
+        sentenceToShow: "This is an example sentence.",
+        sentenceToGuess: "Dies ist ein Beispielsatz.",
+      },
+      {
+        sentenceToShow: "This is another example.",
+        sentenceToGuess: "Dies ist ein weiteres Beispiel.",
+      },
+    ]
+
   return (
     <>
       <OriginalSentence originalSentence={originalSentence} />
@@ -41,16 +53,8 @@ const GameView: React.FunctionComponent<IGameViewProps> = ({
         showBorderOnEmptyInput={showBorderOnEmptyInput}
       />
       <Paragraph
-        lettersAndIndexes={[
-          {
-            letters: "example".split(''),
-            indexes: [0, 1, 2, 3, 4, 5, 6] // Example letters and indexes for demonstration
-          },
-          {
-            letters: "test".split(''),
-            indexes: [7, 8, 9, 10] // Another example
-          }
-        ]}
+        paragraphIndex={0}
+        paragraph={testData[0]}
         languageToTranslateInto={languageToTranslateInto}
       />
     </>

@@ -16,15 +16,12 @@ const LetterInput = ({
   correctLetter,
   isNonCharacter,
   inputIndex,
-  firstParagraphLetterIndex,
-  lastParagraphLetterIndex,
   onCorrectLetterEntered,
   revealed = false,
-  paragraphIndex, 
+  paragraphIndex,
   ...props
 }: ILetterInputProps) => {
-
-  const value = (isNonCharacter || revealed) ? { value: correctLetter } : {};
+  const value = isNonCharacter || revealed ? { value: correctLetter } : {};
 
   // Advance to the next input when the current input is filled, skipping inputs that already have a letter
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,14 +36,15 @@ const LetterInput = ({
     if (input.value.length !== 1) {
       return;
     }
-    let nextInputIndex = inputIndex + 1;
+    let nextInputIndex = parseInt(input.getAttribute("data-input-index") || "-1", 10);
     let nextInput: HTMLInputElement | null = null;
-    while ((nextInput = document.querySelector(`input[data-input-index="${paragraphIndex}-${nextInputIndex}"]`) as HTMLInputElement | null)) {
+    while ((nextInput = document.querySelector(`input[data-input-index="${nextInputIndex}"]`) as HTMLInputElement | null)) {
       if (!nextInput.value) {
         nextInput.focus();
         break;
       }
 
+      // increment inputIndex to find the next input
       nextInputIndex++;
     }
   };
@@ -66,14 +64,11 @@ const LetterInput = ({
     }
 
     // Otherwise, move to the previous input
-    let previousInputIndex = inputIndex - 1;
+    let previousInputIndex = parseInt(currentInput.getAttribute("data-input-index") || "-1", 10) - 1;
     let previousInput: HTMLInputElement | null = null;
 
     // Find the next available previous input that is not disabled
-    while (
-      (previousInput = document.querySelector(
-        `input[data-input-index="${paragraphIndex}-${previousInputIndex}"]`
-      ) as HTMLInputElement | null)
+    while ((previousInput = document.querySelector(`input[data-input-index="${previousInputIndex}"]`) as HTMLInputElement | null)
     ) {
       if (!previousInput.disabled) {
         previousInput.focus();
@@ -117,9 +112,9 @@ const LetterInput = ({
       onInput={handleInputChange} // Handle input change to advance focus
       onKeyDown={handleKeyDown} // Handle backspace to go back
       data-correct-letter={correctLetter}
-      data-input-index={paragraphIndex + "-" + inputIndex} // Unique identifier for the input
+      data-letter-input
       required
-      autoFocus={inputIndex === 0} // Autofocus on the first input
+      autoFocus={inputIndex === 0 && paragraphIndex === 0} // Autofocus on the first input of the first paragraph
       disabled={isNonCharacter || revealed} // Disable input if it's a non-character or already revealed
       {...value} // only show non characters
       className={finalClasses}

@@ -3,11 +3,33 @@ import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
 import { Language, languageRegexes, randomIntFromInterval } from "../Utils";
 import Footer from "./Footer";
-import GameView from "./GameView";
+import GameView, {ParagraphData} from "./GameView";
 import LoadingSpinner from "./LoadingSpinner";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
 import TranslateForm from "./TranslateForm";
 import Paragraph from "./Paragraph";
+
+const testData: ParagraphData[] = [
+  {
+    sentenceToShow: "This is a long examplesentence to test if this app works as expected. I really hope it does. I will just make it a bit longer, because I need to test if position sticky works for the shown sentence",
+    sentenceToGuess: "Dies ist ein langer Beispielsatz, um zu testen, ob diese Anwendung wie erwartet funktioniert. Ich hoffe wirklich, dass sie das tut. Ich werde ihn nur ein bisschen länger machen, weil ich testen muss, ob Position Sticky für den gezeigten Satz funktioniert",
+  },
+  {
+    sentenceToShow: "This is a long examplesentence to test if this app works as expected. I really hope it does. I will just make it a bit longer, because I need to test if position sticky works for the shown sentence",
+    sentenceToGuess: "Dies ist ein langer Beispielsatz, um zu testen, ob diese Anwendung wie erwartet funktioniert. Ich hoffe wirklich, dass sie das tut. Ich werde ihn nur ein bisschen länger machen, weil ich testen muss, ob Position Sticky für den gezeigten Satz funktioniert",
+  },
+]
+
+// const testData: ParagraphData[] = [
+//   {
+//     sentenceToShow: "this test",
+//     sentenceToGuess: "this test",
+//   },
+//   {
+//     sentenceToShow: "this test",
+//     sentenceToGuess: "this test",
+//   },
+// ]
 
 interface ITest2Props {}
 
@@ -23,6 +45,20 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
 
   /**Refs for the letter inputs.  */
   const inputRefs = useRef<React.RefObject<HTMLInputElement>[][]>([]);
+
+  const inputWrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Add increasing indexes to all the inputs in a data attribute called input-index
+    const inputs = inputWrapperRef.current?.querySelectorAll(
+      "input[data-letter-input]"
+    );
+    if (inputs) {
+      inputs.forEach((input, index) => {
+        input.setAttribute("data-input-index", index.toString());
+      });
+    }
+  }, [inputWrapperRef]);
 
   //Update letterinformation when enteredSentence changes
   useEffect(() => {
@@ -305,48 +341,18 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
                 onShowBorderChange={setShowBorderOnEmptyInput}
               />
             )}
-            <Paragraph
-                lettersAndIndexes={[
-                  {
-                    "letters": [
-                        "e",
-                        "x",
-                        "a",
-                        "m",
-                        "p",
-                        "l",
-                        "e"
-                    ],
-                    "indexes": [
-                        0,
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6
-                    ]
-                },
-                  {
-                    letters: "test".split(""),
-                    indexes: [7, 8, 9, 10], // Another example
-                  },
-                ]}
-                languageToTranslateInto={languageToTranslateInto}
-            />
-            <Paragraph
-              lettersAndIndexes={[
-                {
-                  letters: "hello".split(""),
-                  indexes: [11, 12, 13, 14, 15], // Example letters and indexes for demonstration
-                },
-                {
-                  letters: "world".split(""),
-                  indexes: [16, 17, 18, 19, 20], // Another example
-                },
-              ]}
-              languageToTranslateInto={languageToTranslateInto}
-            />
+            <div ref={inputWrapperRef}>
+              {testData.map((paragraphData, i) => {
+                return (
+                  <Paragraph
+                    key={i}
+                    paragraphIndex={i}
+                    paragraph={paragraphData}
+                    languageToTranslateInto={languageToTranslateInto}
+                  />
+                );
+              }) }
+            </div>
           </div>
           <Footer />
         </>
