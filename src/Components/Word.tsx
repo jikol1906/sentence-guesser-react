@@ -38,13 +38,15 @@ const Word: React.FunctionComponent<IWordProps> = ({
 
   return (
     <div
-      className="inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop"
+      className="font-mono inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop"
       style={{ "--animation-delay": animationDelay } as React.CSSProperties}
     >
       <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
         {word.map((letter, j) => (
           <LetterInput
             key={indexes[j]}
+            firstParagraphLetterIndex={indexes[0]}
+            lastParagraphLetterIndex={indexes.at(-1)!}
             paragraphIndex={paragraphIndex}
             onCorrectLetterEntered={(inputIndex: number) =>
               updateRevealedIndexes(inputIndex)

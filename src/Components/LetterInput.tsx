@@ -4,6 +4,8 @@ interface ILetterInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   inputIndex: number;
   revealed?: boolean;
+  firstParagraphLetterIndex: number;
+  lastParagraphLetterIndex: number;
   onCorrectLetterEntered: (inputIndex: number) => void;
   isNonCharacter: boolean;
   paragraphIndex: number; // Optional, if needed for context
@@ -14,6 +16,8 @@ const LetterInput = ({
   correctLetter,
   isNonCharacter,
   inputIndex,
+  firstParagraphLetterIndex,
+  lastParagraphLetterIndex,
   onCorrectLetterEntered,
   revealed = false,
   paragraphIndex, 
@@ -32,22 +36,18 @@ const LetterInput = ({
       onCorrectLetterEntered(inputIndex);
     }
 
-    if (input.value.length === 1) {
-      let nextInputIndex = inputIndex + 1;
-      let nextInput: HTMLInputElement | null = null;
-
-      // Find the next input that doesn't already have a letter
-      while (
-        (nextInput = document.querySelector(
-          `input[data-input-index="${paragraphIndex}-${nextInputIndex}"]`
-        ) as HTMLInputElement | null)
-      ) {
-        if (!nextInput.value) {
-          nextInput.focus();
-          break;
-        }
-        nextInputIndex++;
+    if (input.value.length !== 1) {
+      return;
+    }
+    let nextInputIndex = inputIndex + 1;
+    let nextInput: HTMLInputElement | null = null;
+    while ((nextInput = document.querySelector(`input[data-input-index="${paragraphIndex}-${nextInputIndex}"]`) as HTMLInputElement | null)) {
+      if (!nextInput.value) {
+        nextInput.focus();
+        break;
       }
+
+      nextInputIndex++;
     }
   };
 

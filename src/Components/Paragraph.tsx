@@ -38,7 +38,10 @@ const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
   paragraphIndex,
 }) => {
   return (
-    <div className="font-mono">
+    <div className="space-y-8">
+      <div className="sticky text-lg top-7 p-4 bg-slate-600 z-10 rounded-md">
+        <p >{paragraph.sentenceToShow}</p>
+      </div>
       {convertSentenceToGuess(paragraph.sentenceToGuess).map((wordData, i) => (
         <Word
           key={i}
