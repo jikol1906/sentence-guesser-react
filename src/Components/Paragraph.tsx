@@ -27,7 +27,7 @@ const convertSentenceToGuess = (sentence: string): WordWithIndexes[] => {
       word: [...word],
       indexes: Array.from({ length: word.length }, (_, i) => currIndex + i),
     };
-    currIndex += word.length + 1; // +1 for the space
+    currIndex += word.length
     return wordData;
   });
 }
