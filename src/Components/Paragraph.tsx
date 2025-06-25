@@ -1,12 +1,35 @@
 import * as React from "react";
 import { Language } from "../Utils";
 import Word from "./Word";
-import type { Paragraph } from "./GameView";
+import type { ParagraphData } from "./GameView";
 
 interface ISentenceGuesserProps {
-  paragraph: Paragraph;
+  paragraph: ParagraphData;
   languageToTranslateInto: Language;
   paragraphIndex: number;
+}
+
+export type WordWithIndexes = {
+  word: string[];
+  indexes: number[];
+}
+
+/**
+ * Converts a sentence into an array of words, where each word is represented as an object
+ * containing its characters split into an array and an array of indexes. The indexes go from 0-n where n is the total length of the sentence
+ * @param sentence The sentence to convert
+ * @return An array of objects, each containing a word and its indexes
+ * */
+const convertSentenceToGuess = (sentence: string): WordWithIndexes[] => {
+  let currIndex = 0;
+  return sentence.split(" ").map((word) => {
+    const wordData: WordWithIndexes = {
+      word: [...word],
+      indexes: Array.from({ length: word.length }, (_, i) => currIndex + i),
+    };
+    currIndex += word.length + 1; // +1 for the space
+    return wordData;
+  });
 }
 
 const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
@@ -16,12 +39,11 @@ const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
 }) => {
   return (
     <div className="font-mono">
-      {paragraph.sentenceToGuess.split(" ").map((letter, i) => (
+      {convertSentenceToGuess(paragraph.sentenceToGuess).map((wordData, i) => (
         <Word
-          paragraphIndex={paragraphIndex}
           key={i}
-          letters={letter}
-          indexes={indexes}
+          paragraphIndex={paragraphIndex}
+          wordData={wordData}
           languageToTranslateInto={languageToTranslateInto}
           animationDelay={`${i * 0.02}s`}
         />

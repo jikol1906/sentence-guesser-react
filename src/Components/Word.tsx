@@ -2,18 +2,17 @@ import * as React from "react";
 import { Language, isCharacter } from "../Utils";
 import LetterInput from "./LetterInput";
 import { useState } from "react";
+import { WordWithIndexes } from "./Paragraph";
 
 interface IWordProps {
-  letters: string[];
   paragraphIndex: number;
-  indexes: number[];
+  wordData: WordWithIndexes;
   languageToTranslateInto: Language;
   animationDelay: string;
 }
 
 const Word: React.FunctionComponent<IWordProps> = ({
-  letters,
-  indexes,
+  wordData : { word, indexes },
   languageToTranslateInto,
   animationDelay,
   paragraphIndex,
@@ -30,8 +29,7 @@ const Word: React.FunctionComponent<IWordProps> = ({
     const randomIndex = Math.floor(Math.random() * unrevealedIndexes.length);
     setRevealedIndexes([...revealedIndexes, unrevealedIndexes[randomIndex]]);
   };
-
-  const updateRevealedIndexes = (inputIndex: number) => {
+    const updateRevealedIndexes = (inputIndex: number) => {
     if (revealedIndexes.includes(inputIndex)) {
       return; // Already revealed
     }
@@ -44,9 +42,10 @@ const Word: React.FunctionComponent<IWordProps> = ({
       style={{ "--animation-delay": animationDelay } as React.CSSProperties}
     >
       <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
-        {letters.map((letter, j) => (
+        {word.map((letter, j) => (
           <LetterInput
             key={indexes[j]}
+            paragraphIndex={paragraphIndex}
             onCorrectLetterEntered={(inputIndex: number) =>
               updateRevealedIndexes(inputIndex)
             }

@@ -4,6 +4,11 @@ import ActionButtons from './ActionButtons';
 import OriginalSentence from './OriginalSentence';
 import Paragraph from './Paragraph';
 
+export type ParagraphData = {
+  sentenceToShow: string;
+  sentenceToGuess: string;
+};
+
 interface IGameViewProps {
     originalSentence: string;
     words: string[][];
@@ -24,12 +29,7 @@ const GameView: React.FunctionComponent<IGameViewProps> = ({
   onTryNewSentence,
   onShowBorderChange,
   showBorderOnEmptyInput,
-  words,
-  inputRefs,
   languageToTranslateInto,
-  onInput,
-  onKeyUp,
-  onRevealLetter,
 }) => {
   return (
     <>

@@ -6,6 +6,7 @@ interface ILetterInputProps
   revealed?: boolean;
   onCorrectLetterEntered: (inputIndex: number) => void;
   isNonCharacter: boolean;
+  paragraphIndex: number; // Optional, if needed for context
   correctLetter: string;
 }
 
@@ -14,11 +15,10 @@ const LetterInput = ({
   isNonCharacter,
   inputIndex,
   onCorrectLetterEntered,
-  revealed = false, 
+  revealed = false,
+  paragraphIndex, 
   ...props
 }: ILetterInputProps) => {
-
-
 
   const value = (isNonCharacter || revealed) ? { value: correctLetter } : {};
 
@@ -39,7 +39,7 @@ const LetterInput = ({
       // Find the next input that doesn't already have a letter
       while (
         (nextInput = document.querySelector(
-          `input[data-input-index="${nextInputIndex}"]`
+          `input[data-input-index="${paragraphIndex}-${nextInputIndex}"]`
         ) as HTMLInputElement | null)
       ) {
         if (!nextInput.value) {
@@ -72,7 +72,7 @@ const LetterInput = ({
     // Find the next available previous input that is not disabled
     while (
       (previousInput = document.querySelector(
-        `input[data-input-index="${previousInputIndex}"]`
+        `input[data-input-index="${paragraphIndex}-${previousInputIndex}"]`
       ) as HTMLInputElement | null)
     ) {
       if (!previousInput.disabled) {
@@ -117,7 +117,7 @@ const LetterInput = ({
       onInput={handleInputChange} // Handle input change to advance focus
       onKeyDown={handleKeyDown} // Handle backspace to go back
       data-correct-letter={correctLetter}
-      data-input-index={inputIndex} // Use data attribute to identify input
+      data-input-index={paragraphIndex + "-" + inputIndex} // Unique identifier for the input
       required
       autoFocus={inputIndex === 0} // Autofocus on the first input
       disabled={isNonCharacter || revealed} // Disable input if it's a non-character or already revealed
