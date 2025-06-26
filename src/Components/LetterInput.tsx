@@ -2,10 +2,7 @@ import * as React from "react";
 
 interface ILetterInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  inputIndex: number;
   revealed?: boolean;
-  firstParagraphLetterIndex: number;
-  lastParagraphLetterIndex: number;
   onCorrectLetterEntered: (inputIndex: number) => void;
   isNonCharacter: boolean;
   paragraphIndex: number; // Optional, if needed for context
@@ -15,7 +12,6 @@ interface ILetterInputProps
 const LetterInput = ({
   correctLetter,
   isNonCharacter,
-  inputIndex,
   onCorrectLetterEntered,
   revealed = false,
   paragraphIndex,
@@ -26,17 +22,18 @@ const LetterInput = ({
   // Advance to the next input when the current input is filled, skipping inputs that already have a letter
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
+    const index = parseInt(input.getAttribute("data-input-index") || "-1", 10);
 
     //If correct value was entered, then disable the input
     if (input.value.toLowerCase() === correctLetter.toLowerCase()) {
       input.disabled = true;
-      onCorrectLetterEntered(inputIndex);
+      onCorrectLetterEntered(index);
     }
 
     if (input.value.length !== 1) {
       return;
     }
-    let nextInputIndex = parseInt(input.getAttribute("data-input-index") || "-1", 10);
+    let nextInputIndex = index;
     let nextInput: HTMLInputElement | null = null;
     while ((nextInput = document.querySelector(`input[data-input-index="${nextInputIndex}"]`) as HTMLInputElement | null)) {
       if (!nextInput.value) {
@@ -58,7 +55,7 @@ const LetterInput = ({
     const currentInput = e.target as HTMLInputElement;
 
     // If the current input has an incorrect letter, clear it and stop
-    if (currentInput.value && currentInput.value !== correctLetter) {
+    if (currentInput.value) {
       currentInput.value = ""; // Clear the incorrect letter
       return;
     }
@@ -114,7 +111,6 @@ const LetterInput = ({
       data-correct-letter={correctLetter}
       data-letter-input
       required
-      autoFocus={inputIndex === 0 && paragraphIndex === 0} // Autofocus on the first input of the first paragraph
       disabled={isNonCharacter || revealed} // Disable input if it's a non-character or already revealed
       {...value} // only show non characters
       className={finalClasses}
