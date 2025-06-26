@@ -2,7 +2,6 @@ import * as React from "react";
 import { Language, isCharacter } from "../Utils";
 import LetterInput from "./LetterInput";
 import { useState } from "react";
-import { WordWithIndexes } from "./Paragraph";
 
 interface IWordProps {
   paragraphIndex: number;
@@ -32,6 +31,7 @@ const Word: React.FunctionComponent<IWordProps> = ({
   };
   
   const updateRevealedIndexes = (inputIndex: number) => {
+
     if (revealedIndexes.includes(inputIndex)) {
       return; // Already revealed
     }
@@ -48,9 +48,7 @@ const Word: React.FunctionComponent<IWordProps> = ({
           <LetterInput
             key={j}
             paragraphIndex={paragraphIndex}
-            onCorrectLetterEntered={(inputIndex: number) =>
-              updateRevealedIndexes(inputIndex)
-            }
+            onCorrectLetterEntered={() => updateRevealedIndexes(j)}
             revealed={revealedIndexes.includes(j)}
             isNonCharacter={!isCharacter(letter, languageToTranslateInto)}
             correctLetter={letter}

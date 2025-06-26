@@ -3,7 +3,7 @@ import * as React from "react";
 interface ILetterInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   revealed?: boolean;
-  onCorrectLetterEntered: (inputIndex: number) => void;
+  onCorrectLetterEntered: () => void;
   isNonCharacter: boolean;
   paragraphIndex: number; // Optional, if needed for context
   correctLetter: string;
@@ -27,7 +27,7 @@ const LetterInput = ({
     //If correct value was entered, then disable the input
     if (input.value.toLowerCase() === correctLetter.toLowerCase()) {
       input.disabled = true;
-      onCorrectLetterEntered(index);
+      onCorrectLetterEntered();
     }
 
     if (input.value.length !== 1) {
