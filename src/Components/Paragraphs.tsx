@@ -27,7 +27,7 @@ const Paragraphs: React.FC<ParagraphsProps> = ({ paragraphData, languageToTransl
     }, [inputWrapperRef]);
 
   return (
-    <div ref={inputWrapperRef}>
+    <div key={JSON.stringify(paragraphData)} ref={inputWrapperRef}>
       {paragraphData.map((data, index) => (
         <Paragraph
           key={index}
