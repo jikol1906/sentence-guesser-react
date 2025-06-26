@@ -6,13 +6,13 @@ import { WordWithIndexes } from "./Paragraph";
 
 interface IWordProps {
   paragraphIndex: number;
-  wordData: WordWithIndexes;
+  word: string;
   languageToTranslateInto: Language;
   animationDelay: string;
 }
 
 const Word: React.FunctionComponent<IWordProps> = ({
-  wordData : { word, indexes },
+  word,
   languageToTranslateInto,
   animationDelay,
   paragraphIndex,
@@ -20,16 +20,18 @@ const Word: React.FunctionComponent<IWordProps> = ({
   const [revealedIndexes, setRevealedIndexes] = useState<number[]>([]);
 
   const onRevealRandomLetter = () => {
-    const unrevealedIndexes = indexes.filter(
-      (index) => !revealedIndexes.includes(index)
-    );
+
+    const indexes: number[] = Array.from({ length: word.length },(_, index) => index);
+    const unrevealedIndexes = indexes.filter((index) => !revealedIndexes.includes(index));
+
     if (unrevealedIndexes.length === 0) {
       return;
     }
     const randomIndex = Math.floor(Math.random() * unrevealedIndexes.length);
     setRevealedIndexes([...revealedIndexes, unrevealedIndexes[randomIndex]]);
   };
-    const updateRevealedIndexes = (inputIndex: number) => {
+  
+  const updateRevealedIndexes = (inputIndex: number) => {
     if (revealedIndexes.includes(inputIndex)) {
       return; // Already revealed
     }
@@ -42,17 +44,14 @@ const Word: React.FunctionComponent<IWordProps> = ({
       style={{ "--animation-delay": animationDelay } as React.CSSProperties}
     >
       <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
-        {word.map((letter, j) => (
+        {word.split("").map((letter, j) => (
           <LetterInput
-            key={indexes[j]}
-            firstParagraphLetterIndex={indexes[0]}
-            lastParagraphLetterIndex={indexes.at(-1)!}
+            key={j}
             paragraphIndex={paragraphIndex}
             onCorrectLetterEntered={(inputIndex: number) =>
               updateRevealedIndexes(inputIndex)
             }
-            revealed={revealedIndexes.includes(indexes[j])}
-            inputIndex={indexes[j]}
+            revealed={revealedIndexes.includes(j)}
             isNonCharacter={!isCharacter(letter, languageToTranslateInto)}
             correctLetter={letter}
             placeholder=" "
