@@ -3,13 +3,13 @@ import { Language } from "../Utils";
 import Word from "./Word";
 import type { ParagraphData } from "./GameView";
 
-interface ISentenceGuesserProps {
+interface ParagraphProps {
   paragraph: ParagraphData;
   languageToTranslateInto: Language;
   paragraphIndex: number;
 }
 
-const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
+const Paragraph: React.FunctionComponent<ParagraphProps> = ({
   languageToTranslateInto,
   paragraph,
   paragraphIndex,
