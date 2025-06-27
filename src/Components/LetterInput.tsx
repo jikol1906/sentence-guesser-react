@@ -22,7 +22,6 @@ const LetterInput = ({
   // Advance to the next input when the current input is filled, skipping inputs that already have a letter
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
-    const index = parseInt(input.getAttribute("data-input-index") || "-1", 10);
 
     //If correct value was entered, then disable the input
     if (input.value.toLowerCase() === correctLetter.toLowerCase()) {
