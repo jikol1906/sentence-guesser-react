@@ -6,13 +6,11 @@ import type { ParagraphData } from "./GameView";
 interface ParagraphProps {
   paragraph: ParagraphData;
   languageToTranslateInto: Language;
-  paragraphIndex: number;
 }
 
 const Paragraph: React.FunctionComponent<ParagraphProps> = ({
   languageToTranslateInto,
   paragraph,
-  paragraphIndex,
 }) => {
 
   return (
@@ -23,7 +21,6 @@ const Paragraph: React.FunctionComponent<ParagraphProps> = ({
       {paragraph.sentenceToGuess.split(" ").map((word, i) => (
         <Word
           key={i}
-          paragraphIndex={paragraphIndex}
           word={word}
           languageToTranslateInto={languageToTranslateInto}
           animationDelay={`${i * 0.02}s`}

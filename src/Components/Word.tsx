@@ -4,7 +4,6 @@ import LetterInput from "./LetterInput";
 import { useState } from "react";
 
 interface IWordProps {
-  paragraphIndex: number;
   word: string;
   languageToTranslateInto: Language;
   animationDelay: string;
@@ -14,7 +13,6 @@ const Word: React.FunctionComponent<IWordProps> = ({
   word,
   languageToTranslateInto,
   animationDelay,
-  paragraphIndex,
 }) => {
   const [revealedIndexes, setRevealedIndexes] = useState<number[]>([]);
 
@@ -48,7 +46,6 @@ const Word: React.FunctionComponent<IWordProps> = ({
         {word.split("").map((letter, j) => !isCharacter(letter, languageToTranslateInto) ? <p>{letter}</p> : (
           <LetterInput
             key={j}
-            paragraphIndex={paragraphIndex}
             onCorrectLetterEntered={() => updateRevealedIndexes(j)}
             revealed={revealedIndexes.includes(j)}
             correctLetter={letter}

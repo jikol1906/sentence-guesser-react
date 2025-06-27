@@ -31,7 +31,6 @@ const Paragraphs: React.FC<ParagraphsProps> = ({ paragraphData, languageToTransl
       {paragraphData.map((data, index) => (
         <Paragraph
           key={index}
-          paragraphIndex={index}
           paragraph={data}
           languageToTranslateInto={languageToTranslateInto}
         />
