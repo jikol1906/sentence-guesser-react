@@ -30,21 +30,34 @@ const LetterInput = ({
       onCorrectLetterEntered();
     }
 
-    if (input.value.length !== 1) {
+    if (input.value.length !== 1 || (e.nativeEvent as InputEvent).isComposing) {
       return;
     }
-    let nextInputIndex = index;
-    let nextInput: HTMLInputElement | null = null;
-    while ((nextInput = document.querySelector(`input[data-input-index="${nextInputIndex}"]`) as HTMLInputElement | null)) {
-      if (!nextInput.value) {
-        nextInput.focus();
-        break;
-      }
-
-      // increment inputIndex to find the next input
-      nextInputIndex++;
-    }
+    
+    focusNextAvailableInput(e);
   };
+
+  const handleCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+    if (input.value.length === 1) {
+      focusNextAvailableInput(e);
+    }
+  }
+
+const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+    const currentIndex = parseInt(input.getAttribute('data-input-index') || '-1', 10);
+    let nextInputIndex = currentIndex + 1;
+    let nextInput: HTMLInputElement | null;
+
+    while ((nextInput = document.querySelector(`input[data-input-index="${nextInputIndex}"]`))) {
+        if (!nextInput.value) {
+            nextInput.focus();
+            break;
+        }
+        nextInputIndex++;
+    }
+};
 
   // Handle backspace to go back to the previous input and delete the letter in the previous input if present
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -108,6 +121,7 @@ const LetterInput = ({
       pattern={`[${correctLetter.toLowerCase()}${correctLetter.toUpperCase()}]`}
       onInput={handleInputChange} // Handle input change to advance focus
       onKeyDown={handleKeyDown} // Handle backspace to go back
+      onCompositionEnd={handleCompositionEnd} // Handle composition end to advance focus
       data-correct-letter={correctLetter}
       data-letter-input
       required
