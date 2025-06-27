@@ -17,7 +17,7 @@ const Paragraph: React.FunctionComponent<ISentenceGuesserProps> = ({
 
   return (
     <div className="space-y-8">
-      <div className="sticky text-lg top-7 p-4 bg-slate-600 z-10 rounded-md">
+      <div className="sticky text-lg top-7 mb-7 p-4 bg-slate-600 z-10 rounded-md">
         <p>{paragraph.sentenceToShow}</p>
       </div>
       {paragraph.sentenceToGuess.split(" ").map((word, i) => (
