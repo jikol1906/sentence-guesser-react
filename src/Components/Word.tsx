@@ -20,7 +20,8 @@ const Word: React.FunctionComponent<IWordProps> = ({
 
   const onRevealRandomLetter = () => {
 
-    const indexes: number[] = Array.from({ length: word.length },(_, index) => index);
+    const indexes: number[] = Array.from({ length: word.length },(_, index) => index)
+      .filter((index) => isCharacter(word[index], languageToTranslateInto));
     const unrevealedIndexes = indexes.filter((index) => !revealedIndexes.includes(index));
 
     if (unrevealedIndexes.length === 0) {
