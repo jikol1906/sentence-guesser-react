@@ -44,14 +44,13 @@ const Word: React.FunctionComponent<IWordProps> = ({
       className="font-mono inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop"
       style={{ "--animation-delay": animationDelay } as React.CSSProperties}
     >
-      <div className="space-x-1 text-base sm:text-2xl md:text-3xl">
-        {word.split("").map((letter, j) => (
+      <div className="space-x-1 text-base sm:text-2xl md:text-3xl flex">
+        {word.split("").map((letter, j) => !isCharacter(letter, languageToTranslateInto) ? <p>{letter}</p> : (
           <LetterInput
             key={j}
             paragraphIndex={paragraphIndex}
             onCorrectLetterEntered={() => updateRevealedIndexes(j)}
             revealed={revealedIndexes.includes(j)}
-            isNonCharacter={!isCharacter(letter, languageToTranslateInto)}
             correctLetter={letter}
             placeholder=" "
             autoCapitalize="off" // Prevent auto capitalize on mobile devices

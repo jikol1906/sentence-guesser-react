@@ -4,20 +4,18 @@ interface ILetterInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   revealed?: boolean;
   onCorrectLetterEntered: () => void;
-  isNonCharacter: boolean;
   paragraphIndex: number; // Optional, if needed for context
   correctLetter: string;
 }
 
 const LetterInput = ({
   correctLetter,
-  isNonCharacter,
   onCorrectLetterEntered,
   revealed = false,
   paragraphIndex,
   ...props
 }: ILetterInputProps) => {
-  const value = isNonCharacter || revealed ? { value: correctLetter } : {};
+  const value = revealed ? { value: correctLetter } : {};
 
   // Advance to the next input when the current input is filled, skipping inputs that already have a letter
   const handleLetterEntered = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +85,7 @@ const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
     }
   };
 
-  const baseClasses = `
+  const classes = `
     w-[1ch]
     outline-none
     transition-all
@@ -97,21 +95,11 @@ const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
     rounded-none
     disabled:opacity-100
     placeholder:opacity-[.08]
-  `;
-
-  const characterClasses = `
     border-b-2 
     border-solid
     border-white
     [&:not(:placeholder-shown)]:border-green-500
     [&:not(:placeholder-shown)]:invalid:border-red-500
-  `;
-
-  const nonCharacterClasses = "border-none";
-
-  const finalClasses = `
-    ${baseClasses}
-    ${!isNonCharacter ? characterClasses : nonCharacterClasses}
   `;
 
   return (
@@ -124,9 +112,9 @@ const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
       data-correct-letter={correctLetter}
       data-letter-input
       required
-      disabled={isNonCharacter || revealed}
+      disabled={revealed}
       {...value}
-      className={finalClasses}
+      className={classes}
       {...props}
     />
   );
