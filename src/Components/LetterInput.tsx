@@ -119,14 +119,14 @@ const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
     <input
       maxLength={1}
       pattern={`[${correctLetter.toLowerCase()}${correctLetter.toUpperCase()}]`}
-      onInput={handleInputChange} // Handle input change to advance focus
-      onKeyDown={handleKeyDown} // Handle backspace to go back
-      onCompositionEnd={handleCompositionEnd} // Handle composition end to advance focus
+      onInput={handleInputChange}
+      onKeyDown={handleKeyDown}
+      onCompositionEnd={handleCompositionEnd}
       data-correct-letter={correctLetter}
       data-letter-input
       required
-      disabled={isNonCharacter || revealed} // Disable input if it's a non-character or already revealed
-      {...value} // only show non characters
+      disabled={isNonCharacter || revealed}
+      {...value}
       className={finalClasses}
       {...props}
     />
