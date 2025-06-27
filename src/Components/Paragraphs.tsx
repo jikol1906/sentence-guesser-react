@@ -24,10 +24,10 @@ const Paragraphs: React.FC<ParagraphsProps> = ({ paragraphData, languageToTransl
       //focus first input
       inputs![0]!.focus();
   
-    }, [inputWrapperRef]);
+    }, [paragraphData, inputWrapperRef]);
 
   return (
-    <div key={JSON.stringify(paragraphData)} ref={inputWrapperRef}>
+    <div ref={inputWrapperRef}>
       {paragraphData.map((data, index) => (
         <Paragraph
           key={index}
