@@ -20,7 +20,7 @@ const LetterInput = ({
   const value = isNonCharacter || revealed ? { value: correctLetter } : {};
 
   // Advance to the next input when the current input is filled, skipping inputs that already have a letter
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLetterEntered = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
 
     //If correct value was entered, then disable the input
@@ -59,7 +59,7 @@ const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
 };
 
   // Handle backspace to go back to the previous input and delete the letter in the previous input if present
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleBackspaceInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Backspace") {
       return;
     }
@@ -118,8 +118,8 @@ const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
     <input
       maxLength={1}
       pattern={`[${correctLetter.toLowerCase()}${correctLetter.toUpperCase()}]`}
-      onInput={handleInputChange}
-      onKeyDown={handleKeyDown}
+      onInput={handleLetterEntered}
+      onKeyDown={handleBackspaceInput}
       onCompositionEnd={handleCompositionEnd}
       data-correct-letter={correctLetter}
       data-letter-input
