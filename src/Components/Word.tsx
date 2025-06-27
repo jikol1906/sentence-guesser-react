@@ -52,10 +52,6 @@ const Word: React.FunctionComponent<IWordProps> = ({
             onCorrectLetterEntered={() => updateRevealedIndexes(j)}
             revealed={revealedIndexes.includes(j)}
             correctLetter={letter}
-            placeholder=" "
-            autoCapitalize="off" // Prevent auto capitalize on mobile devices
-            type="text"
-            autoCorrect="off"
           />
         ))}
       </div>

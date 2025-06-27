@@ -4,7 +4,6 @@ interface ILetterInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   revealed?: boolean;
   onCorrectLetterEntered: () => void;
-  paragraphIndex: number; // Optional, if needed for context
   correctLetter: string;
 }
 
@@ -12,17 +11,14 @@ const LetterInput = ({
   correctLetter,
   onCorrectLetterEntered,
   revealed = false,
-  paragraphIndex,
   ...props
 }: ILetterInputProps) => {
   const value = revealed ? { value: correctLetter } : {};
 
-  // Advance to the next input when the current input is filled, skipping inputs that already have a letter
-  const handleLetterEntered = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const handleLetterEntered = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
 
-    //If correct value was entered, then disable the input
-    if (input.value.toLowerCase() === correctLetter.toLowerCase()) {
+     if (input.value.toLowerCase() === correctLetter.toLowerCase()) {
       input.disabled = true;
       onCorrectLetterEntered();
     }
@@ -56,26 +52,22 @@ const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
     }
 };
 
-  // Handle backspace to go back to the previous input and delete the letter in the previous input if present
-  const handleBackspaceInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+   const handleBackspaceInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Backspace") {
       return;
     }
 
     const currentInput = e.target as HTMLInputElement;
 
-    // If the current input has an incorrect letter, clear it and stop
-    if (currentInput.value) {
+     if (currentInput.value) {
       currentInput.value = ""; // Clear the incorrect letter
       return;
     }
 
-    // Otherwise, move to the previous input
-    let previousInputIndex = parseInt(currentInput.getAttribute("data-input-index") || "-1", 10) - 1;
+     let previousInputIndex = parseInt(currentInput.getAttribute("data-input-index") || "-1", 10) - 1;
     let previousInput: HTMLInputElement | null = null;
 
-    // Find the next available previous input that is not disabled
-    while ((previousInput = document.querySelector(`input[data-input-index="${previousInputIndex}"]`) as HTMLInputElement | null)
+     while ((previousInput = document.querySelector(`input[data-input-index="${previousInputIndex}"]`) as HTMLInputElement | null)
     ) {
       if (!previousInput.disabled) {
         previousInput.focus();
@@ -113,8 +105,12 @@ const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
       data-letter-input
       required
       disabled={revealed}
-      {...value}
       className={classes}
+      placeholder=" "
+      autoCapitalize="off" // Prevent auto capitalize on mobile devices
+      type="text"
+      autoCorrect="off"
+      {...value}
       {...props}
     />
   );
