@@ -7,12 +7,14 @@ interface IWordProps {
   word: string;
   languageToTranslateInto: Language;
   animationDelay: string;
+  staticWord?: boolean; // Optional prop to indicate if the word is static
 }
 
 const Word: React.FunctionComponent<IWordProps> = ({
   word,
   languageToTranslateInto,
   animationDelay,
+  staticWord = false, // Default to false if not provided
 }) => {
   const [revealedIndexes, setRevealedIndexes] = useState<number[]>([]);
 
@@ -37,27 +39,41 @@ const Word: React.FunctionComponent<IWordProps> = ({
     setRevealedIndexes([...revealedIndexes, inputIndex]);
   };
 
+  const textClasses = "space-x-1 text-base sm:text-2xl md:text-3xl";
+
   return (
     <div
       className="font-mono inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop"
       style={{ "--animation-delay": animationDelay } as React.CSSProperties}
     >
-      <div className="space-x-1 text-base sm:text-2xl md:text-3xl flex">
-        {word.split("").map((letter, j) => !isCharacter(letter, languageToTranslateInto) ? <p>{letter}</p> : (
-          <LetterInput
-            key={j}
-            onCorrectLetterEntered={() => updateRevealedIndexes(j)}
-            revealed={revealedIndexes.includes(j)}
-            correctLetter={letter}
-          />
-        ))}
-      </div>
-      <button
-        onClick={onRevealRandomLetter}
-        className="mt-4 text-xs opacity-40 hover:opacity-100"
-      >
-        Reveal
-      </button>
+      {!staticWord ? (
+        <>
+          <div className={`flex ${textClasses}`}>
+            {word
+              .split("")
+              .map((letter, j) =>
+                !isCharacter(letter, languageToTranslateInto) ? (
+                  <p>{letter}</p>
+                ) : (
+                  <LetterInput
+                    key={j}
+                    onCorrectLetterEntered={() => updateRevealedIndexes(j)}
+                    revealed={revealedIndexes.includes(j)}
+                    correctLetter={letter}
+                  />
+                )
+              )}
+          </div>
+          <button
+            onClick={onRevealRandomLetter}
+            className="mt-4 text-xs opacity-40 hover:opacity-100"
+          >
+            Reveal
+          </button>
+        </>
+      ) : (
+        <p className={textClasses}>{word}</p>
+      )}
     </div>
   );
 };
