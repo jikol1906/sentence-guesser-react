@@ -8,28 +8,42 @@ import LoadingSpinner from "./LoadingSpinner";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
 import TranslateForm from "./TranslateForm";
 import Paragraph from "./Paragraph";
-
-const testData: ParagraphData[] = [
-  {
-    sentenceToShow: "This is a long examplesentence to test if this app works as expected. I really hope it does. I will just make it a bit longer, because I need to test if position sticky works for the shown sentence",
-    sentenceToGuess: "Dies ist ein langer Beispielsatz, um zu testen, ob diese Anwendung wie erwartet funktioniert. Ich hoffe wirklich, dass sie das tut. Ich werde ihn nur ein bisschen länger machen, weil ich testen muss, ob Position Sticky für den gezeigten Satz funktioniert",
-  },
-  {
-    sentenceToShow: "This is a long examplesentence to test if this app works as expected. I really hope it does. I will just make it a bit longer, because I need to test if position sticky works for the shown sentence",
-    sentenceToGuess: "Dies ist ein langer Beispielsatz, um zu testen, ob diese Anwendung wie erwartet funktioniert. Ich hoffe wirklich, dass sie das tut. Ich werde ihn nur ein bisschen länger machen, weil ich testen muss, ob Position Sticky für den gezeigten Satz funktioniert",
-  },
-]
+import Paragraphs from "./Paragraphs";
+import { WordBankManager } from "./WordBankManager";
 
 // const testData: ParagraphData[] = [
 //   {
-//     sentenceToShow: "this test",
-//     sentenceToGuess: "this test",
+//     sentenceToShow: "This is a long examplesentence to test if this app works as expected. I really hope it does. I will just make it a bit longer, because I need to test if position sticky works for the shown sentence",
+//     sentenceToGuess: "Dies ist ein langer Beispielsatz, um zu testen, ob diese Anwendung wie erwartet funktioniert. Ich hoffe wirklich, dass sie das tut. Ich werde ihn nur ein bisschen länger machen, weil ich testen muss, ob Position Sticky für den gezeigten Satz funktioniert",
 //   },
 //   {
-//     sentenceToShow: "this test",
-//     sentenceToGuess: "this test",
+//     sentenceToShow: "This is a long examplesentence to test if this app works as expected. I really hope it does. I will just make it a bit longer, because I need to test if position sticky works for the shown sentence",
+//     sentenceToGuess: "Dies ist ein langer Beispielsatz, um zu testen, ob diese Anwendung wie erwartet funktioniert. Ich hoffe wirklich, dass sie das tut. Ich werde ihn nur ein bisschen länger machen, weil ich testen muss, ob Position Sticky für den gezeigten Satz funktioniert",
 //   },
 // ]
+
+// The type for our array of words and context sentences
+export type WordData = {
+  word: string;
+  contextSentence: string;
+};
+
+// Initial list of words. This will be the default state.
+const initialWordBank: WordData[] = [
+  { word: 'nachhaltig', contextSentence: 'Wir versuchen, nachhaltiger zu leben.' },
+  { word: 'Herausforderung', contextSentence: 'Die neue Aufgabe ist eine große Herausforderung.' },
+  { word: 'begeistert', contextSentence: 'Ich bin von dieser Idee begeistert.' },
+  { word: 'entwickeln', contextSentence: 'Die Firma will neue Produkte entwickeln.' },
+  { word: 'umfangreich', contextSentence: 'Die Bibliothek hat eine umfangreiche Sammlung.' },
+  { word: 'Gelegenheit', contextSentence: 'Das ist eine gute Gelegenheit, etwas Neues zu lernen.'}
+];
+
+const testData: ParagraphData[] = [
+  {
+    sentenceToShow: `Companies often try to lure talented employees with high salaries and benefits.`,
+    sentenceToGuess: `Unternehmen versuchen oft, talentierte Mitarbeiter mit hohen Gehältern und Vorteilen zu ködern.`,
+  },
+]
 
 interface ITest2Props {}
 
@@ -42,23 +56,18 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     useState<Language>("german");
   const [showBorderOnEmptyInput, setShowBorderOnEmptyInput] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [paragraphData, setParagraphData] = useState<ParagraphData[]>(testData);
+
+
+  const [targetLanguage, setTargetLanguage] = useState<Language>('german');
+  // The word input is removed, as we now select from the wordBank
+  const [paragraphs, setParagraphs] = useState<ParagraphData[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [wordBank, setWordBank] = useState<WordData[]>(initialWordBank);
 
   /**Refs for the letter inputs.  */
   const inputRefs = useRef<React.RefObject<HTMLInputElement>[][]>([]);
-
-  const inputWrapperRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Add increasing indexes to all the inputs in a data attribute called input-index
-    const inputs = inputWrapperRef.current?.querySelectorAll(
-      "input[data-letter-input]"
-    );
-    if (inputs) {
-      inputs.forEach((input, index) => {
-        input.setAttribute("data-input-index", index.toString());
-      });
-    }
-  }, [inputWrapperRef]);
 
   //Update letterinformation when enteredSentence changes
   useEffect(() => {
@@ -96,6 +105,49 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       );
       clearInput(wordToSelect, letterToSelect);
       selectInput(wordToSelect, letterToSelect);
+    }
+  };
+
+  const fetchSentencePair = async () => {
+    setLoading(true);
+    setError(null);
+
+    // 1. Select a random word object from the wordBank
+    const randomIndex = Math.floor(Math.random() * wordBank.length);
+    const randomWordData = wordBank[randomIndex];
+
+    try {
+      // 2. Send the randomly selected data to the backend
+      const response = await fetch('/.netlify/functions/generate-sentence-pair', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          wordOrPhrase: randomWordData.word,
+          contextSentence: randomWordData.contextSentence,
+          sourceLanguage: 'english',
+          targetLanguage: targetLanguage,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch sentence pair: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      const newParagraph: ParagraphData = {
+        sentenceToShow: data['english'],
+        sentenceToGuess: data[targetLanguage],
+      };
+
+      setParagraphs(prevParagraphs => [...prevParagraphs, newParagraph]);
+
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -315,44 +367,17 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
       ) : (
         <>
           <div className="max-w-5xl m-auto flex-1 text-white space-y-14">
-            {enteringSentence ? (
-              <>
-                <SentenceGuesserHeader />
-                <TranslateForm
-                  onSubmit={translate}
-                  showBorderOnEmptyInput={showBorderOnEmptyInput}
-                  setShowBorderOnEmptyInput={setShowBorderOnEmptyInput}
-                  onLanguageChange={setLanguageToTranslateInto}
-                  selectedLanguage={languageToTranslateInto}
-                />
-              </>
-            ) : (
-              <GameView
-                originalSentence={originalSentence}
-                words={words}
-                inputRefs={inputRefs.current}
-                languageToTranslateInto={languageToTranslateInto}
-                showBorderOnEmptyInput={showBorderOnEmptyInput}
-                onInput={onInput}
-                onKeyUp={onKeyUp}
-                onRevealLetter={revealRandLetter}
-                onRemoveAllWrong={removeAllWrongLetters}
-                onTryNewSentence={tryNewSentence}
-                onShowBorderChange={setShowBorderOnEmptyInput}
-              />
-            )}
-            <div ref={inputWrapperRef}>
-              {testData.map((paragraphData, i) => {
-                return (
-                  <Paragraph
-                    key={i}
-                    paragraphIndex={i}
-                    paragraph={paragraphData}
-                    languageToTranslateInto={languageToTranslateInto}
-                  />
-                );
-              }) }
-            </div>
+          <SentenceGuesserHeader />
+            <WordBankManager
+              words={wordBank}
+              onWordsChange={(updatedWords) => {
+                setWordBank(updatedWords);
+              }}
+            />
+            <Paragraphs
+              paragraphData={paragraphData}
+              languageToTranslateInto={languageToTranslateInto} 
+            />
           </div>
           <Footer />
         </>
