@@ -10,6 +10,7 @@ import TranslateForm from "./TranslateForm";
 import Paragraph from "./Paragraph";
 import Paragraphs from "./Paragraphs";
 import { WordBankManager } from "./WordBankManager";
+import Button from "./Button";
 
 // const testData: ParagraphData[] = [
 //   {
@@ -33,9 +34,6 @@ const initialWordBank: WordData[] = [
   { word: 'nachhaltig', contextSentence: 'Wir versuchen, nachhaltiger zu leben.' },
   { word: 'Herausforderung', contextSentence: 'Die neue Aufgabe ist eine große Herausforderung.' },
   { word: 'begeistert', contextSentence: 'Ich bin von dieser Idee begeistert.' },
-  { word: 'entwickeln', contextSentence: 'Die Firma will neue Produkte entwickeln.' },
-  { word: 'umfangreich', contextSentence: 'Die Bibliothek hat eine umfangreiche Sammlung.' },
-  { word: 'Gelegenheit', contextSentence: 'Das ist eine gute Gelegenheit, etwas Neues zu lernen.'}
 ];
 
 const testData: ParagraphData[] = [
@@ -45,9 +43,7 @@ const testData: ParagraphData[] = [
   },
 ]
 
-interface ITest2Props {}
-
-const App: React.FunctionComponent<ITest2Props> = (props) => {
+const App: React.FunctionComponent = () => {
   const [words, setWords] = useState<string[][]>([]);
   const [translatedSentence, setTranslatedSentence] = useImmer<string[]>([]);
   const [originalSentence, setOriginalSentence] = useState("");
@@ -142,7 +138,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
         sentenceToGuess: data[targetLanguage],
       };
 
-      setParagraphs(prevParagraphs => [...prevParagraphs, newParagraph]);
+      setParagraphData(prevParagraphs => [...prevParagraphs, newParagraph]);
 
     } catch (err: any) {
       setError(err.message);
@@ -151,214 +147,6 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
     }
   };
 
-  /**
-   * Reveals one random letter of the specified word
-   * @param wordNumber - index of the word which will have one letter revealed.
-   */
-  const revealRandLetter = (wordNumber: number) => {
-    const inputsWithWrongLetters = inputRefs.current[wordNumber].filter(
-      (i) => !i.current!.checkValidity()
-    );
-    if (inputsWithWrongLetters.length > 0) {
-      const inputToReveal =
-        inputsWithWrongLetters[
-          randomIntFromInterval(0, inputsWithWrongLetters.length - 1)
-        ];
-      inputToReveal.current!.value = inputToReveal.current!.getAttribute(
-        "data-correct-letter"
-      )!;
-      inputToReveal.current!.disabled = true;
-      if (document.activeElement === inputToReveal.current) {
-        inputToReveal.current!.blur();
-      }
-    }
-  };
-
-  const onInput = (
-    e: React.FormEvent<HTMLInputElement>,
-    wordNum: number,
-    letterNum: number
-  ) => {
-    const value = e.currentTarget.value;
-    //Disable inputs with correct value, no point in being able to delete correct words
-    if (e.currentTarget.checkValidity()) {
-      e.currentTarget.disabled = true;
-    }
-    if (languageRegexes[languageToTranslateInto].test(value)) {
-      selectNextAvailableInput(wordNum, letterNum);
-    }
-  };
-
-  const tryNewSentence = () => {
-    setWords([]);
-    setEnteringSentence(true);
-  };
-
-  const translate = async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsLoading(true);
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const translationInputText = formData.get("test");
-
-    try {
-      const res = await fetch(
-        `/.netlify/functions/translate`, // URL doesn't need query params
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            sentence: translationInputText,
-            lang: languageToTranslateInto,
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        const message = `An error has occured: ${res.status} ${res.statusText}`;
-        throw new Error(message);
-      }
-
-      const json = await res.json();
-      setTranslatedSentence(json.translation.trim().split(" ") as string[]);
-      setOriginalSentence(translationInputText?.toString()!);
-      setEnteringSentence(false);
-    } catch (error) {
-      alert(error);
-    }
-
-    setIsLoading(false);
-  };
-
-  /**
-   * Select the next available letter input skipping all the disabled inputs until the next non disabled input or the last letter is reached
-   * @param fromWord - the word to start from
-   * @param fromLetter - the letter of the word to start from
-   */
-  const selectNextAvailableInput = (fromWord: number, fromLetter: number) => {
-    if (!isLastLetterOfLastWord(fromWord, fromLetter)) {
-      let [nextWordNumber, nextLetterNumber] = getNextLetterInput(
-        fromWord,
-        fromLetter
-      );
-
-      while (inputIsDisabled(nextWordNumber, nextLetterNumber)) {
-        if (isLastLetterOfLastWord(nextWordNumber, nextLetterNumber)) {
-          return;
-        }
-        [nextWordNumber, nextLetterNumber] = getNextLetterInput(
-          nextWordNumber,
-          nextLetterNumber
-        );
-      }
-
-      selectInput(nextWordNumber, nextLetterNumber);
-    }
-  };
-
-  const getNextPreviousAvailableInput = (
-    fromWord: number,
-    fromLetter: number
-  ) => {
-    if (!isFirstLetterofFirstWord(fromWord, fromLetter)) {
-      let [previousWord, previousLetter] = getPreviousLetterInput(
-        fromWord,
-        fromLetter
-      );
-
-      while (inputIsDisabled(previousWord, previousLetter)) {
-        if (isFirstLetterofFirstWord(previousWord, previousLetter)) {
-          return [fromWord, fromLetter];
-        }
-        [previousWord, previousLetter] = getPreviousLetterInput(
-          previousWord,
-          previousLetter
-        );
-      }
-
-      return [previousWord, previousLetter];
-    }
-
-    return [fromWord, fromLetter];
-  };
-
-  const inputIsDisabled = (wordNum: number, letterNum: number) => {
-    return inputRefs.current[wordNum][letterNum].current?.disabled;
-  };
-
-  const selectInput = (wordNum: number, letterNum: number) => {
-    return inputRefs.current[wordNum][letterNum].current?.focus();
-  };
-
-  /**
-   * Return the word and letter index of the next letter input (the input to the right)
-   * @param fromWord - the word to start from
-   * @param fromLetter - the letter of the word to start from
-   * @returns Tuple containing the next word and letter indexes
-   */
-  const getNextLetterInput = (
-    fromWord: number,
-    fromLetter: number
-  ): [nextWord: number, nextLetter: number] => {
-    if (isLastLetterOfWord(fromWord, fromLetter)) {
-      return [fromWord + 1, 0];
-    } else {
-      return [fromWord, fromLetter + 1];
-    }
-  };
-
-  /**
-   * Return the word and letter index of the previous letter input (the input to the left)
-   * @param fromWord - the word to start from
-   * @param fromLetter - the letter of the word to start from
-   * @returns Tuple containing the previous word and letter indexes
-   */
-  const getPreviousLetterInput = (
-    fromWord: number,
-    fromLetter: number
-  ): [previousWord: number, previousLetter: number] => {
-    if (fromLetter === 0) {
-      return [fromWord - 1, inputRefs.current![fromWord - 1].length - 1];
-    } else {
-      return [fromWord, fromLetter - 1];
-    }
-  };
-
-  const isLastLetterOfWord = (wordNumber: number, letterNumber: number) => {
-    return inputRefs.current[wordNumber]!.length - 1 === letterNumber;
-  };
-
-  const isLastWord = (wordNumber: number) => {
-    return inputRefs.current!.length - 1 === wordNumber;
-  };
-
-  const isLastLetterOfLastWord = (wordNumber: number, letterNumber: number) => {
-    return (
-      isLastWord(wordNumber) && isLastLetterOfWord(wordNumber, letterNumber)
-    );
-  };
-
-  const isFirstLetterofFirstWord = (
-    wordNumber: number,
-    letterNumber: number
-  ) => {
-    return wordNumber === 0 && letterNumber === 0;
-  };
-
-  const clearInput = (wordNumber: number, letterNumber: number) => {
-    inputRefs.current[wordNumber][letterNumber].current!.value = "";
-  };
-
-  const removeAllWrongLetters = () => {
-    inputRefs.current.forEach((word) => {
-      word.forEach((letterInput) => {
-        if (!letterInput.current!.checkValidity()) {
-          letterInput.current!.value = "";
-        }
-      });
-    });
-  };
 
   return (
     <div className="relative min-h-screen bg-slate-800  flex py-32 px-5">
@@ -378,6 +166,7 @@ const App: React.FunctionComponent<ITest2Props> = (props) => {
               paragraphData={paragraphData}
               languageToTranslateInto={languageToTranslateInto} 
             />
+            <Button onClick={fetchSentencePair}>new</Button>
           </div>
           <Footer />
         </>
