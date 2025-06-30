@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import Paragraph from "./Paragraph"; // Adjust the import path as needed
+import Sentence from "./Sentence"; // Adjust the import path as needed
 import { Language } from "../Utils";
 
 interface ParagraphsProps {
@@ -7,7 +7,7 @@ interface ParagraphsProps {
   languageToTranslateInto: Language;
 }
 
-const Paragraphs: React.FC<ParagraphsProps> = ({ paragraphData, languageToTranslateInto }) => {
+const Sentences: React.FC<ParagraphsProps> = ({ paragraphData, languageToTranslateInto }) => {
 
     const inputWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +36,7 @@ const Paragraphs: React.FC<ParagraphsProps> = ({ paragraphData, languageToTransl
   return (
     <div ref={inputWrapperRef}>
       {paragraphData.map((data, index, arr) => (
-        <Paragraph
+        <Sentence
           key={index}
           paragraph={data}
           languageToTranslateInto={languageToTranslateInto}
@@ -47,4 +47,4 @@ const Paragraphs: React.FC<ParagraphsProps> = ({ paragraphData, languageToTransl
   );
 };
 
-export default Paragraphs;
+export default Sentences;

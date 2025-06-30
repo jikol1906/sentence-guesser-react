@@ -7,8 +7,8 @@ import GameView, {ParagraphData} from "./GameView";
 import LoadingSpinner from "./LoadingSpinner";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
 import TranslateForm from "./TranslateForm";
-import Paragraph from "./Paragraph";
-import Paragraphs from "./Paragraphs";
+import Sentence from "./Sentence";
+import Sentences from "./Sentences";
 import { WordBankManager } from "./WordBankManager";
 import Button from "./Button";
 
@@ -162,7 +162,7 @@ const App: React.FunctionComponent = () => {
                 setWordBank(updatedWords);
               }}
             />
-            <Paragraphs
+            <Sentences
               paragraphData={paragraphData}
               languageToTranslateInto={languageToTranslateInto} 
             />

@@ -9,7 +9,7 @@ interface ParagraphProps {
   isLastParagraph?: boolean;
 }
 
-const Paragraph: React.FunctionComponent<ParagraphProps> = ({
+const Sentence: React.FunctionComponent<ParagraphProps> = ({
   languageToTranslateInto,
   paragraph,
   isLastParagraph
@@ -33,4 +33,4 @@ const Paragraph: React.FunctionComponent<ParagraphProps> = ({
   );
 };
 
-export default Paragraph;
+export default Sentence;
