@@ -6,15 +6,17 @@ import type { ParagraphData } from "./GameView";
 interface ParagraphProps {
   paragraph: ParagraphData;
   languageToTranslateInto: Language;
+  isLastParagraph?: boolean;
 }
 
 const Paragraph: React.FunctionComponent<ParagraphProps> = ({
   languageToTranslateInto,
   paragraph,
+  isLastParagraph
 }) => {
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" data-is-last-paragraph={isLastParagraph}>
       <div className="sticky text-lg top-7 mb-7 p-4 bg-slate-600 z-10 rounded-md">
         <p>{paragraph.sentenceToShow}</p>
       </div>

@@ -20,19 +20,27 @@ const Paragraphs: React.FC<ParagraphsProps> = ({ paragraphData, languageToTransl
       inputs.forEach((input, index) => {
         input.setAttribute("data-input-index", index.toString());
       });
-  
-      //focus first input
-      inputs![0]!.focus();
+      
+      const lastParagraph = inputWrapperRef.current?.querySelector(
+        '[data-is-last-paragraph="true"]'
+      ) as HTMLDivElement;
+
+      const firstInputInLastParagraph = lastParagraph?.querySelector(
+        'input[data-letter-input]'
+      ) as HTMLInputElement;
+
+      firstInputInLastParagraph?.focus();
   
     }, [paragraphData, inputWrapperRef]);
 
   return (
     <div ref={inputWrapperRef}>
-      {paragraphData.map((data, index) => (
+      {paragraphData.map((data, index, arr) => (
         <Paragraph
           key={index}
           paragraph={data}
           languageToTranslateInto={languageToTranslateInto}
+          isLastParagraph={index === arr.length - 1}
         />
       ))}
     </div>
