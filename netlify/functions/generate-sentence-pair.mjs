@@ -20,41 +20,87 @@ export const handler = async (event) => {
 
     const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-    const fullContents = [
-      { role: 'user', parts: [{ text: `{"wordOrPhrase": "ausziehen", "sourceLanguage": "german", "targetLanguage": "english"}` }] },
-      { role: 'model', parts: [{ text: `{"german": "Ich muss nächste Woche ausziehen, weil mein Mietvertrag abläuft.", "english": "I have to move out next week because my rental contract is expiring."}` }] },
-      { role: 'user', parts: [{ text: `{"wordOrPhrase": "ködern", "contextSentence": "Wie Großkanzleien mit Luxusreisen junge Anwälte ködern", "sourceLanguage": "german", "targetLanguage": "english"}` }] },
-      { role: 'model', parts: [{ text: `{"german": "Die Firma versucht, neue Talente mit hohen Gehältern zu ködern.", "english": "The company tries to lure new talents with high salaries."}` }] },
-      { role: 'user', parts: [{ text: JSON.stringify({ wordOrPhrase, contextSentence, sourceLanguage, targetLanguage }) }] },
+    const contents = [
+      {
+        role: "user",
+        parts: [
+          {
+            text: `WORD: absegnen
+  CONTEXT: Der Chef muss den Urlaubsantrag noch absegnen.
+  SOURCE: english
+  TARGET: german`,
+          },
+        ],
+      },
+      {
+        role: "model",
+        parts: [
+          {
+            text: `\`\`\`json
+  {
+    "german": "Der Ausschuss wird die neuen Vorschriften morgen absegnen.",
+    "english": "The committee will approve the new regulations tomorrow."
+  }
+  \`\`\``,
+          },
+        ],
+      },
+      {
+        role: "user",
+        parts: [
+          {
+            text: `WORD: vergegenwärtigen
+  SOURCE: english
+  TARGET: german`,
+          },
+        ],
+      },
+      {
+        role: "model",
+        parts: [
+          {
+            text: `\`\`\`json
+  {
+    "german": "Es ist wichtig, sich die Konsequenzen seiner Handlungen zu vergegenwärtigen.",
+    "english": "It is important to visualize the consequences of your actions."
+  }
+  \`\`\``,
+          },
+        ],
+      },
+      {
+        role: "user",
+        parts: [
+          {
+            text: `
+            WORD: ${wordOrPhrase}
+            CONTEXT: ${contextSentence}
+            SOURCE: ${sourceLanguage}
+            TARGET: ${targetLanguage}
+            `,
+          },
+        ],
+      },
     ];
 
+    const config = {
+      temperature: 2,
+      responseMimeType: 'application/json',
+      systemInstruction: [
+        {
+          text: `You are an expert linguist and AI assistant who creates high-quality sentence pairs for language learning. Your task is to analyze the provided input, which contains a word or phrase and a context sentence.
+  
+  Based on the meaning of the word/phrase in that context, create a new, distinct, and natural-sounding example sentence that clearly demonstrates its usage. Then, provide the translation of your newly created sentence into the other specified language.
+  
+  Your final output must be a single JSON object. The keys of this JSON object must be the lowercase names of the languages (e.g., "english", "german").`,
+        },
+      ],
+    };
+
     const result = await genAI.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: fullContents,
-      config: {
-        temperature: 2.0,
-        thinkingBudget: 0, // Disables thinking
-        responseMimeType: 'application/json',
-        systemInstruction: 
-              `Your purpose is to generate a sentence pair; a sentence in ${sourceLanguage} and the sentence in its ${targetLanguage} translation. In the ${sourceLanguage} sentence a word/phrase provided by the user should be present.
-
-              The user will provide you with a word/phrase, the source and target languages, and an optional context sentence in which the word/phrase occurs. The input will be in the following format:
-
-              {
-                "wordOrPhrase": "<Word that should be in the ${sourceLanguage} sentence>",
-                "contextSentence": "<Optional context sentence to show a concrete usage of the word. The sentence you generate should be very different from this one>",
-                "sourceLanguage": "${sourceLanguage}",
-                "targetLanguage": "${targetLanguage}"
-              }
-
-              You will then return the sentence pair in the following JSON format:
-
-              {
-                "${sourceLanguage}" : "<The sentence in ${sourceLanguage} here>",
-                "${targetLanguage}" : "<The sentence in its ${targetLanguage} translation here>"
-              }
-              `,
-      }
+      model: "gemini-2.5-flash",
+      contents,
+      config,
     });
 
     // This is the corrected section
