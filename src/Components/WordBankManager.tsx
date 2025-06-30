@@ -13,27 +13,24 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
 
   const handleAddWord = (event: React.FormEvent) => {
     event.preventDefault();
-    if (newWord.trim() === '') {
-      alert('Please enter a word or phrase.');
-      return;
+    if (newWord.trim()) { // Only check if newWord is provided
+      const updatedWords = [
+        ...words,
+        { word: newWord, contextSentence: newContextSentence.trim() || '' } // Default to an empty string if not provided
+      ];
+      onWordsChange(updatedWords);
+      setNewWord('');
+      setNewContextSentence('');
     }
-
-    const newWordData: WordData = {
-      word: newWord.trim(),
-      contextSentence: newContextSentence.trim(),
-    };
-
-    const updatedWords = [...words, newWordData];
-    onWordsChange(updatedWords);
-
-    // Clear input fields
-    setNewWord('');
-    setNewContextSentence('');
   };
 
   const handleRemoveWord = (indexToRemove: number) => {
     const updatedWords = words.filter((_, index) => index !== indexToRemove);
     onWordsChange(updatedWords);
+  };
+
+  const handleClearAll = () => {
+    onWordsChange([]); // Clear the entire word bank
   };
 
   return (
@@ -57,52 +54,53 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="context-sentence" className="block text-sm font-medium text-gray-300 mb-1">
-            Context Sentence (Optional)
+          <label htmlFor="new-context-sentence" className="block text-sm font-medium text-gray-300 mb-1">
+            Context Sentence
           </label>
           <input
-            id="context-sentence"
+            id="new-context-sentence"
             type="text"
             value={newContextSentence}
             onChange={(e) => setNewContextSentence(e.target.value)}
             className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            placeholder="e.g., Wir versuchen, nachhaltiger zu leben."
+            placeholder="e.g., Nachhaltig leben ist wichtig."
           />
         </div>
-        <Button type="submit">
+        <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
           Add Word
         </Button>
       </form>
 
-      {/* List of existing words */}
-      <div>
-        <h3 className="text-xl font-semibold mb-3">Current Words</h3>
-        <div className="space-y-3">
-          {words.length > 0 ? (
-            words.map((wordData, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between bg-gray-700 p-3 rounded-md"
-              >
-                <div>
-                  <p className="font-bold">{wordData.word}</p>
-                  {wordData.contextSentence && (
-                    <p className="text-sm text-gray-400">{wordData.contextSentence}</p>
-                  )}
-                </div>
-                <button
-                  onClick={() => handleRemoveWord(index)}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md transition-colors duration-200"
-                >
-                  Remove
-                </button>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-400 text-center">The word bank is empty.</p>
-          )}
-        </div>
+      {/* Clear All Button */}
+      <div className="text-center mb-8">
+        <Button
+          onClick={handleClearAll}
+          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
+        >
+          Clear All
+        </Button>
       </div>
+
+      {/* Word List */}
+      <ul className="space-y-4">
+        {words.map((wordData, index) => (
+          <li
+            key={index}
+            className="flex justify-between items-center bg-gray-700 p-4 rounded-lg shadow"
+          >
+            <div>
+              <p className="font-bold">{wordData.word}</p>
+              <p className="text-sm text-gray-400">{wordData.contextSentence}</p>
+            </div>
+            <Button
+              onClick={() => handleRemoveWord(index)}
+              className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
+            >
+              Remove
+            </Button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

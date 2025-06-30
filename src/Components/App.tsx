@@ -1,27 +1,14 @@
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useImmer } from "use-immer";
-import { Language, languageRegexes, randomIntFromInterval } from "../Utils";
+import { Language  } from "../Utils";
 import Footer from "./Footer";
-import GameView, {ParagraphData} from "./GameView";
+import {ParagraphData} from "./GameView";
 import LoadingSpinner from "./LoadingSpinner";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
-import TranslateForm from "./TranslateForm";
-import Sentence from "./Sentence";
 import Sentences from "./Sentences";
 import { WordBankManager } from "./WordBankManager";
 import Button from "./Button";
-
-// const testData: ParagraphData[] = [
-//   {
-//     sentenceToShow: "This is a long examplesentence to test if this app works as expected. I really hope it does. I will just make it a bit longer, because I need to test if position sticky works for the shown sentence",
-//     sentenceToGuess: "Dies ist ein langer Beispielsatz, um zu testen, ob diese Anwendung wie erwartet funktioniert. Ich hoffe wirklich, dass sie das tut. Ich werde ihn nur ein bisschen länger machen, weil ich testen muss, ob Position Sticky für den gezeigten Satz funktioniert",
-//   },
-//   {
-//     sentenceToShow: "This is a long examplesentence to test if this app works as expected. I really hope it does. I will just make it a bit longer, because I need to test if position sticky works for the shown sentence",
-//     sentenceToGuess: "Dies ist ein langer Beispielsatz, um zu testen, ob diese Anwendung wie erwartet funktioniert. Ich hoffe wirklich, dass sie das tut. Ich werde ihn nur ein bisschen länger machen, weil ich testen muss, ob Position Sticky für den gezeigten Satz funktioniert",
-//   },
-// ]
 
 // The type for our array of words and context sentences
 export type WordData = {
@@ -36,73 +23,29 @@ const initialWordBank: WordData[] = [
   { word: 'begeistert', contextSentence: 'Ich bin von dieser Idee begeistert.' },
 ];
 
-const testData: ParagraphData[] = [
-  {
-    sentenceToShow: `Companies often try to lure talented employees with high salaries and benefits.`,
-    sentenceToGuess: `Unternehmen versuchen oft, talentierte Mitarbeiter mit hohen Gehältern und Vorteilen zu ködern.`,
-  },
-]
-
 const App: React.FunctionComponent = () => {
-  const [words, setWords] = useState<string[][]>([]);
-  const [translatedSentence, setTranslatedSentence] = useImmer<string[]>([]);
-  const [originalSentence, setOriginalSentence] = useState("");
-  const [enteringSentence, setEnteringSentence] = useState(true);
   const [languageToTranslateInto, setLanguageToTranslateInto] =
     useState<Language>("german");
   const [showBorderOnEmptyInput, setShowBorderOnEmptyInput] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [paragraphData, setParagraphData] = useState<ParagraphData[]>(testData);
-
+  const [paragraphData, setParagraphData] = useState<ParagraphData[]>([]);
 
   const [targetLanguage, setTargetLanguage] = useState<Language>('german');
   // The word input is removed, as we now select from the wordBank
   const [paragraphs, setParagraphs] = useState<ParagraphData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [wordBank, setWordBank] = useState<WordData[]>(initialWordBank);
 
-  /**Refs for the letter inputs.  */
-  const inputRefs = useRef<React.RefObject<HTMLInputElement>[][]>([]);
+  const [wordBank, setWordBank] = useState<WordData[]>(() => {
+    // Retrieve the word bank from localStorage on initial load
+    const storedWordBank = localStorage.getItem('wordBank');
+    return storedWordBank ? JSON.parse(storedWordBank) : initialWordBank;
+  });
 
-  //Update letterinformation when enteredSentence changes
+  // Save the word bank to localStorage whenever it changes
   useEffect(() => {
-    const letterInformationArr: string[][] = [];
-    inputRefs.current = [];
-    translatedSentence.forEach((s) => {
-      const arr: React.RefObject<HTMLInputElement>[] = [];
-      const letterInformation: string[] = [];
-      s.split("").forEach((l) => {
-        arr.push(React.createRef()); // Create a ref for all letter inputs, so that we can programatically advance to the next or previous input
-        letterInformation.push(l);
-      });
-      letterInformationArr.push(letterInformation);
-      inputRefs.current.push(arr);
-    });
-
-    setWords(letterInformationArr);
-  }, [setWords, translatedSentence, languageToTranslateInto]);
-
-  /*Only solution I could find to delete the character from the current input and
-  go to the previously available input was to check for Backspace or Delete with onKeyUp event.
-  onKeyDown and onKeyPressed are called before the character from the current input is deleted
-   */
-  const onKeyUp = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    wordNum: number,
-    letterNum: number
-  ) => {
-    const isBackspaceOrDelete = e.key === "Backspace" || e.key === "Delete";
-
-    if (isBackspaceOrDelete) {
-      const [wordToSelect, letterToSelect] = getNextPreviousAvailableInput(
-        wordNum,
-        letterNum
-      );
-      clearInput(wordToSelect, letterToSelect);
-      selectInput(wordToSelect, letterToSelect);
-    }
-  };
+    localStorage.setItem('wordBank', JSON.stringify(wordBank));
+  }, [wordBank]);
 
   const fetchSentencePair = async () => {
     setLoading(true);
@@ -154,8 +97,8 @@ const App: React.FunctionComponent = () => {
         <LoadingSpinner />
       ) : (
         <>
-          <div className="max-w-5xl m-auto flex-1 text-white space-y-14">
-          <SentenceGuesserHeader />
+          <div className="max-w-5xl m-auto flex-1 text-white space-y-14 grid">
+            <SentenceGuesserHeader />
             <WordBankManager
               words={wordBank}
               onWordsChange={(updatedWords) => {
@@ -164,9 +107,29 @@ const App: React.FunctionComponent = () => {
             />
             <Sentences
               paragraphData={paragraphData}
-              languageToTranslateInto={languageToTranslateInto} 
+              languageToTranslateInto={languageToTranslateInto}
             />
-            <Button onClick={fetchSentencePair}>new</Button>
+            {loading ? (
+              <LoadingSpinner />
+            ) : (
+              <Button
+                className="bg-slate-500 p-4 m-auto flex items-center justify-center gap-2"
+                onClick={fetchSentencePair}
+              >
+                New challenge
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
+                  />
+                </svg>
+              </Button>
+            )}
           </div>
           <Footer />
         </>
