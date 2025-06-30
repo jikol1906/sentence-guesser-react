@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Language } from "../Utils";
 import Word from "./Word";
-import type { ParagraphData } from "./GameView";
+import type { SentenceData } from "./GameView";
 
 interface ParagraphProps {
-  paragraph: ParagraphData;
+  paragraph: SentenceData;
   languageToTranslateInto: Language;
   isLastParagraph?: boolean;
 }

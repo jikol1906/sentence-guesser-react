@@ -1,9 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useImmer } from "use-immer";
 import { Language  } from "../Utils";
 import Footer from "./Footer";
-import {ParagraphData} from "./GameView";
 import LoadingSpinner from "./LoadingSpinner";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
 import Sentences from "./Sentences";
@@ -14,6 +12,11 @@ import Button from "./Button";
 export type WordData = {
   word: string;
   contextSentence: string;
+};
+
+export type SentenceData = {
+  sentenceToShow: string;
+  sentenceToGuess: string;
 };
 
 // Initial list of words. This will be the default state.
@@ -28,11 +31,11 @@ const App: React.FunctionComponent = () => {
     useState<Language>("german");
   const [showBorderOnEmptyInput, setShowBorderOnEmptyInput] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [paragraphData, setParagraphData] = useState<ParagraphData[]>([]);
+  const [paragraphData, setParagraphData] = useState<SentenceData[]>([]);
 
   const [targetLanguage, setTargetLanguage] = useState<Language>('german');
   // The word input is removed, as we now select from the wordBank
-  const [paragraphs, setParagraphs] = useState<ParagraphData[]>([]);
+  const [paragraphs, setParagraphs] = useState<SentenceData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -76,7 +79,7 @@ const App: React.FunctionComponent = () => {
 
       const data = await response.json();
 
-      const newParagraph: ParagraphData = {
+      const newParagraph: SentenceData = {
         sentenceToShow: data['english'],
         sentenceToGuess: data[targetLanguage],
       };
