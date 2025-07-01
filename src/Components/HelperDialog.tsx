@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, ReactNode } from 'react';
+import React, { useRef, useEffect, ReactNode } from 'react';
 
 // --- Icon Component for the Close Button ---
 // A simple functional component for the close icon.
