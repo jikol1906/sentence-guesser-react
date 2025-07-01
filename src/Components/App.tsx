@@ -13,6 +13,7 @@ import useLocalStorageState from "../hooks/useLocalStorageState";
 export type WordData = {
   word: string;
   contextSentence: string;
+  previousSentencesIncludingWord?: string[]; // Optional property to store previous sentences
 };
 
 export type SentenceData = {
@@ -87,6 +88,7 @@ const App: React.FunctionComponent = () => {
           contextSentence: randomWordData.contextSentence,
           sourceLanguage: 'english',
           targetLanguage: targetLanguage,
+          previousSentences: randomWordData.previousSentencesIncludingWord,
         }),
       });
 
@@ -102,6 +104,18 @@ const App: React.FunctionComponent = () => {
       };
 
       // add the sentence to previousSentences of the wordBank
+
+      setWordBank(prevWordBank => {
+        const updatedWordBank = [...prevWordBank];
+        updatedWordBank[nextIdx] = {
+          ...updatedWordBank[nextIdx],
+          previousSentencesIncludingWord: [
+            ...(updatedWordBank[nextIdx].previousSentencesIncludingWord || []),
+            sentencePair.sentenceToShow,
+          ],
+        };
+        return updatedWordBank;
+      });
 
       setSentences(prevParagraphs => [...prevParagraphs, sentencePair]);
 

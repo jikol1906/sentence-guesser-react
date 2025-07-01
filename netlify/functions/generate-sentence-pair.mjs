@@ -9,7 +9,7 @@ export const handler = async (event) => {
   }
 
   try {
-    const { wordOrPhrase, contextSentence, sourceLanguage, targetLanguage } = JSON.parse(event.body);
+    const { wordOrPhrase, contextSentence, sourceLanguage, targetLanguage, previousSentences } = JSON.parse(event.body);
 
     if (!wordOrPhrase || !sourceLanguage || !targetLanguage) {
       return {
@@ -50,8 +50,10 @@ export const handler = async (event) => {
         parts: [
           {
             text: `WORD: vergegenwärtigen
-  SOURCE: english
-  TARGET: german`,
+                  SOURCE: english
+                  TARGET: german
+                  PREVIOUS_SENTENCES: ["Es ist wichtig, sich zu vergegenwärtigen, dass das menschliche Bewusstsein in seiner Natur dual angelegt ist."]
+                  `,
           },
         ],
       },
@@ -77,6 +79,7 @@ export const handler = async (event) => {
             CONTEXT: ${contextSentence}
             SOURCE: ${sourceLanguage}
             TARGET: ${targetLanguage}
+            ${previousSentences ? `PREVIOUS_SENTENCES: ${JSON.stringify(previousSentences)}` : ''}
             `,
           },
         ],
@@ -88,9 +91,11 @@ export const handler = async (event) => {
       responseMimeType: 'application/json',
       systemInstruction: [
         {
-          text: `You are an expert linguist and AI assistant who creates high-quality sentence pairs for language learning. Your task is to analyze the provided input, which contains a word or phrase and a context sentence.
+          text: `You are an expert linguist and AI assistant who creates high-quality sentence pairs for language learning. Your task is to analyze the provided input, which contains a word or phrase and a context sentence as well as a source and target language
   
-  Based on the meaning of the word/phrase in that context, create a new, distinct, and natural-sounding example sentence that clearly demonstrates its usage. Then, provide the translation of your newly created sentence into the other specified language.
+  Based on the meaning of the word/phrase in that context, create a new, distinct, and natural-sounding example sentence in the target language, that clearly demonstrates its usage. Then, provide the translation of your newly created sentence into the other specified language (the source language).
+  
+  the sentence you generate in the source language should also be vastly different from the list of words contained in PREVIOUS_SENTENCES (if it is present in the input).
   
   Your final output must be a single JSON object. The keys of this JSON object must be the lowercase names of the languages (e.g., "english", "german").`,
         },
@@ -106,7 +111,6 @@ export const handler = async (event) => {
     // This is the corrected section
     const response = result.candidates[0].content;
 
-    console.log(response)
 
     const text = response.parts[0].text;
 
