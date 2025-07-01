@@ -19,6 +19,9 @@ export type SentenceData = {
   sentenceToGuess: string;
 };
 
+//Function to shuffle array
+const shuffleArray = <T extends any>(array: T[]): T[] => array.sort(() => Math.random() - 0.5);
+
 // Initial list of words. This will be the default state.
 const initialWordBank: WordData[] = [
   { word: 'nachhaltig', contextSentence: 'Wir versuchen, nachhaltiger zu leben.' },
@@ -37,6 +40,7 @@ const App: React.FunctionComponent = () => {
   // The word input is removed, as we now select from the wordBank
   const [paragraphs, setParagraphs] = useState<SentenceData[]>([]);
   const [loading, setLoading] = useState(false);
+  const [wordBankOrder, setWordBankOrder] = useState<number[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const [wordBank, setWordBank] = useState<WordData[]>(() => {
@@ -48,15 +52,37 @@ const App: React.FunctionComponent = () => {
   // Save the word bank to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('wordBank', JSON.stringify(wordBank));
+
+    //Generate array with increasing numbers equal to length of wordBank
+    const newOrder = Array.from({ length: wordBank.length }, (_, i) => i);
+    //shuffle
+    const shuffledOrder = shuffleArray(newOrder);
+    setWordBankOrder(shuffledOrder);
   }, [wordBank]);
+
+  //If wordbankOrder is empty, reset it
+  useEffect(() => {
+    if (wordBankOrder.length === 0 && wordBank.length > 0) {
+      const newOrder = Array.from({ length: wordBank.length }, (_, i) => i);
+      setWordBankOrder(shuffleArray(newOrder));
+    }
+  }, [wordBankOrder, wordBank.length]);
 
   const fetchSentencePair = async () => {
     setLoading(true);
     setError(null);
 
-    // 1. Select a random word object from the wordBank
-    const randomIndex = Math.floor(Math.random() * wordBank.length);
-    const randomWordData = wordBank[randomIndex];
+    // 1. Get the index from the end of the array.
+    const nextIdx = wordBankOrder[wordBankOrder.length - 1];
+
+    // 2. Create a NEW array that contains all but the last element.
+    const newOrder = wordBankOrder.slice(0, -1);
+
+    // 3. Update the state with the new array. This has a new reference,
+    // which WILL trigger the useEffect hook when the component rerenders.
+    setWordBankOrder(newOrder);
+
+    const randomWordData = wordBank[nextIdx];
 
     try {
       // 2. Send the randomly selected data to the backend
