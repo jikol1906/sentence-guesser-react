@@ -7,6 +7,7 @@ import SentenceGuesserHeader from "./SentenceGuesserHeader";
 import Sentences from "./Sentences";
 import { WordBankManager } from "./WordBankManager";
 import Button from "./Button";
+import useLocalStorageState from "../hooks/useLocalStorageState";
 
 // The type for our array of words and context sentences
 export type WordData = {
@@ -32,22 +33,16 @@ const initialWordBank: WordData[] = [
 const App: React.FunctionComponent = () => {
   const [languageToTranslateInto, setLanguageToTranslateInto] =
     useState<Language>("german");
-  const [paragraphData, setParagraphData] = useState<SentenceData[]>([]);
+  const [paragraphData, setParagraphData] = useLocalStorageState<SentenceData[]>('sentences',[]);
 
   const [targetLanguage, setTargetLanguage] = useState<Language>('german');
   const [loading, setLoading] = useState(false);
-  const [wordBankOrder, setWordBankOrder] = useState<number[]>([]);
+  const [wordBankOrder, setWordBankOrder] = useLocalStorageState<number[]>('wordBankOrder',[]);
   const [error, setError] = useState<string | null>(null);
 
-  const [wordBank, setWordBank] = useState<WordData[]>(() => {
-    // Retrieve the word bank from localStorage on initial load
-    const storedWordBank = localStorage.getItem('wordBank');
-    return storedWordBank ? JSON.parse(storedWordBank) : initialWordBank;
-  });
+  const [wordBank, setWordBank] = useLocalStorageState<WordData[]>('wordBank',[]);
 
-  // Save the word bank to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('wordBank', JSON.stringify(wordBank));
 
     //Generate array with increasing numbers equal to length of wordBank
     const newOrder = Array.from({ length: wordBank.length }, (_, i) => i);
