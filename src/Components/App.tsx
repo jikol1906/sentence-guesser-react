@@ -32,13 +32,9 @@ const initialWordBank: WordData[] = [
 const App: React.FunctionComponent = () => {
   const [languageToTranslateInto, setLanguageToTranslateInto] =
     useState<Language>("german");
-  const [showBorderOnEmptyInput, setShowBorderOnEmptyInput] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
   const [paragraphData, setParagraphData] = useState<SentenceData[]>([]);
 
   const [targetLanguage, setTargetLanguage] = useState<Language>('german');
-  // The word input is removed, as we now select from the wordBank
-  const [paragraphs, setParagraphs] = useState<SentenceData[]>([]);
   const [loading, setLoading] = useState(false);
   const [wordBankOrder, setWordBankOrder] = useState<number[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -105,12 +101,12 @@ const App: React.FunctionComponent = () => {
 
       const data = await response.json();
 
-      const newParagraph: SentenceData = {
+      const sentencePair: SentenceData = {
         sentenceToShow: data['english'],
         sentenceToGuess: data[targetLanguage],
       };
 
-      setParagraphData(prevParagraphs => [...prevParagraphs, newParagraph]);
+      setParagraphData(prevParagraphs => [...prevParagraphs, sentencePair]);
 
     } catch (err: any) {
       setError(err.message);
@@ -122,10 +118,6 @@ const App: React.FunctionComponent = () => {
 
   return (
     <div className="relative min-h-screen bg-slate-800  flex py-32 px-5">
-      {isLoading ? (
-        <LoadingSpinner />
-      ) : (
-        <>
           <div className="max-w-5xl m-auto flex-1 text-white space-y-14 grid">
             <SentenceGuesserHeader />
             <WordBankManager
@@ -161,8 +153,6 @@ const App: React.FunctionComponent = () => {
             )}
           </div>
           <Footer />
-        </>
-      )}
     </div>
   );
 };
