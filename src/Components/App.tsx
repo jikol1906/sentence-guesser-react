@@ -118,41 +118,41 @@ const App: React.FunctionComponent = () => {
 
   return (
     <div className="relative min-h-screen bg-slate-800  flex py-32 px-5">
-          <div className="max-w-5xl m-auto flex-1 text-white space-y-14 grid">
-            <SentenceGuesserHeader />
-            <WordBankManager
-              words={wordBank}
-              onWordsChange={(updatedWords) => {
-                setWordBank(updatedWords);
-              }}
-            />
-            <Sentences
-              paragraphData={paragraphData}
-              languageToTranslateInto={languageToTranslateInto}
-            />
-            {loading ? (
-              <LoadingSpinner />
-            ) : (
-              <Button
-                className="bg-slate-500 p-4 m-auto flex items-center justify-center gap-2"
-                onClick={fetchSentencePair}
-              >
-                New challenge
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
-                  />
-                </svg>
-              </Button>
-            )}
-          </div>
-          <Footer />
+      <div className="max-w-5xl m-auto flex-1 text-white space-y-14 grid">
+        <SentenceGuesserHeader />
+        <WordBankManager
+          words={wordBank}
+          onWordsChange={(updatedWords) => {
+            setWordBank(updatedWords);
+          }}
+        />
+        <Sentences
+          paragraphData={paragraphData}
+          languageToTranslateInto={languageToTranslateInto}
+        />
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <Button
+            className="bg-slate-500 p-4 m-auto flex items-center justify-center gap-2"
+            onClick={fetchSentencePair}
+          >
+            New challenge
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
+              />
+            </svg>
+          </Button>
+        )}
+      </div>
+      <Footer />
     </div>
   );
 };
