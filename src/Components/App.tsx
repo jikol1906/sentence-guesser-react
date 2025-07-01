@@ -33,7 +33,7 @@ const initialWordBank: WordData[] = [
 const App: React.FunctionComponent = () => {
   const [languageToTranslateInto, setLanguageToTranslateInto] =
     useState<Language>("german");
-  const [paragraphData, setParagraphData] = useLocalStorageState<SentenceData[]>('sentences',[]);
+  const [sentences, setSentences] = useLocalStorageState<SentenceData[]>('sentences',[]);
 
   const [targetLanguage, setTargetLanguage] = useState<Language>('german');
   const [loading, setLoading] = useState(false);
@@ -101,7 +101,9 @@ const App: React.FunctionComponent = () => {
         sentenceToGuess: data[targetLanguage],
       };
 
-      setParagraphData(prevParagraphs => [...prevParagraphs, sentencePair]);
+      // add the sentence to previousSentences of the wordBank
+
+      setSentences(prevParagraphs => [...prevParagraphs, sentencePair]);
 
     } catch (err: any) {
       setError(err.message);
@@ -111,7 +113,7 @@ const App: React.FunctionComponent = () => {
   };
 
   const clearParagraphData = () => {
-    setParagraphData([]); // Clear the paragraphData state
+    setSentences([]); // Clear the paragraphData state
   };
 
 
@@ -133,7 +135,7 @@ const App: React.FunctionComponent = () => {
           Clear challenges
         </Button>
         <Sentences
-          paragraphData={paragraphData}
+          sentences={sentences}
           languageToTranslateInto={languageToTranslateInto}
         />
         {loading ? (

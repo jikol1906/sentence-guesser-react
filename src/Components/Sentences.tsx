@@ -1,13 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import Sentence from "./Sentence"; // Adjust the import path as needed
 import { Language } from "../Utils";
+import type { SentenceData } from "./App";
 
 interface ParagraphsProps {
-  paragraphData: { sentenceToShow: string; sentenceToGuess: string }[];
+  sentences: SentenceData[];
   languageToTranslateInto: Language;
 }
 
-const Sentences: React.FC<ParagraphsProps> = ({ paragraphData, languageToTranslateInto }) => {
+const Sentences: React.FC<ParagraphsProps> = ({ sentences, languageToTranslateInto }) => {
 
     const inputWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -31,11 +32,11 @@ const Sentences: React.FC<ParagraphsProps> = ({ paragraphData, languageToTransla
 
       firstInputInLastParagraph?.focus();
   
-    }, [paragraphData, inputWrapperRef]);
+    }, [sentences, inputWrapperRef]);
 
   return (
     <div ref={inputWrapperRef}>
-      {paragraphData.map((data, index, arr) => (
+      {sentences.map((data, index, arr) => (
         <Sentence
           key={index}
           paragraph={data}
