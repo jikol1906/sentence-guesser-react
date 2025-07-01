@@ -115,6 +115,10 @@ const App: React.FunctionComponent = () => {
     }
   };
 
+  const clearParagraphData = () => {
+    setParagraphData([]); // Clear the paragraphData state
+  };
+
 
   return (
     <div className="relative min-h-screen bg-slate-800  flex py-32 px-5">
@@ -126,6 +130,13 @@ const App: React.FunctionComponent = () => {
             setWordBank(updatedWords);
           }}
         />
+        <Button
+          onClick={clearParagraphData}
+          buttonType="danger"
+          className="justify-self-center"
+        >
+          Clear challenges
+        </Button>
         <Sentences
           paragraphData={paragraphData}
           languageToTranslateInto={languageToTranslateInto}

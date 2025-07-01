@@ -75,7 +75,7 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
       <div className="text-center mb-8">
         <Button
           onClick={handleClearAll}
-          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
+          buttonType='danger'
         >
           Clear All
         </Button>
@@ -94,7 +94,7 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
             </div>
             <Button
               onClick={() => handleRemoveWord(index)}
-              className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
+              buttonType='danger'
             >
               Remove
             </Button>
