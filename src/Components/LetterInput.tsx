@@ -27,20 +27,20 @@ const LetterInput = ({
       return;
     }
     
-    focusNextAvailableInput(e);
+    focusNextAvailableInput(e,'next');
   };
 
   const handleCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
     if (input.value.length === 1) {
-      focusNextAvailableInput(e);
+      focusNextAvailableInput(e,'next');
     }
   }
 
-const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
+const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>, direction: 'next' | 'previous') => {
     const input = e.target as HTMLInputElement;
     const currentIndex = parseInt(input.getAttribute('data-input-index') || '-1', 10);
-    let nextInputIndex = currentIndex + 1;
+    let nextInputIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
     let nextInput: HTMLInputElement | null;
 
     while ((nextInput = document.querySelector(`input[data-input-index="${nextInputIndex}"]`))) {
@@ -48,9 +48,18 @@ const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
             nextInput.focus();
             break;
         }
-        nextInputIndex++;
+        nextInputIndex = direction === 'next' ? nextInputIndex + 1 : nextInputIndex - 1;
     }
 };
+
+const handleArrowKeyNavigation = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === 'ArrowRight') {
+    focusNextAvailableInput(e, 'next');
+  } else if (e.key === 'ArrowLeft') {
+    focusNextAvailableInput(e, 'previous');
+  }
+};
+
 
    const handleBackspaceInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Backspace") {
@@ -99,7 +108,10 @@ const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
       maxLength={1}
       pattern={`[${correctLetter.toLowerCase()}${correctLetter.toUpperCase()}]`}
       onInput={handleLetterEntered}
-      onKeyDown={handleBackspaceInput}
+      onKeyDown={(e) => {
+        handleBackspaceInput(e)
+        handleArrowKeyNavigation(e);
+      }}
       onCompositionEnd={handleCompositionEnd}
       data-correct-letter={correctLetter}
       data-letter-input
