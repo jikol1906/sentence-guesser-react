@@ -43,17 +43,13 @@ const App: React.FunctionComponent = () => {
 
   const [wordBank, setWordBank] = useLocalStorageState<WordData[]>('wordBank',[]);
 
-  useEffect(() => {
-
-    //Generate array with increasing numbers equal to length of wordBank
-    const newOrder = Array.from({ length: wordBank.length }, (_, i) => i);
-    //shuffle
-    const shuffledOrder = shuffleArray(newOrder);
-    setWordBankOrder(shuffledOrder);
-  }, [wordBank]);
-
   //If wordbankOrder is empty, reset it
   useEffect(() => {
+
+    if(wordBankOrder.length > 0) {
+      return;
+    }
+
     if (wordBankOrder.length === 0 && wordBank.length > 0) {
       const newOrder = Array.from({ length: wordBank.length }, (_, i) => i);
       setWordBankOrder(shuffleArray(newOrder));
@@ -77,7 +73,6 @@ const App: React.FunctionComponent = () => {
     const randomWordData = wordBank[nextIdx];
 
     try {
-      // 2. Send the randomly selected data to the backend
       const response = await fetch('/.netlify/functions/generate-sentence-pair', {
         method: 'POST',
         headers: {
@@ -137,9 +132,7 @@ const App: React.FunctionComponent = () => {
         <SentenceGuesserHeader />
         <WordBankManager
           words={wordBank}
-          onWordsChange={(updatedWords) => {
-            setWordBank(updatedWords);
-          }}
+          onWordsChange={(updatedWords) => setWordBank(updatedWords)}
         />
         <Button
           onClick={clearParagraphData}
