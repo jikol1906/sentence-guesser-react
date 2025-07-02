@@ -112,7 +112,7 @@ const App: React.FunctionComponent = () => {
         return updatedWordBank;
       });
 
-      setSentences(prevParagraphs => [...prevParagraphs, sentencePair]);
+      setSentences(prevSentences => [...prevSentences, sentencePair]);
 
     } catch (err: any) {
       setError(err.message);
