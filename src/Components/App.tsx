@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Language  } from "../Utils";
 import Footer from "./Footer";
 import LoadingSpinner from "./LoadingSpinner";
@@ -41,18 +41,17 @@ const App: React.FunctionComponent = () => {
   const [wordBankOrder, setWordBankOrder] = useLocalStorageState<number[]>('wordBankOrder',[]);
   const [error, setError] = useState<string | null>(null);
 
+  const previousWordBankLength = useRef<number>(0);
+
   const [wordBank, setWordBank] = useLocalStorageState<WordData[]>('wordBank',[]);
 
   //If wordbankOrder is empty, reset it
   useEffect(() => {
 
-    if(wordBankOrder.length > 0) {
-      return;
-    }
-
-    if (wordBankOrder.length === 0 && wordBank.length > 0) {
+    if (wordBank.length > 0 && previousWordBankLength.current !== wordBank.length || wordBankOrder.length === 0) {
       const newOrder = Array.from({ length: wordBank.length }, (_, i) => i);
       setWordBankOrder(shuffleArray(newOrder));
+      previousWordBankLength.current = wordBank.length;
     }
   }, [wordBankOrder, wordBank.length]);
 
