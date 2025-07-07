@@ -4,13 +4,15 @@ export function randomIntFromInterval(min:number, max:number) {
 }
 
 
-export const languageRegexes = {
+export const languageRegexes : Record<string,RegExp> = {
   german: /[a-zA-ZäöüßÄÖÜẞ]/,
   spanish: /[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ]/,
-  french: /[a-zA-ZàâçéèêëîïôûùüÿæœÀÂÇÉÈÊËÎÏÔÛÙÜŸÆŒ]/
+  french: /[a-zA-ZàâçéèêëîïôûùüÿæœÀÂÇÉÈÊËÎÏÔÛÙÜŸÆŒ]/,
 } as const
 
 export type Language = keyof typeof languageRegexes;
+
+export const LANGUAGES: Language[] = Object.keys(languageRegexes) as Language[];
 
 export function isCharacter(character:string,lang:Language) {
   return languageRegexes[lang].test(character)
