@@ -1,5 +1,36 @@
 import { GoogleGenAI } from '@google/genai';
 
+const generateUserMessage = (
+  wordOrPhrase,
+  contextSentence,
+  sourceLanguage,
+  targetLanguage,
+  previousSentences
+) => {
+  return `
+  WORD: ${wordOrPhrase}
+  CONTEXT: ${contextSentence}
+  SOURCE: ${sourceLanguage}
+  TARGET: ${targetLanguage}
+  ${
+    previousSentences
+      ? `PREVIOUS_SENTENCES: ${JSON.stringify(previousSentences)}`
+      : ""
+  }
+  `;
+};
+
+const generateModelMessage = (germanSentence, englishSentence) => {
+  return `
+  {
+    "german": "${germanSentence}",
+    "english": "${englishSentence}"
+  }
+`;
+};
+
+
+
 export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return {
@@ -25,13 +56,12 @@ export const handler = async (event) => {
         role: "user",
         parts: [
           {
-            text: 
-              `
-WORD: absegnen
-CONTEXT: Der Chef muss den Urlaubsantrag noch absegnen.
-SOURCE: english
-TARGET: german
-              `,
+            text: generateUserMessage(
+              "absegnen",
+              "Der Chef muss den Urlaubsantrag noch absegnen.",
+              "english",
+              "german"
+            ),
           },
         ],
       },
@@ -39,13 +69,37 @@ TARGET: german
         role: "model",
         parts: [
           {
-            text: 
-              `
-{
-  "german": "Der Ausschuss wird die neuen Vorschriften morgen absegnen.",
-  "english": "The committee will approve the new regulations tomorrow."
-}
-              `,
+            text: generateModelMessage(
+              "Der Chef muss den Urlaubsantrag noch absegnen.",
+              "The boss still needs to approve the vacation request."
+            ),
+          },
+        ],
+      },
+      {
+        role: "user",
+        parts: [
+          {
+            text: generateUserMessage(
+              "vergegenwärtigen",
+              "Es ist wichtig, sich zu vergegenwärtigen, dass das menschliche Bewusstsein in seiner Natur dual angelegt ist.",
+              "english",
+              "german",
+              [
+                "Es ist wichtig, sich zu vergegenwärtigen, dass das menschliche Bewusstsein in seiner Natur dual angelegt ist.",
+              ]
+            ),
+          },
+        ],
+      },
+      {
+        role: "model",
+        parts: [
+          {
+            text: generateModelMessage(
+              "Es ist wichtig, sich die Konsequenzen seiner Handlungen zu vergegenwärtigen.",
+              "It is important to visualize the consequences of your actions."
+            ),
           },
         ],
       },
@@ -54,41 +108,13 @@ TARGET: german
         parts: [
           {
             text: 
-              `
-WORD: vergegenwärtigen
-SOURCE: english
-TARGET: german
-PREVIOUS_SENTENCES: ["Es ist wichtig, sich zu vergegenwärtigen, dass das menschliche Bewusstsein in seiner Natur dual angelegt ist."]
-              `,
-          },
-        ],
-      },
-      {
-        role: "model",
-        parts: [
-          {
-            text: 
-              `
-{
-  "german": "Es ist wichtig, sich die Konsequenzen seiner Handlungen zu vergegenwärtigen.",
-  "english": "It is important to visualize the consequences of your actions."
-}
-              `,
-          },
-        ],
-      },
-      {
-        role: "user",
-        parts: [
-          {
-            text: 
-              `
-WORD: ${wordOrPhrase}
-CONTEXT: ${contextSentence}
-SOURCE: ${sourceLanguage}
-TARGET: ${targetLanguage}
-${previousSentences ? `PREVIOUS_SENTENCES: ${JSON.stringify(previousSentences)}` : ''}
-            `,
+            generateUserMessage(
+              wordOrPhrase,
+              contextSentence,
+              sourceLanguage,
+              targetLanguage,
+              previousSentences
+            ),
           },
         ],
       },
