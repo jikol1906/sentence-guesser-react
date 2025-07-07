@@ -3,19 +3,19 @@ import { Language, isCharacter } from "../Utils";
 import LetterInput from "./LetterInput";
 import { useState } from "react";
 
-interface IWordProps {
+interface WordProps {
   word: string;
   languageToTranslateInto: Language;
   animationDelay: string;
   staticWord?: boolean; // Optional prop to indicate if the word is static
 }
 
-const Word: React.FunctionComponent<IWordProps> = ({
+const Word = ({
   word,
   languageToTranslateInto,
   animationDelay,
   staticWord = false, // Default to false if not provided
-}) => {
+} : WordProps) => {
   const [revealedIndexes, setRevealedIndexes] = useState<number[]>([]);
 
   const onRevealRandomLetter = () => {
@@ -72,7 +72,7 @@ const Word: React.FunctionComponent<IWordProps> = ({
           </button>
         </>
       ) : (
-        <p className={textClasses}>{word}</p>
+        <span className={textClasses}>{word}</span>
       )}
     </div>
   );
