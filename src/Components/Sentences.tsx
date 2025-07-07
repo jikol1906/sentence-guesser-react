@@ -1,14 +1,14 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Sentence from "./Sentence"; // Adjust the import path as needed
 import { Language } from "../Utils";
 import type { SentenceData } from "./App";
 
-interface ParagraphsProps {
+interface SentencesProps {
   sentences: SentenceData[];
   languageToTranslateInto: Language;
 }
 
-const Sentences: React.FC<ParagraphsProps> = ({ sentences, languageToTranslateInto }) => {
+const Sentences = ({ sentences, languageToTranslateInto } : SentencesProps) => {
 
     const inputWrapperRef = useRef<HTMLDivElement>(null);
 
