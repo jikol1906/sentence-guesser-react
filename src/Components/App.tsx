@@ -142,7 +142,6 @@ const App: React.FunctionComponent = () => {
         </Button>
         <Sentences
           sentences={sentences}
-          guessOnlyWordMode={true}
           languageToTranslateInto={targetLanguage}
         />
         {loading ? (

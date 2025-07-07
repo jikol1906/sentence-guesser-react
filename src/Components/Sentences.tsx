@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import Sentence from "./Sentence"; // Adjust the import path as needed
-import { Language, removeWordTags } from "../Utils";
+import { Language } from "../Utils";
 import type { SentenceData } from "./App";
 
 interface SentencesProps {

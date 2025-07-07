@@ -1,4 +1,4 @@
-import { Language, wordIsSurroundedByTags } from "../Utils";
+import { Language, wordIsSurroundedByTags, removeWordTags } from "../Utils";
 import Word from "./Word";
 import type { SentenceData } from "./App";
 
@@ -25,7 +25,7 @@ const Sentence = ({
       {sentence.sentenceToGuess.split(" ").map((word, i) => (
         <Word
           key={i}
-          word={word}
+          word={guessOnlyWordMode ? removeWordTags(word) : word} // Remove tags if in guess-only mode
           languageToTranslateInto={languageToTranslateInto}
           animationDelay={`${i * 0.02}s`}
           wordIsShown={guessOnlyWordMode && !wordIsSurroundedByTags(word)} // If the word is not surrounded by tags and not in guess-only mode, treat it as static

@@ -49,7 +49,7 @@ const Word = ({
       {!wordIsShown ? (
         <>
           <div className={`flex ${textClasses}`}>
-            {removeWordTags(word)
+            {word
               .split("")
               .map((letter, j) =>
                 !isCharacter(letter, languageToTranslateInto) ? (
