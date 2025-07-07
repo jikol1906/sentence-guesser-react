@@ -120,8 +120,8 @@ const App: React.FunctionComponent = () => {
     }
   };
 
-  const clearParagraphData = () => {
-    setSentences([]); // Clear the paragraphData state
+  const clearSentenceData = () => {
+    setSentences([]); // Clear the sentence data state
   };
 
 
@@ -134,7 +134,7 @@ const App: React.FunctionComponent = () => {
           onWordsChange={(updatedWords) => setWordBank(updatedWords)}
         />
         <Button
-          onClick={clearParagraphData}
+          onClick={clearSentenceData}
           buttonType="danger"
           className="justify-self-center"
         >

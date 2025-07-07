@@ -23,7 +23,7 @@ const Sentences = ({ sentences, languageToTranslateInto } : SentencesProps) => {
       });
       
       const lastParagraph = inputWrapperRef.current?.querySelector(
-        '[data-is-last-paragraph="true"]'
+        '[data-is-last-sentence="true"]'
       ) as HTMLDivElement;
 
       const firstInputInLastParagraph = lastParagraph?.querySelector(
@@ -39,9 +39,9 @@ const Sentences = ({ sentences, languageToTranslateInto } : SentencesProps) => {
       {sentences.map((data, index, arr) => (
         <Sentence
           key={index}
-          paragraph={data}
+          sentence={data}
           languageToTranslateInto={languageToTranslateInto}
-          isLastParagraph={index === arr.length - 1}
+          isLastSentence={index === arr.length - 1}
         />
       ))}
     </div>

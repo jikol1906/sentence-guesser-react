@@ -4,23 +4,23 @@ import Word from "./Word";
 import type { SentenceData } from "./App";
 
 interface SentenceProps {
-  paragraph: SentenceData;
+  sentence: SentenceData;
   languageToTranslateInto: Language;
-  isLastParagraph?: boolean;
+  isLastSentence?: boolean;
 }
 
 const Sentence = ({
   languageToTranslateInto,
-  paragraph,
-  isLastParagraph
+  sentence,
+  isLastSentence
 } : SentenceProps) => {
 
   return (
-    <div className="space-y-8" data-is-last-paragraph={isLastParagraph}>
+    <div className="space-y-8" data-is-last-sentence={isLastSentence}>
       <div className="sticky text-lg top-7 mb-7 p-4 bg-slate-600 z-10 rounded-md">
-        <p>{paragraph.sentenceToShow}</p>
+        <p>{sentence.sentenceToShow}</p>
       </div>
-      {paragraph.sentenceToGuess.split(" ").map((word, i) => (
+      {sentence.sentenceToGuess.split(" ").map((word, i) => (
         <Word
           key={i}
           word={word}
