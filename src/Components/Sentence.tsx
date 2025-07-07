@@ -1,19 +1,19 @@
 import * as React from "react";
 import { Language } from "../Utils";
 import Word from "./Word";
-import type { SentenceData } from "./GameView";
+import type { SentenceData } from "./App";
 
-interface ParagraphProps {
+interface SentenceProps {
   paragraph: SentenceData;
   languageToTranslateInto: Language;
   isLastParagraph?: boolean;
 }
 
-const Sentence: React.FunctionComponent<ParagraphProps> = ({
+const Sentence = ({
   languageToTranslateInto,
   paragraph,
   isLastParagraph
-}) => {
+} : SentenceProps) => {
 
   return (
     <div className="space-y-8" data-is-last-paragraph={isLastParagraph}>
