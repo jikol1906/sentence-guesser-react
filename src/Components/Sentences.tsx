@@ -3,8 +3,20 @@ import Sentence from "./Sentence"; // Adjust the import path as needed
 import { Language } from "../Utils";
 import type { SentenceData } from "./App";
 
+export type Word = {
+  letters: string[];
+  shownIndexes: boolean[];
+  showWord: boolean;
+}
+
+export type SentenceGroup = {
+  sentenceToShow: string;
+  sentenceToGuess: string;
+  sentenceToGuessWords: Word[];
+}
+
 interface SentencesProps {
-  sentences: SentenceData[];
+  sentences: SentenceGroup[];
   languageToTranslateInto: Language;
   guessOnlyWordMode?: boolean;
 }
