@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
-import Button from './Button'; // Assuming Button component accepts children and onClick
-import { WordData } from './App';
+import Button from './Button';
+
+type WordData = {
+  word: string;
+  contextSentence: string;
+};
 
 type WordBankManagerProps = {
   words: WordData[];
@@ -10,18 +14,28 @@ type WordBankManagerProps = {
 export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWordsChange }) => {
   const [newWord, setNewWord] = useState('');
   const [newContextSentence, setNewContextSentence] = useState('');
+  const [bulkInput, setBulkInput] = useState('');
 
   const handleAddWord = (event: React.FormEvent) => {
     event.preventDefault();
-    if (newWord.trim()) { // Only check if newWord is provided
-      const updatedWords = [
-        ...words,
-        { word: newWord, contextSentence: newContextSentence.trim() || '' } // Default to an empty string if not provided
-      ];
+    if (newWord.trim()) {
+      const updatedWords = [...words, { word: newWord, contextSentence: newContextSentence.trim() || '' }];
       onWordsChange(updatedWords);
       setNewWord('');
       setNewContextSentence('');
     }
+  };
+
+  const handleBulkInputSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const lines = bulkInput.split('\n');
+    const parsedWords: WordData[] = lines.map((line) => {
+      const [word, contextSentence = ''] = line.split(':').map((part) => part.trim());
+      return { word, contextSentence };
+    });
+    const updatedWords = [...words, ...parsedWords.filter((entry) => entry.word)];
+    onWordsChange(updatedWords);
+    setBulkInput('');
   };
 
   const handleRemoveWord = (indexToRemove: number) => {
@@ -30,7 +44,7 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
   };
 
   const handleClearAll = () => {
-    onWordsChange([]); // Clear the entire word bank
+    onWordsChange([]);
   };
 
   return (
@@ -41,7 +55,7 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
       <form onSubmit={handleAddWord} className="mb-8 p-4 border border-gray-700 rounded-lg">
         <div className="mb-4">
           <label htmlFor="new-word" className="block text-sm font-medium text-gray-300 mb-1">
-            Word or Phrase <span className="text-red-500">*</span>
+            Word or Phrase
           </label>
           <input
             id="new-word"
@@ -50,7 +64,6 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
             onChange={(e) => setNewWord(e.target.value)}
             className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
             placeholder="e.g., nachhaltig"
-            required
           />
         </div>
         <div className="mb-4">
@@ -66,19 +79,38 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
             placeholder="e.g., Nachhaltig leben ist wichtig."
           />
         </div>
-        <Button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
-          Add Word
+        <Button type="submit" >
+          Add
+        </Button>
+      </form>
+
+      {/* Bulk Input Form */}
+      <form onSubmit={handleBulkInputSubmit} className="mb-8 p-4 border border-gray-700 rounded-lg">
+        <div className="mb-4">
+          <label htmlFor="bulk-input" className="block text-sm font-medium text-gray-300 mb-1">
+            Bulk Input (Format: "word : context sentence" for each line)
+          </label>
+          <textarea
+            id="bulk-input"
+            value={bulkInput}
+            onChange={(e) => setBulkInput(e.target.value)}
+            className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            rows={6}
+          />
+        </div>
+        <Button type="submit" >
+          Bulk add
         </Button>
       </form>
 
       {/* Clear All Button */}
       <div className="text-center mb-8">
-        <Button
+        <button
           onClick={handleClearAll}
-          buttonType='danger'
+          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
         >
           Clear All
-        </Button>
+        </button>
       </div>
 
       {/* Word List */}
@@ -90,14 +122,16 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
           >
             <div>
               <p className="font-bold">{wordData.word}</p>
-              <p className="text-sm text-gray-400">{wordData.contextSentence}</p>
+              {wordData.contextSentence && (
+                <p className="text-sm text-gray-400">{wordData.contextSentence}</p>
+              )}
             </div>
-            <Button
+            <button
               onClick={() => handleRemoveWord(index)}
-              buttonType='danger'
+              className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
             >
               Remove
-            </Button>
+            </button>
           </li>
         ))}
       </ul>
