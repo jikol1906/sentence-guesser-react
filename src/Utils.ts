@@ -3,6 +3,14 @@ export function randomIntFromInterval(min:number, max:number) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+export function removeWordTags(sentence:string) {
+  return sentence.replace(/<WORD>(.*?)<\/WORD>/g, '$1');
+}
+
+export function wordIsSurroundedByTags(word:string) {
+  return word.includes("<WORD>") && word.includes("</WORD>");
+}
+
 
 export const languageRegexes : Record<string,RegExp> = {
   german: /[a-zA-ZäöüßÄÖÜẞ]/,

@@ -70,7 +70,7 @@ export const handler = async (event) => {
         parts: [
           {
             text: generateModelMessage(
-              "Der Chef muss den Urlaubsantrag noch absegnen.",
+              "Der Chef muss den Urlaubsantrag noch <WORD>absegnen</WORD>.",
               "The boss still needs to approve the vacation request."
             ),
           },
@@ -97,7 +97,7 @@ export const handler = async (event) => {
         parts: [
           {
             text: generateModelMessage(
-              "Es ist wichtig, sich die Konsequenzen seiner Handlungen zu vergegenwärtigen.",
+              "Es ist wichtig, sich die Konsequenzen seiner Handlungen zu <WORD>vergegenwärtigen</WORD>.",
               "It is important to visualize the consequences of your actions."
             ),
           },
@@ -129,7 +129,7 @@ export const handler = async (event) => {
             `
 You are an expert linguist and AI assistant who creates high-quality sentence pairs for language learning. Your task is to analyze the provided input, which contains a word or phrase and a context sentence as well as a source and target language
 
-Based on the meaning of the word/phrase in that context, create a new, distinct, and natural-sounding example sentence in the target language, that clearly demonstrates its usage. Then, provide the translation of your newly created sentence into the other specified language (the source language).
+Based on the meaning of the word/phrase in that context, create a new, distinct, and natural-sounding example sentence in the target language, that clearly demonstrates its usage, the word should be wrapped in <WORD>...</WORD>. Then, provide the translation of your newly created sentence into the other specified language (the source language).
 
 the sentence you generate in the source language should also be vastly different from the list of words contained in PREVIOUS_SENTENCES (if it is present in the input).
 

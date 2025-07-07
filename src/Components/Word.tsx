@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Language, isCharacter } from "../Utils";
+import { Language, isCharacter, removeWordTags } from "../Utils";
 import LetterInput from "./LetterInput";
 import { useState } from "react";
 
@@ -7,14 +7,14 @@ interface WordProps {
   word: string;
   languageToTranslateInto: Language;
   animationDelay: string;
-  staticWord?: boolean; // Optional prop to indicate if the word is static
+  wordIsShown?: boolean; // Optional prop to indicate if the word is static
 }
 
 const Word = ({
   word,
   languageToTranslateInto,
   animationDelay,
-  staticWord = false, // Default to false if not provided
+  wordIsShown = false, // Default to false if not provided
 } : WordProps) => {
   const [revealedIndexes, setRevealedIndexes] = useState<number[]>([]);
 
@@ -46,14 +46,14 @@ const Word = ({
       className="font-mono inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop"
       style={{ "--animation-delay": animationDelay } as React.CSSProperties}
     >
-      {!staticWord ? (
+      {!wordIsShown ? (
         <>
           <div className={`flex ${textClasses}`}>
-            {word
+            {removeWordTags(word)
               .split("")
               .map((letter, j) =>
                 !isCharacter(letter, languageToTranslateInto) ? (
-                  <p>{letter}</p>
+                  <p key={j}>{letter}</p>
                 ) : (
                   <LetterInput
                     key={j}

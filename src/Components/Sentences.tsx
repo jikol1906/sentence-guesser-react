@@ -1,14 +1,19 @@
 import { useEffect, useRef } from "react";
 import Sentence from "./Sentence"; // Adjust the import path as needed
-import { Language } from "../Utils";
+import { Language, removeWordTags } from "../Utils";
 import type { SentenceData } from "./App";
 
 interface SentencesProps {
   sentences: SentenceData[];
   languageToTranslateInto: Language;
+  guessOnlyWordMode?: boolean;
 }
 
-const Sentences = ({ sentences, languageToTranslateInto } : SentencesProps) => {
+const Sentences = ({ 
+  sentences, 
+  languageToTranslateInto,
+  guessOnlyWordMode = false
+} : SentencesProps) => {
 
     const inputWrapperRef = useRef<HTMLDivElement>(null);
 
@@ -40,6 +45,7 @@ const Sentences = ({ sentences, languageToTranslateInto } : SentencesProps) => {
         <Sentence
           key={index}
           sentence={data}
+          guessOnlyWordMode={guessOnlyWordMode}
           languageToTranslateInto={languageToTranslateInto}
           isLastSentence={index === arr.length - 1}
         />

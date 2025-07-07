@@ -8,6 +8,7 @@ import Sentences from "./Sentences";
 import { WordBankManager } from "./WordBankManager";
 import Button from "./Button";
 import useLocalStorageState from "../hooks/useLocalStorageState";
+import LanguageSelector from "./LanguageSelector";
 
 // The type for our array of words and context sentences
 export type WordData = {
@@ -32,8 +33,6 @@ const initialWordBank: WordData[] = [
 ];
 
 const App: React.FunctionComponent = () => {
-  const [languageToTranslateInto, setLanguageToTranslateInto] =
-    useState<Language>("german");
   const [sentences, setSentences] = useLocalStorageState<SentenceData[]>('sentences',[]);
 
   const [targetLanguage, setTargetLanguage] = useState<Language>('german');
@@ -129,6 +128,7 @@ const App: React.FunctionComponent = () => {
     <div className="relative min-h-screen bg-slate-800  flex py-32 px-5">
       <div className="max-w-5xl m-auto flex-1 text-white space-y-14 grid">
         <SentenceGuesserHeader />
+        <LanguageSelector onLanguageChosen={setTargetLanguage}/>
         <WordBankManager
           words={wordBank}
           onWordsChange={(updatedWords) => setWordBank(updatedWords)}
@@ -142,7 +142,8 @@ const App: React.FunctionComponent = () => {
         </Button>
         <Sentences
           sentences={sentences}
-          languageToTranslateInto={languageToTranslateInto}
+          guessOnlyWordMode={true}
+          languageToTranslateInto={targetLanguage}
         />
         {loading ? (
           <LoadingSpinner />
