@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import Sentence from "./Sentence"; // Adjust the import path as needed
 import { Language } from "../Utils";
-import type { SentenceData } from "./App";
 
 export type Word = {
   letters: string[];
@@ -11,7 +10,6 @@ export type Word = {
 
 export type SentenceGroup = {
   sentenceToShow: string;
-  sentenceToGuess: string;
   sentenceToGuessWords: Word[];
 }
 
@@ -56,7 +54,7 @@ const Sentences = ({
       {sentences.map((data, index, arr) => (
         <Sentence
           key={index}
-          sentence={data}
+          sentenceGroup={data}
           guessOnlyWordMode={guessOnlyWordMode}
           languageToTranslateInto={languageToTranslateInto}
           isLastSentence={index === arr.length - 1}

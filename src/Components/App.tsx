@@ -1,11 +1,11 @@
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
-import { Language  } from "../Utils";
+import {useEffect, useRef, useState} from "react";
+import {isCharacter, Language, shuffleArray} from "../Utils";
 import Footer from "./Footer";
 import LoadingSpinner from "./LoadingSpinner";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
-import Sentences from "./Sentences";
-import { WordBankManager } from "./WordBankManager";
+import Sentences, {SentenceGroup} from "./Sentences";
+import {WordBankManager} from "./WordBankManager";
 import Button from "./Button";
 import useLocalStorageState from "../hooks/useLocalStorageState";
 import LanguageSelector from "./LanguageSelector";
@@ -17,14 +17,6 @@ export type WordData = {
   previousSentencesIncludingWord?: string[]; // Optional property to store previous sentences
 };
 
-export type SentenceData = {
-  sentenceToShow: string;
-  sentenceToGuess: string;
-};
-
-//Function to shuffle array
-const shuffleArray = <T extends any>(array: T[]): T[] => array.sort(() => Math.random() - 0.5);
-
 // Initial list of words. This will be the default state.
 const initialWordBank: WordData[] = [
   { word: 'nachhaltig', contextSentence: 'Wir versuchen, nachhaltiger zu leben.' },
@@ -33,12 +25,16 @@ const initialWordBank: WordData[] = [
 ];
 
 const App: React.FunctionComponent = () => {
-  const [sentences, setSentences] = useLocalStorageState<SentenceData[]>('sentences',[]);
+  const [sentences, setSentences] = useLocalStorageState<SentenceGroup[]>('sentences',[]);
 
   const [targetLanguage, setTargetLanguage] = useState<Language>('german');
   const [loading, setLoading] = useState(false);
   const [wordBankOrder, setWordBankOrder] = useLocalStorageState<number[]>('wordBankOrder',[]);
   const [error, setError] = useState<string | null>(null);
+
+  console.log(sentences);
+  
+  
 
   const previousWordBankLength = useRef<number>(0);
 
@@ -47,7 +43,7 @@ const App: React.FunctionComponent = () => {
   //If wordbankOrder is empty, reset it
   useEffect(() => {
 
-    if (wordBank.length > 0 && previousWordBankLength.current !== wordBank.length || wordBankOrder.length === 0) {
+    if (wordBank.length > 0 && previousWordBankLength.current !== wordBank.length) {
       const newOrder = Array.from({ length: wordBank.length }, (_, i) => i);
       setWordBankOrder(shuffleArray(newOrder));
       previousWordBankLength.current = wordBank.length;
@@ -91,9 +87,17 @@ const App: React.FunctionComponent = () => {
 
       const data = await response.json();
 
-      const sentencePair: SentenceData = {
+      const sentencePair: SentenceGroup = {
         sentenceToShow: data['english'],
-        sentenceToGuess: data[targetLanguage],
+        sentenceToGuessWords: 
+          data[targetLanguage].split(" ").map((word: string) => {
+            const letters = word.split('');
+            return ({
+              letters: letters,
+              shownIndexes: Array(letters.length).fill(false).map((_,i) => !isCharacter(letters[i], targetLanguage)),
+              showWord: false,
+            });
+          }),
       };
 
       // add the sentence to previousSentences of the wordBank

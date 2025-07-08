@@ -2,9 +2,10 @@ import * as React from "react";
 import { Language, isCharacter, removeWordTags } from "../Utils";
 import LetterInput from "./LetterInput";
 import { useState } from "react";
+import { Word as IWord } from "./Sentences";
 
 interface WordProps {
-  word: string;
+  word: IWord;
   languageToTranslateInto: Language;
   animationDelay: string;
   wordIsShown?: boolean; // Optional prop to indicate if the word is static
@@ -20,8 +21,8 @@ const Word = ({
 
   const onRevealRandomLetter = () => {
 
-    const indexes: number[] = Array.from({ length: word.length },(_, index) => index)
-      .filter((index) => isCharacter(word[index], languageToTranslateInto));
+    const indexes: number[] = Array.from({ length: word.letters.length },(_, index) => index)
+      .filter((index) => isCharacter(word.letters[index], languageToTranslateInto));
     const unrevealedIndexes = indexes.filter((index) => !revealedIndexes.includes(index));
 
     if (unrevealedIndexes.length === 0) {
@@ -49,10 +50,9 @@ const Word = ({
       {!wordIsShown ? (
         <>
           <div className={`flex ${textClasses}`}>
-            {word
-              .split("")
+            {word.letters
               .map((letter, j) =>
-                !isCharacter(letter, languageToTranslateInto) ? (
+                word.shownIndexes[j] ? (
                   <p key={j}>{letter}</p>
                 ) : (
                   <LetterInput
@@ -72,7 +72,7 @@ const Word = ({
           </button>
         </>
       ) : (
-        <span className={textClasses}>{word}</span>
+        <span className={textClasses}>{word.letters.join("")}</span>
       )}
     </div>
   );

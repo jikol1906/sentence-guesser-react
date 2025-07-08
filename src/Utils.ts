@@ -24,4 +24,5 @@ export const LANGUAGES: Language[] = Object.keys(languageRegexes) as Language[];
 
 export function isCharacter(character:string,lang:Language) {
   return languageRegexes[lang].test(character)
-}
+} //Function to shuffle array
+export const shuffleArray = <T extends any>(array: T[]): T[] => array.sort(() => Math.random() - 0.5);
