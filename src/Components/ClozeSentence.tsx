@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import Word from "./Word";  
+import Word from "./Word";
 import { WordType } from "../types";
 
 type ClozeSentenceProps = {
@@ -21,19 +21,14 @@ const ClozeSentence = ({ words }: ClozeSentenceProps) => {
       input.setAttribute("data-cloze-wrapper-id", uniqueId.current);
     });
 
-    const lastParagraph = inputWrapperRef.current?.querySelector(
-      '[data-is-last-sentence="true"]'
-    ) as HTMLDivElement;
-
-    const firstInputInLastParagraph = lastParagraph?.querySelector(
-      "input[data-letter-input]"
-    ) as HTMLInputElement;
-
-    firstInputInLastParagraph?.focus();
   }, [words, inputWrapperRef]);
 
   return (
-    <div ref={inputWrapperRef} className="font-mono text-white">
+    <div
+      ref={inputWrapperRef}
+      data-cloze-id={uniqueId.current} // Add this data attribute
+      className="font-mono text-white"
+    >
       {words.map(({ letters, shownIndexes, showWord }, i) => (
         <Word
           key={i}
