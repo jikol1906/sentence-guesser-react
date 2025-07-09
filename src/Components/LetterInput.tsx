@@ -3,6 +3,7 @@ import * as React from "react";
 interface ILetterInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   revealed?: boolean;
+  clozeWrapperId: string;
   onCorrectLetterEntered: () => void;
   correctLetter: string;
 }
@@ -10,6 +11,7 @@ interface ILetterInputProps
 const LetterInput = ({
   correctLetter,
   onCorrectLetterEntered,
+  clozeWrapperId,
   revealed = false,
   ...props
 }: ILetterInputProps) => {
@@ -37,13 +39,17 @@ const LetterInput = ({
     }
   }
 
+const getInput = (clozeWrapperId: string, index: number): HTMLInputElement | null => {
+    return document.querySelector(`input[data-input-index="${index}"][data-cloze-wrapper-id="${clozeWrapperId}"]`) as HTMLInputElement | null;
+}
+
 const focusNextAvailableInput = (e: React.SyntheticEvent<HTMLInputElement>, direction: 'next' | 'previous') => {
     const input = e.target as HTMLInputElement;
     const currentIndex = parseInt(input.getAttribute('data-input-index') || '-1', 10);
     let nextInputIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
     let nextInput: HTMLInputElement | null;
 
-    while ((nextInput = document.querySelector(`input[data-input-index="${nextInputIndex}"]`))) {
+    while ((nextInput = getInput(clozeWrapperId, nextInputIndex)) !== null) {
         if (!nextInput.value) {
             nextInput.focus();
             break;
@@ -76,7 +82,7 @@ const handleArrowKeyNavigation = (e: React.KeyboardEvent<HTMLInputElement>) => {
      let previousInputIndex = parseInt(currentInput.getAttribute("data-input-index") || "-1", 10) - 1;
     let previousInput: HTMLInputElement | null = null;
 
-     while ((previousInput = document.querySelector(`input[data-input-index="${previousInputIndex}"]`) as HTMLInputElement | null)
+     while ((previousInput = getInput(clozeWrapperId, previousInputIndex)) !== null && previousInputIndex >= 0
     ) {
       if (!previousInput.disabled) {
         previousInput.focus();

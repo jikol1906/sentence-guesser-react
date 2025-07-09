@@ -5,24 +5,26 @@ import { useState } from "react";
 import { Word as IWord } from "./Sentences";
 
 interface WordProps {
-  word: IWord;
-  languageToTranslateInto: Language;
+  letters: string[];
+  shownIndexes: number[];
+  clozeWrapperId: string;
   animationDelay: string;
   wordIsShown?: boolean; // Optional prop to indicate if the word is static
 }
 
 const Word = ({
-  word,
-  languageToTranslateInto,
+  letters,
+  shownIndexes,
+  clozeWrapperId,
   animationDelay,
   wordIsShown = false, // Default to false if not provided
 } : WordProps) => {
-  const [revealedIndexes, setRevealedIndexes] = useState<number[]>([]);
+  const [revealedIndexes, setRevealedIndexes] = useState<number[]>(shownIndexes);
 
   const onRevealRandomLetter = () => {
 
-    const indexes: number[] = Array.from({ length: word.letters.length },(_, index) => index)
-      .filter((index) => isCharacter(word.letters[index], languageToTranslateInto));
+    const indexes: number[] = Array.from({ length: letters.length },(_, index) => index)
+
     const unrevealedIndexes = indexes.filter((index) => !revealedIndexes.includes(index));
 
     if (unrevealedIndexes.length === 0) {
@@ -44,19 +46,20 @@ const Word = ({
 
   return (
     <div
-      className="font-mono inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop"
+      className="inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop"
       style={{ "--animation-delay": animationDelay } as React.CSSProperties}
     >
       {!wordIsShown ? (
         <>
           <div className={`flex ${textClasses}`}>
-            {word.letters
+            {letters
               .map((letter, j) =>
-                word.shownIndexes[j] ? (
+                shownIndexes.includes(j) ? (
                   <p key={j}>{letter}</p>
                 ) : (
                   <LetterInput
                     key={j}
+                    clozeWrapperId={clozeWrapperId}
                     onCorrectLetterEntered={() => updateRevealedIndexes(j)}
                     revealed={revealedIndexes.includes(j)}
                     correctLetter={letter}
@@ -72,7 +75,7 @@ const Word = ({
           </button>
         </>
       ) : (
-        <span className={textClasses}>{word.letters.join("")}</span>
+        <span className={textClasses}>{letters.join("")}</span>
       )}
     </div>
   );

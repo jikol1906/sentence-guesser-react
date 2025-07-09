@@ -1,3 +1,5 @@
+import { WordType } from "./types";
+
 export function randomIntFromInterval(min:number, max:number) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -12,7 +14,26 @@ export function wordIsSurroundedByTags(word:string) {
 }
 
 
-export const languageRegexes : Record<string,RegExp> = {
+export const convertClozeApiResponseToWords = (sentence: string[], language: Language = 'german'): WordType[] => {
+  const words = sentence.map((word) => {
+    let letters = word.split('');
+    const isHiddenWord = /_.+_/.test(word);
+
+    //Remove underscores from hidden words
+    letters = letters.filter(letter => letter !== '_');
+    
+    return {
+      letters: letters,
+      shownIndexes: letters.map((_, i) => !isCharacter(letters[i], language) ? i : -1).filter(i => i !== -1),
+      showWord: !isHiddenWord,
+    };
+  });
+
+  return words;
+}
+
+
+export const languageRegexes = {
   german: /[a-zA-ZäöüßÄÖÜẞ]/,
   spanish: /[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ]/,
   french: /[a-zA-ZàâçéèêëîïôûùüÿæœÀÂÇÉÈÊËÎÏÔÛÙÜŸÆŒ]/,

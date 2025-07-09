@@ -183,7 +183,7 @@ export const handler = async (event) => {
     const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     const config = {
-      temperature: 2,
+      temperature: 1,
       responseMimeType: 'application/json',
       systemInstruction: [
         {
