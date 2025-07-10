@@ -42,7 +42,7 @@ const Word = ({
 
   return (
     <div
-      className="inline-grid pb-3 pr-3 md:pb-7 md:pr-10 animate-fadeInTop"
+      className="inline-grid animate-fadeInTop"
       style={{ "--animation-delay": animationDelay } as React.CSSProperties}
     >
       {!wordIsShown ? (

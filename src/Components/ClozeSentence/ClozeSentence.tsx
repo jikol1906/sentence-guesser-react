@@ -9,7 +9,7 @@ type ClozeSentenceProps = {
 const ClozeSentence = ({ words }: ClozeSentenceProps) => {
   return (
     <div
-      className="font-mono text-white"
+      className="font-mono text-white flex flex-wrap gap-5"
     >
       {words.map(({ letters, shownIndexes, showWord }, i) => (
         <Word
