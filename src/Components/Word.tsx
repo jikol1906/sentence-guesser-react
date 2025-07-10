@@ -1,13 +1,10 @@
 import * as React from "react";
-import { Language, isCharacter, removeWordTags } from "../Utils";
 import LetterInput from "./LetterInput";
 import { useState } from "react";
-import { Word as IWord } from "./Sentences";
 
 interface WordProps {
   letters: string[];
   shownIndexes: number[];
-  clozeWrapperId: string;
   animationDelay: string;
   wordIsShown?: boolean; // Optional prop to indicate if the word is static
 }
@@ -15,7 +12,6 @@ interface WordProps {
 const Word = ({
   letters,
   shownIndexes,
-  clozeWrapperId,
   animationDelay,
   wordIsShown = false, // Default to false if not provided
 } : WordProps) => {
@@ -59,7 +55,6 @@ const Word = ({
                 ) : (
                   <LetterInput
                     key={j}
-                    clozeWrapperId={clozeWrapperId}
                     onCorrectLetterEntered={() => updateRevealedIndexes(j)}
                     revealed={revealedIndexes.includes(j)}
                     correctLetter={letter}

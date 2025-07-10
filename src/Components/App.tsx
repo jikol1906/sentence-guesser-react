@@ -16,7 +16,8 @@ import Button from "./Button";
 import useLocalStorageState from "../hooks/useLocalStorageState";
 import LanguageSelector from "./LanguageSelector";
 import { WordType } from "../types";
-import ClozeSentence from "./ClozeSentence";
+import ClozeSentence from "./ClozeSentence/ClozeSentence";
+import ClozeSentenceGroup from "./ClozeSentence/ClozeSentenceGroup";
 
 // The type for our array of words and context sentences
 export type WordData = {
@@ -176,12 +177,11 @@ const App: React.FunctionComponent = () => {
         >
           Clear challenges
         </Button>
-        {clozeSentences.map((sentenceWords, i) => (
-          <ClozeSentence
-            key={i}
-            words={sentenceWords}
-          />
-        ))}
+        <ClozeSentenceGroup>
+          {clozeSentences.map((sentenceWords, i) => (
+            <ClozeSentence key={i} words={sentenceWords} />
+          ))}
+        </ClozeSentenceGroup>
         {loading ? (
           <LoadingSpinner />
         ) : (
