@@ -1,10 +1,17 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, createContext } from "react";
 
 type ClozeSentenceGroupProps = {
+  onLetterEntered: (inputIndex: number, letter: string) => void;
   children: React.ReactNode;
 };
 
-const ClozeSentenceGroup = ({ children }: ClozeSentenceGroupProps) => {
+export type ClozeSentenceContextType = {
+  onLetterEntered: (inputIndex: number, letter: string) => void;
+};
+
+export const ClozeSentenceContext = createContext<ClozeSentenceContextType | null>(null);
+
+const ClozeSentenceGroup = ({ children, onLetterEntered }: ClozeSentenceGroupProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -35,7 +42,16 @@ const ClozeSentenceGroup = ({ children }: ClozeSentenceGroupProps) => {
     return () => observer.disconnect();
   }, []);
 
-  return <div ref={containerRef}>{children}</div>;
+  return ( 
+    <ClozeSentenceContext.Provider value={{ onLetterEntered }}>
+      <div
+        ref={containerRef}
+        className="font-mono text-white flex flex-wrap gap-5"
+      >
+        {children}
+      </div>
+    </ClozeSentenceContext.Provider>
+  );
 };
 
 export default ClozeSentenceGroup;

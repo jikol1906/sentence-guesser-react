@@ -1,4 +1,5 @@
 import * as React from "react";
+import { ClozeSentenceContext, ClozeSentenceContextType } from "./ClozeSentence/ClozeSentenceGroup";
 
 interface ILetterInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -15,6 +16,8 @@ const LetterInput = ({
 }: ILetterInputProps) => {
   const value = revealed ? { value: correctLetter } : {};
 
+  const { onLetterEntered } = React.useContext(ClozeSentenceContext) as ClozeSentenceContextType
+
   const handleLetterEntered = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
 
@@ -26,6 +29,8 @@ const LetterInput = ({
     if (input.value.length !== 1 || (e.nativeEvent as InputEvent).isComposing) {
       return;
     }
+
+    onLetterEntered(parseInt(input.getAttribute('data-input-index') || '-1', 10), input.value);
 
     focusNextAvailableInput(e, 'next');
   };
