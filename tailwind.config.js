@@ -6,6 +6,12 @@ module.exports = {
       fontFamily: {
         mono: ['"Roboto Mono"', "monospace"],
       },
+      colors: {
+       primary : '#1E293B',
+       secondary: "#475569", 
+       wrongLetter: '#F8654B',
+       correctLetter: '#54D43B',
+      },
       animation: {
         typewriterReveal: "typewriterReveal 0.6s step-end 15 forwards, reveal 5s forwards",
         fadeInTop: "fadeInTop 0.6s var(--animation-delay,0s) ease-in-out both"
