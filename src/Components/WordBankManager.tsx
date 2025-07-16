@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import Button from './Button';
+import ExpandableWrapper from './ExpandableWrapper';
 
 type WordData = {
   word: string;
   contextSentence: string;
 };
+
+type SetStateAction<S> = S | ((prevState: S) => S);
 
 type WordBankManagerProps = {
   words: WordData[];
@@ -48,7 +51,7 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
   };
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-5xl mx-auto text-white">
+    <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-white">
       <h2 className="text-2xl font-bold mb-4 text-center">Manage Word Bank</h2>
 
       {/* Form for adding new words */}
@@ -115,25 +118,25 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
 
       {/* Word List */}
       <ul className="space-y-4">
-        {words.map((wordData, index) => (
-          <li
-            key={index}
-            className="flex justify-between items-center bg-gray-700 p-4 rounded-lg shadow"
-          >
-            <div>
-              <p className="font-bold">{wordData.word}</p>
-              {wordData.contextSentence && (
-                <p className="text-sm text-gray-400">{wordData.contextSentence}</p>
-              )}
-            </div>
-            <button
-              onClick={() => handleRemoveWord(index)}
-              className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
+          {words.map((wordData, index) => (
+            <li
+              key={index}
+              className="flex justify-between items-center bg-gray-700 p-4 rounded-lg shadow"
             >
-              Remove
-            </button>
-          </li>
-        ))}
+              <div>
+                <p className="font-bold">{wordData.word}</p>
+                {wordData.contextSentence && (
+                  <p className="text-sm text-gray-400">{wordData.contextSentence}</p>
+                )}
+              </div>
+              <button
+                onClick={() => handleRemoveWord(index)}
+                className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
+              >
+                Remove
+              </button>
+            </li>
+          ))}
       </ul>
     </div>
   );

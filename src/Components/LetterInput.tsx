@@ -111,7 +111,6 @@ const LetterInput = ({
         handleArrowKeyNavigation(e);
       }}
       onCompositionEnd={handleCompositionEnd}
-      data-correct-letter={correctLetter}
       data-letter-input
       required
       disabled={revealed}

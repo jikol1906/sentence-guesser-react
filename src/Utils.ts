@@ -22,11 +22,12 @@ export const convertClozeApiResponseToWords = (sentence: string[], language: Lan
     //Remove underscores from hidden words
     letters = letters.filter(letter => letter !== '_');
     
-    return {
+    const convertedToWordType : WordType = {
       letters: letters,
       shownIndexes: letters.map((_, i) => !isCharacter(letters[i], language) ? i : -1).filter(i => i !== -1),
-      showWord: !isHiddenWord,
     };
+
+    return isHiddenWord ? convertedToWordType : word; 
   });
 
   return words;

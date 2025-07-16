@@ -18,6 +18,8 @@ import LanguageSelector from "./LanguageSelector";
 import { WordType } from "../types";
 import ClozeSentence from "./ClozeSentence/ClozeSentence";
 import ClozeSentenceGroup from "./ClozeSentence/ClozeSentenceGroup";
+import ExpandableWrapper from "./ExpandableWrapper";
+import { Drawer } from "./Drawer";
 
 // The type for our array of words and context sentences
 export type WordData = {
@@ -48,14 +50,23 @@ const initialWordBank: WordData[] = [
   },
 ];
 
+const testData: WordType[][] = [
+  [
+    ...[
+      ...'This is some text with some'.split(" "),
+      { letters: 'words'.split(""), shownIndexes: [] },
+      ...'that serves as an'.split(" "),
+      { letters: 'example'.split(""), shownIndexes: [] },
+    ]
+  ],
+  ['this','is',{ letters : 'another'.split(""), shownIndexes: [] },'test','sentence','with','some','words','to','fill','the','gap'],
+];
+
 const App: React.FunctionComponent = () => {
   const [clozeSentences, setClozeSentences] = useLocalStorageState<
     WordType[][]
   >("clozeSentences", []);
-  const [mode] = useLocalStorageState<ChallengeMode>(
-    "challengeMode",
-    "cloze"
-  );
+  const [mode] = useLocalStorageState<ChallengeMode>("challengeMode", "cloze");
   const [targetLanguage, setTargetLanguage] = useState<Language>("german");
   const [loading, setLoading] = useState(false);
   const [wordBankOrder, setWordBankOrder] = useLocalStorageState<number[]>(
@@ -64,8 +75,6 @@ const App: React.FunctionComponent = () => {
   );
   const [error, setError] = useState<string | null>(null);
 
-  const previousWordBankLength = useRef<number>(0);
-
   const [wordBank, setWordBank] = useLocalStorageState<WordData[]>(
     "wordBank",
     []
@@ -73,13 +82,9 @@ const App: React.FunctionComponent = () => {
 
   //If wordbankOrder is empty, reset it
   useEffect(() => {
-    if (
-      wordBank.length > 0 &&
-      previousWordBankLength.current !== wordBank.length
-    ) {
+    if (wordBank.length > 0 && wordBankOrder.length === 0) {
       const newOrder = Array.from({ length: wordBank.length }, (_, i) => i);
       setWordBankOrder(shuffleArray(newOrder));
-      previousWordBankLength.current = wordBank.length;
     }
   }, [wordBankOrder, wordBank.length]);
 
@@ -123,7 +128,7 @@ const App: React.FunctionComponent = () => {
         );
       }
 
-      const data = await response.json() as ClozeApiResponse;
+      const data = (await response.json()) as ClozeApiResponse;
 
       const sentence = data.words as string[];
 
@@ -162,48 +167,54 @@ const App: React.FunctionComponent = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-800  flex py-32 px-5">
-      <div className="max-w-5xl m-auto flex-1 text-white space-y-14 grid">
+    <div className="relative min-h-screen bg-slate-800 text-white py-32">
+      <div className="max-w-5xl m-auto flex flex-col gap-6">
         <SentenceGuesserHeader />
-        <LanguageSelector onLanguageChosen={setTargetLanguage} />
-        <WordBankManager
-          words={wordBank}
-          onWordsChange={(updatedWords) => setWordBank(updatedWords)}
-        />
+        <Drawer title="Manage word bank">
+          {/* <LanguageSelector onLanguageChosen={setTargetLanguage} /> */}
+          <WordBankManager
+            words={wordBank}
+            onWordsChange={(updatedWords) => setWordBank(updatedWords)}
+          />
+        </Drawer>
         <Button
           onClick={clearSentenceData}
           buttonType="danger"
-          className="justify-self-center"
+          className="self-center"
         >
           Clear challenges
         </Button>
-        <ClozeSentenceGroup>
-          {clozeSentences.map((sentenceWords, i) => (
-            <ClozeSentence key={i} words={sentenceWords} />
-          ))}
-        </ClozeSentenceGroup>
-        {loading ? (
-          <LoadingSpinner />
-        ) : (
-          <Button
-            className="bg-slate-500 p-4 m-auto flex items-center justify-center gap-2"
-            onClick={fetchNewClozeSentence}
-          >
-            New challenge
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="currentColor"
-                d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
-              />
-            </svg>
-          </Button>
-        )}
       </div>
+      <ClozeSentenceGroup onLetterEntered={(i, l) => console.log(i, l)}>
+        {clozeSentences.map((sentenceWords, i) => (
+          <div className="py-[125px] px-2 border-b-[1px] border-secondary">
+            <ClozeSentence key={i} words={sentenceWords} />
+          </div>
+        ))}
+      </ClozeSentenceGroup>
+
+      {loading ? (
+        <LoadingSpinner />
+      ) : (
+        <Button
+          className="bg-slate-500 p-4 m-auto flex items-center justify-center gap-2 mt-10"
+          onClick={fetchNewClozeSentence}
+        >
+          New challenge
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
+            />
+          </svg>
+        </Button>
+      )}
+
       <Footer />
     </div>
   );

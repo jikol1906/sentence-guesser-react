@@ -46,7 +46,6 @@ const ClozeSentenceGroup = ({ children, onLetterEntered }: ClozeSentenceGroupPro
     <ClozeSentenceContext.Provider value={{ onLetterEntered }}>
       <div
         ref={containerRef}
-        className="font-mono text-white flex flex-wrap gap-5"
       >
         {children}
       </div>
