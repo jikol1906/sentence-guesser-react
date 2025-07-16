@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import Word from "../Word";
 import { WordType } from "../../types";
 
@@ -9,17 +8,16 @@ type ClozeSentenceProps = {
 const ClozeSentence = ({ words }: ClozeSentenceProps) => {
   return (
     <div
-      className="font-mono text-white flex flex-wrap gap-5"
+      className="font-mono font-thin flex flex-wrap gap-5 max-w-5xl m-auto text-base sm:text-2xl md:text-3xl"
     >
-      {words.map(({ letters, shownIndexes, showWord }, i) => (
+      {words.map((word, i) => typeof word === 'object' ? (
         <Word
           key={i}
-          letters={letters}
-          shownIndexes={shownIndexes}
+          letters={word.letters}
+          shownIndexes={word.shownIndexes}
           animationDelay={`${i * 0.02}s`}
-          wordIsShown={showWord}
         />
-      ))}
+      ) : <span>{word}</span>)}
     </div>
   );
 };
