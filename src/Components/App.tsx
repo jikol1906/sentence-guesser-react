@@ -50,18 +50,6 @@ const initialWordBank: WordData[] = [
   },
 ];
 
-const testData: WordType[][] = [
-  [
-    ...[
-      ...'This is some text with some'.split(" "),
-      { letters: 'words'.split(""), shownIndexes: [] },
-      ...'that serves as an'.split(" "),
-      { letters: 'example'.split(""), shownIndexes: [] },
-    ]
-  ],
-  ['this','is',{ letters : 'another'.split(""), shownIndexes: [] },'test','sentence','with','some','words','to','fill','the','gap'],
-];
-
 const App: React.FunctionComponent = () => {
   const [clozeSentences, setClozeSentences] = useLocalStorageState<
     WordType[][]
@@ -175,17 +163,11 @@ const App: React.FunctionComponent = () => {
           {/* <LanguageSelector onLanguageChosen={setTargetLanguage} /> */}
           <WordBankManager
             words={wordBank}
+            onClearAllChallengesClicked={clearSentenceData}
             onWordsChange={(updatedWords) => setWordBank(updatedWords)}
             onClearAll={() => setWordBankOrder([])}
           />
         </Drawer>
-        <Button
-          onClick={clearSentenceData}
-          buttonType="danger"
-          className="self-center"
-        >
-          Clear challenges
-        </Button>
       </div>
       <ClozeSentenceGroup onLetterEntered={(i, l) => console.log(i, l)}>
         {clozeSentences.map((sentenceWords, i) => (

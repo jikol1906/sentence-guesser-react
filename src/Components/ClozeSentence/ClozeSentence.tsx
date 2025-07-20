@@ -7,7 +7,7 @@ type ClozeSentenceProps = {
 
 const ClozeSentence = ({ words }: ClozeSentenceProps) => {
   return (
-    <div className="font-mono font-thin flex flex-wrap gap-2 md:gap-5 max-w-5xl m-auto text-base sm:text-2xl md:text-3xl">
+    <div className="max-w-[60ch] font-mono font-thin text-base sm:text-2xl md:text-3xl flex flex-wrap gap-2 md:gap-5">
       {words.map((word, i) =>
         typeof word === "object" ? (
           <Word

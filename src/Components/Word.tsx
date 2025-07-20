@@ -57,7 +57,7 @@ const Word = ({ letters, shownIndexes, animationDelay }: WordProps) => {
       </div>
       <button
         onClick={onRevealRandomLetter}
-        className="mt-4 px-4 font-normal py-1 bg-secondary text-xs md:text-sm rounded-full"
+        className="mt-4 px-[1em] font-normal py-[0.15em] bg-secondary text-[.4rem] md:text-sm rounded-full"
       >
         Show one
       </button>

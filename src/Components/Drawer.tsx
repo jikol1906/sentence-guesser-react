@@ -9,10 +9,14 @@ interface DrawerProps {
 export const Drawer: React.FC<DrawerProps> = ({ children, title = "Menu" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
 
-  // --- Handlers ---
-  const openDrawer = () => setIsOpen(true);
-  const closeDrawer = () => setIsOpen(false);
+  const closeDrawer = () => {
+      return setIsOpen(false);
+  };
+  const toggleDrawer = () => {
+      return setIsOpen(prev => !prev);
+  };
 
   // --- Effects ---
   // Close drawer on "Escape" key press
@@ -32,7 +36,7 @@ export const Drawer: React.FC<DrawerProps> = ({ children, title = "Menu" }) => {
   // Close drawer when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
+      if (drawerRef.current && !drawerRef.current.contains(event.target as Node) && !hamburgerRef.current?.contains(event.target as Node)) {
         closeDrawer();
       }
     };
@@ -53,12 +57,13 @@ export const Drawer: React.FC<DrawerProps> = ({ children, title = "Menu" }) => {
     <>
       {/* --- Hamburger Trigger Button --- */}
       <button
-        onClick={openDrawer}
+        onClick={toggleDrawer}
+        ref={hamburgerRef}
         className="fixed top-4 right-4 z-50 p-2 rounded-md bg-gray-800 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
         aria-label="Open menu"
       >
         <svg
-          className="h-6 w-6"
+          className="h-8 w-8"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -80,12 +85,13 @@ export const Drawer: React.FC<DrawerProps> = ({ children, title = "Menu" }) => {
       {/* --- Drawer Panel --- */}
       <div
         ref={drawerRef}
-        className={`fixed top-0 right-0 h-full w-full bg-slate-700 text-white shadow-xl z-40
+        className={`fixed top-0 right-0 h-full w-full md:w-1/2 bg-slate-700 text-white shadow-xl z-40
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="drawer-title"
+        aria-hidden={!isOpen}
       >
         <div className="flex flex-col h-full">
           {/* --- Drawer Content --- */}

@@ -12,9 +12,10 @@ type WordBankManagerProps = {
   words: WordData[];
   onWordsChange: (updatedWords: WordData[]) => void;
   onClearAll: () => void;
+  onClearAllChallengesClicked: () => void;
 };
 
-export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWordsChange, onClearAll }) => {
+export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWordsChange, onClearAll, onClearAllChallengesClicked }) => {
   const [newWord, setNewWord] = useState('');
   const [newContextSentence, setNewContextSentence] = useState('');
   const [bulkInput, setBulkInput] = useState('');
@@ -108,13 +109,20 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
       </form>
 
       {/* Clear All Button */}
-      <div className="text-center mb-8">
+      <div className="flex justify-between mb-8">
         <button
           onClick={handleClearAll}
           className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
         >
-          Clear All
+          Clear All Words
         </button>
+        <Button
+          onClick={onClearAllChallengesClicked}
+          buttonType="danger"
+          className="self-center"
+        >
+          Clear challenges
+        </Button>
       </div>
 
       {/* Word List */}
