@@ -163,7 +163,8 @@ const App: React.FunctionComponent = () => {
   };
 
   const clearSentenceData = () => {
-    setClozeSentences([]); // Clear the sentence data state
+    setClozeSentences([]);
+    setWordBankOrder([]);
   };
 
   return (
@@ -175,6 +176,7 @@ const App: React.FunctionComponent = () => {
           <WordBankManager
             words={wordBank}
             onWordsChange={(updatedWords) => setWordBank(updatedWords)}
+            onClearAll={() => setWordBankOrder([])}
           />
         </Drawer>
         <Button

@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import Button from './Button';
 import ExpandableWrapper from './ExpandableWrapper';
+import { on } from 'events';
 
 type WordData = {
   word: string;
   contextSentence: string;
 };
 
-type SetStateAction<S> = S | ((prevState: S) => S);
-
 type WordBankManagerProps = {
   words: WordData[];
   onWordsChange: (updatedWords: WordData[]) => void;
+  onClearAll: () => void;
 };
 
-export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWordsChange }) => {
+export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWordsChange, onClearAll }) => {
   const [newWord, setNewWord] = useState('');
   const [newContextSentence, setNewContextSentence] = useState('');
   const [bulkInput, setBulkInput] = useState('');
@@ -48,6 +48,7 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
 
   const handleClearAll = () => {
     onWordsChange([]);
+    onClearAll();
   };
 
   return (
