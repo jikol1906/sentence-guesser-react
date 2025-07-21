@@ -89,39 +89,52 @@ const LetterInput = ({
     outline-none
     transition-all
     duration-100
-    pb-1
     bg-transparent
     rounded-none
     disabled:opacity-100
     placeholder:opacity-[.08]
-    border-b-2 
     border-solid
     border-white
     [&:not(:placeholder-shown)]:border-green-500
     [&:not(:placeholder-shown)]:invalid:border-red-500
   `;
 
+  const spanClasses = `
+    relative 
+    after:absolute 
+    after:bg-slate-100 
+    after:h-[1px] 
+    after:w-full 
+    after:-bottom-2 
+    after:left-0
+    has-[:not(:placeholder-shown)]:after:bg-green-500
+    has-[:not(:placeholder-shown):invalid]:after:bg-red-500
+  `
+
+
   return (
-    <input
-      maxLength={1}
-      pattern={`[${correctLetter.toLowerCase()}${correctLetter.toUpperCase()}]`}
-      onInput={handleLetterEntered}
-      onKeyDown={(e) => {
-        handleBackspaceInput(e)
-        handleArrowKeyNavigation(e);
-      }}
-      onCompositionEnd={handleCompositionEnd}
-      data-letter-input
-      required
-      disabled={revealed}
-      className={classes}
-      placeholder=" "
-      autoCapitalize="off" // Prevent auto capitalize on mobile devices
-      type="text"
-      autoCorrect="off"
-      {...value}
-      {...props}
-    />
+    <span className={spanClasses}>
+      <input
+        maxLength={1}
+        pattern={`[${correctLetter.toLowerCase()}${correctLetter.toUpperCase()}]`}
+        onInput={handleLetterEntered}
+        onKeyDown={(e) => {
+          handleBackspaceInput(e)
+          handleArrowKeyNavigation(e);
+        }}
+        onCompositionEnd={handleCompositionEnd}
+        data-letter-input
+        required
+        disabled={revealed}
+        className={classes}
+        placeholder=" "
+        autoCapitalize="off" // Prevent auto capitalize on mobile devices
+        type="text"
+        autoCorrect="off"
+        {...value}
+        {...props}
+      />
+    </span>
   );
 };
 
