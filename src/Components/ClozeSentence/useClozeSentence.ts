@@ -1,12 +1,20 @@
+import { useEffect } from "react";
 import { WordType } from "../../types";
 import { useImmer } from "use-immer";
 
-const useClozeSentence = (sentences: WordType[][]) => {
+const useClozeSentence = (initialSentences: WordType[][], onSentencesChange?: (sentences: WordType[][]) => void) => {
 
-    const [words, setWords] = useImmer<WordType[][]>(sentences);
+    const [sentences, setSentences] = useImmer<WordType[][]>(initialSentences);
+
+    // If a callback is provided, call it whenever sentences change
+    useEffect(() => {
+        if (onSentencesChange) {
+            onSentencesChange(sentences);
+        }
+    }, [sentences, onSentencesChange]);
 
     const revealLetter = (sentenceIndex: number, wordIndex: number) => {
-        setWords((draft) => {
+        setSentences((draft) => {
             const word = draft[sentenceIndex].filter(sentence => typeof sentence === "object")[wordIndex];
             const unrevealedIndexes = word.letters
             .map((_, index) => index)
@@ -20,11 +28,12 @@ const useClozeSentence = (sentences: WordType[][]) => {
     }
 
     const reset = () => {
-        setWords(sentences);
+        setSentences(initialSentences);
     };
 
     return {
-        words,
+        sentences,
+        setSentences,
         revealLetter,
         reset,
     };
