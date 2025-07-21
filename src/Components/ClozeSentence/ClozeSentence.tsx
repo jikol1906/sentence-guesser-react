@@ -36,9 +36,9 @@ const ClozeSentence = ({ words, onRevealLetter }: ClozeSentenceProps) => {
       <div className="text-lg flex-row flex gap-4">
         {words
           .filter((word) => typeof word === "object")
-          .map((_, i) => (
+          .map((_, i, arr) => (
             <Button onClick={() => onRevealLetter(i)}>
-              Reveal letter in word {i+1}
+              Reveal letter {arr.length > 1 ? `in word ${i+1}` : ''}
             </Button>
           ))}
       </div>
