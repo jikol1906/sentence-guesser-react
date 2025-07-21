@@ -36,15 +36,22 @@ const Word = ({ letters, shownIndexes, animationDelay }: WordProps) => {
     setRevealedIndexes([...revealedIndexes, inputIndex]);
   };
 
+  const classes = `
+   grid
+   animate-fadeInTop 
+   justify-items-center 
+   relative 
+  `
+
   return (
     <div
-      className="inline-grid animate-fadeInTop justify-items-center"
+      className={classes}
       style={{ "--animation-delay": animationDelay } as React.CSSProperties}
     >
       <div className="flex gap-1">
         {letters.map((letter, j) =>
           shownIndexes.includes(j) ? (
-            <p key={j}>{letter}</p>
+            <span className="border-b-2" key={j}>{letter}</span>
           ) : (
             <LetterInput
               key={j}
@@ -55,12 +62,6 @@ const Word = ({ letters, shownIndexes, animationDelay }: WordProps) => {
           )
         )}
       </div>
-      <button
-        onClick={onRevealRandomLetter}
-        className="mt-4 px-[1em] font-normal py-[0.15em] bg-secondary text-[.4rem] md:text-sm rounded-full"
-      >
-        Show one
-      </button>
     </div>
   );
 };

@@ -6,12 +6,12 @@ interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const ButtonTypeClasses: Record<NonNullable<IButtonProps['buttonType']>, string> = {
-    primary: 'bg-blue-600 hover:bg-blue-500 text-white',
+    primary: 'bg-slate-600 hover:bg-slate-500 text-white',
     danger: 'bg-red-500 hover:bg-red-600 text-white',
 };
 
 const ButtonTypeActiveClasses: Record<NonNullable<IButtonProps['buttonType']>, string> = {
-    primary: 'bg-blue-500',
+    primary: 'bg-slate-500',
     danger: 'bg-red-600',
 };
 
@@ -20,7 +20,7 @@ const Button: React.FunctionComponent<IButtonProps> = (props) => {
 
     return (
         <button
-            className={`px-4 py-2 rounded-lg ${className} ${
+            className={`px-4 py-2 rounded-sm ${className} ${
                 active ? ButtonTypeActiveClasses[buttonType] : ButtonTypeClasses[buttonType]
             }`}
             {...rest}

@@ -105,11 +105,11 @@ const LetterInput = ({
     after:bg-slate-100 
     after:h-[1px] 
     after:w-full 
-    after:-bottom-2 
+    after:-bottom-1 md:after:-bottom-2 
     after:left-0
     has-[:not(:placeholder-shown)]:after:bg-green-500
     has-[:not(:placeholder-shown):invalid]:after:bg-red-500
-  `
+  `.replace(/\s+/g," ")
 
 
   return (
