@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   convertClozeApiResponseToWords,
   isCharacter,
@@ -10,16 +10,14 @@ import {
 import Footer from "./Footer";
 import LoadingSpinner from "./LoadingSpinner";
 import SentenceGuesserHeader from "./SentenceGuesserHeader";
-import Sentences, { SentenceGroup } from "./Sentences";
 import { WordBankManager } from "./WordBankManager";
 import Button from "./Button";
 import useLocalStorageState from "../hooks/useLocalStorageState";
-import LanguageSelector from "./LanguageSelector";
-import { WordType } from "../types";
 import ClozeSentence from "./ClozeSentence/ClozeSentence";
 import ClozeSentenceGroup from "./ClozeSentence/ClozeSentenceGroup";
-import ExpandableWrapper from "./ExpandableWrapper";
 import { Drawer } from "./Drawer";
+import useClozeSentence from "./ClozeSentence/useClozeSentence";
+import ClozeSentenceRevealButtons from "./ClozeSentence/ClozeSentenceRevealButtons";
 
 // The type for our array of words and context sentences
 export type WordData = {
@@ -51,9 +49,11 @@ const initialWordBank: WordData[] = [
 ];
 
 const App: React.FunctionComponent = () => {
-  const [clozeSentences, setClozeSentences] = useLocalStorageState<
-    WordType[][]
-  >("clozeSentences", []);
+  
+  const { setSentences, sentences, revealLetter } = useClozeSentence(
+    localStorage.getItem("clozeSentences") ? JSON.parse(localStorage.getItem("clozeSentences") || "[]") : [],
+    (sentences) => localStorage.setItem("clozeSentences", JSON.stringify(sentences))
+  );
   const [mode] = useLocalStorageState<ChallengeMode>("challengeMode", "cloze");
   const [targetLanguage, setTargetLanguage] = useState<Language>("german");
   const [loading, setLoading] = useState(false);
@@ -139,7 +139,7 @@ const App: React.FunctionComponent = () => {
         return updatedWordBank;
       });
 
-      setClozeSentences((prevSentences) => [
+      setSentences((prevSentences) => [
         ...prevSentences,
         convertedToWords,
       ]);
@@ -151,7 +151,7 @@ const App: React.FunctionComponent = () => {
   };
 
   const clearSentenceData = () => {
-    setClozeSentences([]);
+    setSentences([]);
     setWordBankOrder([]);
   };
 
@@ -170,9 +170,15 @@ const App: React.FunctionComponent = () => {
         </Drawer>
       </div>
       <ClozeSentenceGroup onLetterEntered={(i, l) => console.log(i, l)}>
-        {clozeSentences.map((sentenceWords, i) => (
-          <div className="py-[125px] px-2 border-b-[1px] border-secondary">
-            <ClozeSentence key={i} words={sentenceWords} />
+        {sentences.map((sentenceWords, sentenceIdx) => (
+          <div key={sentenceIdx} className="py-[125px] px-2 border-b-[1px] border-secondary flex justify-center">
+            <div className="space-y-10">
+              <ClozeSentence words={sentenceWords} />
+              <ClozeSentenceRevealButtons
+                words={sentenceWords}
+                onRevealLetter={(wordIndex) => revealLetter(sentenceIdx, wordIndex)}
+              />
+            </div>
           </div>
         ))}
       </ClozeSentenceGroup>

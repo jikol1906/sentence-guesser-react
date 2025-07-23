@@ -15,15 +15,13 @@ const useClozeSentence = (initialSentences: WordType[][], onSentencesChange?: (s
 
     const revealLetter = (sentenceIndex: number, wordIndex: number) => {
         setSentences((draft) => {
-            const word = draft[sentenceIndex].filter(sentence => typeof sentence === "object")[wordIndex];
-            const unrevealedIndexes = word.letters
-            .map((_, index) => index)
-            .filter(index => !word.shownIndexes.includes(index));
-        
-        if (unrevealedIndexes.length > 0) {
-            const randomIndex = Math.floor(Math.random() * unrevealedIndexes.length);
-            word.shownIndexes.push(unrevealedIndexes[randomIndex]);
-        }
+            const word = draft[sentenceIndex][wordIndex];
+            
+            if(typeof word === 'object') {
+                const shownIndexes = word.shownIndexes;
+                shownIndexes.push(Math.min(...shownIndexes) + 1);
+            }
+            
         });
     }
 

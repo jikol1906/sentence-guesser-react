@@ -5,10 +5,9 @@ import { useState } from "react";
 
 type ClozeSentenceProps = {
   words: WordType[];
-  onRevealLetter: (wordIndex: number) => void;
 };
 
-const ClozeSentence = ({ words, onRevealLetter }: ClozeSentenceProps) => {
+const ClozeSentence = ({ words }: ClozeSentenceProps) => {
   return (
     <div className="max-w-[60ch] text-base sm:text-2xl md:text-3xl grid gap-11">
       <div className="font-mono font-thin flex flex-wrap gap-x-2 gap-y-2 sm:gap-x-4 sm:gap-y-4">
@@ -32,15 +31,6 @@ const ClozeSentence = ({ words, onRevealLetter }: ClozeSentenceProps) => {
             </span>
           )
         )}
-      </div>
-      <div className="text-lg flex-row flex gap-4">
-        {words
-          .filter((word) => typeof word === "object")
-          .map((_, i, arr) => (
-            <Button onClick={() => onRevealLetter(i)}>
-              Reveal letter {arr.length > 1 ? `in word ${i+1}` : ''}
-            </Button>
-          ))}
       </div>
     </div>
   );
