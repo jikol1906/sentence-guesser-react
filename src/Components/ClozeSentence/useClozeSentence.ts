@@ -15,12 +15,34 @@ const useClozeSentence = (initialSentences: WordType[][], onSentencesChange?: (s
 
     const revealLetter = (sentenceIndex: number, wordIndex: number) => {
         setSentences((draft) => {
-            const word = draft[sentenceIndex].filter((w) => typeof w === 'object')[wordIndex] as WordType;
-            
+            const word = draft[sentenceIndex].filter((w) => typeof w === 'object')[wordIndex];
+
             if(typeof word === 'object') {
-                word.shownIndexes.push(word.shownIndexes.length);
+
+                if( word.shownIndexes.length === word.letters.length) {
+                    return;
+                }
+
+                let currIndex = 0;
+                while(word.shownIndexes.includes(currIndex)) {
+                    currIndex++;
+                }
+                word.shownIndexes.push(currIndex);
             }
+
             
+        });
+    }
+
+    const updateRevealedLetters = (sentenceIndex: number, wordIndex: number, letterIndex: number) => {
+        setSentences((draft) => {
+            const word = draft[sentenceIndex].filter((w) => typeof w === 'object')[wordIndex];
+
+            if(typeof word === 'object') {
+                if(!word.shownIndexes.includes(letterIndex)) {
+                    word.shownIndexes.push(letterIndex);
+                }
+            }
         });
     }
 
