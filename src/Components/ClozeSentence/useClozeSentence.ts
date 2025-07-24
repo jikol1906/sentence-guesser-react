@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { WordType } from "../../types";
+import { ClozeWord, WordType } from "../../types";
 import { useImmer } from "use-immer";
 
 const useClozeSentence = (initialSentences: WordType[][], onSentencesChange?: (sentences: WordType[][]) => void) => {
@@ -15,20 +15,17 @@ const useClozeSentence = (initialSentences: WordType[][], onSentencesChange?: (s
 
     const revealLetter = (sentenceIndex: number, wordIndex: number) => {
         setSentences((draft) => {
-            const word = draft[sentenceIndex].filter((w) => typeof w === 'object')[wordIndex];
+            const word = draft[sentenceIndex].filter((w) => typeof w === 'object')[wordIndex] as ClozeWord;
 
-            if(typeof word === 'object') {
-
-                if( word.shownIndexes.length === word.letters.length) {
-                    return;
-                }
-
-                let currIndex = 0;
-                while(word.shownIndexes.includes(currIndex)) {
-                    currIndex++;
-                }
-                word.shownIndexes.push(currIndex);
+            if( word.shownIndexes.length === word.letters.length) {
+                return;
             }
+
+            let currIndex = 0;
+            while(word.shownIndexes.includes(currIndex)) {
+                currIndex++;
+            }
+            word.shownIndexes.push(currIndex);
 
             
         });
@@ -36,12 +33,10 @@ const useClozeSentence = (initialSentences: WordType[][], onSentencesChange?: (s
 
     const updateRevealedLetters = (sentenceIndex: number, wordIndex: number, letterIndex: number) => {
         setSentences((draft) => {
-            const word = draft[sentenceIndex].filter((w) => typeof w === 'object')[wordIndex];
+            const word = draft[sentenceIndex].filter((w) => typeof w === 'object')[wordIndex] as ClozeWord;
 
-            if(typeof word === 'object') {
-                if(!word.shownIndexes.includes(letterIndex)) {
-                    word.shownIndexes.push(letterIndex);
-                }
+            if(!word.shownIndexes.includes(letterIndex)) {
+                word.shownIndexes.push(letterIndex);
             }
         });
     }

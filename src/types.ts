@@ -1,4 +1,6 @@
-export type WordType = {
+export type ClozeWord = {
     letters: string[];
     shownIndexes: number[];
-} | string;
+}
+
+export type WordType = ClozeWord | string;
