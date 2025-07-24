@@ -18,6 +18,7 @@ import ClozeSentenceGroup from "./ClozeSentence/ClozeSentenceGroup";
 import { Drawer } from "./Drawer";
 import useClozeSentence from "./ClozeSentence/useClozeSentence";
 import ClozeSentenceRevealButtons from "./ClozeSentence/ClozeSentenceRevealButtons";
+import { WordType } from "../types";
 
 // The type for our array of words and context sentences
 export type WordData = {
@@ -155,6 +156,17 @@ const App: React.FunctionComponent = () => {
     setWordBankOrder([]);
   };
 
+  function renderClozeSentence(sentenceIdx: number, sentenceWords: WordType[]) {
+    return <div key={sentenceIdx} className="py-[125px] px-2 border-b-[1px] border-secondary flex justify-center">
+      <div className="space-y-10">
+        <ClozeSentence words={sentenceWords} />
+        <ClozeSentenceRevealButtons
+          words={sentenceWords}
+          onRevealLetter={(wordIndex) => revealLetter(sentenceIdx, wordIndex)} />
+      </div>
+    </div>;
+  }
+
   return (
     <div className="relative min-h-screen bg-slate-800 text-white py-32">
       <div className="max-w-5xl m-auto flex flex-col gap-6">
@@ -171,15 +183,7 @@ const App: React.FunctionComponent = () => {
       </div>
       <ClozeSentenceGroup onLetterEntered={(i, l) => console.log(i, l)}>
         {sentences.map((sentenceWords, sentenceIdx) => (
-          <div key={sentenceIdx} className="py-[125px] px-2 border-b-[1px] border-secondary flex justify-center">
-            <div className="space-y-10">
-              <ClozeSentence words={sentenceWords} />
-              <ClozeSentenceRevealButtons
-                words={sentenceWords}
-                onRevealLetter={(wordIndex) => revealLetter(sentenceIdx, wordIndex)}
-              />
-            </div>
-          </div>
+          renderClozeSentence(sentenceIdx, sentenceWords)
         ))}
       </ClozeSentenceGroup>
 
@@ -208,6 +212,7 @@ const App: React.FunctionComponent = () => {
       <Footer />
     </div>
   );
+
 };
 
 export default App;
