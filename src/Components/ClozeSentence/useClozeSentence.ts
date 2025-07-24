@@ -15,11 +15,10 @@ const useClozeSentence = (initialSentences: WordType[][], onSentencesChange?: (s
 
     const revealLetter = (sentenceIndex: number, wordIndex: number) => {
         setSentences((draft) => {
-            const word = draft[sentenceIndex][wordIndex];
+            const word = draft[sentenceIndex].filter((w) => typeof w === 'object')[wordIndex] as WordType;
             
             if(typeof word === 'object') {
-                const shownIndexes = word.shownIndexes;
-                shownIndexes.push(Math.min(...shownIndexes) + 1);
+                word.shownIndexes.push(word.shownIndexes.length);
             }
             
         });
