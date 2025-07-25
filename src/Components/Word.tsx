@@ -1,6 +1,6 @@
 import * as React from "react";
 import LetterInput from "./LetterInput";
-import { useState } from "react";
+import {isCharacter} from "../Utils";
 
 interface WordProps {
   letters: string[];
@@ -9,7 +9,6 @@ interface WordProps {
 }
 
 const Word = ({ letters, shownIndexes, animationDelay }: WordProps) => {
-
   const classes = `
    grid
    animate-fadeInTop 
@@ -29,28 +28,32 @@ const Word = ({ letters, shownIndexes, animationDelay }: WordProps) => {
   has-[:not(:placeholder-shown):invalid]:after:bg-red-500
 `.replace(/\s+/g, " ");
 
+  const renderLetter = (letter: string, index: number) => {
+    if (!isCharacter(letter, "german")) {
+      return letter;
+    }
+
+    return (
+      <span className={letterWrapperClasses}>
+        {shownIndexes.includes(index) ? (
+          <span key={index}>{letter}</span>
+        ) : (
+          <LetterInput
+            key={index}
+            revealed={shownIndexes.includes(index)}
+            correctLetter={letter}
+          />
+        )}
+      </span>
+    );
+  };
+
   return (
     <div
       className={classes}
       style={{ "--animation-delay": animationDelay } as React.CSSProperties}
     >
-      <div className="flex gap-1">
-        {letters.map((letter, j) => (
-          <span className={letterWrapperClasses}>
-            {shownIndexes.includes(j) ? (
-              <span key={j}>
-                {letter}
-              </span>
-            ) : (
-              <LetterInput
-                key={j}
-                revealed={shownIndexes.includes(j)}
-                correctLetter={letter}
-              />
-            )}
-          </span>
-        ))}
-      </div>
+      <div className="flex gap-1">{letters.map(renderLetter)}</div>
     </div>
   );
 };
