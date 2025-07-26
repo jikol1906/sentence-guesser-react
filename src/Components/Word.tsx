@@ -30,7 +30,7 @@ const Word = ({ letters, shownIndexes, animationDelay }: WordProps) => {
 
   const renderLetter = (letter: string, index: number) => {
     if (!isCharacter(letter, "german")) {
-      return letter;
+      return <span key={index}>{letter}</span>;
     }
 
     return (

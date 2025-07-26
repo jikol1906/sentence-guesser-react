@@ -49,6 +49,7 @@ const useClozeSentence = (initialSentences: WordType[][], onSentencesChange?: (s
         sentences,
         setSentences,
         revealLetter,
+        updateRevealedLetters,
         reset,
     };
 

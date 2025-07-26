@@ -7,6 +7,7 @@ type ClozeSentenceGroupProps = {
 
 export type ClozeSentenceContextType = {
   onLetterEntered: (inputIndex: number, letter: string) => void;
+  onCorrectLetterEntered?: (inputIndex: number, letter: string) => void;
 };
 
 export const ClozeSentenceContext = createContext<ClozeSentenceContextType | null>(null);
