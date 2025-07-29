@@ -1,18 +1,21 @@
 import { useEffect, useRef, createContext } from "react";
 
 type ClozeSentenceGroupProps = {
-  onLetterEntered: (inputIndex: number, letter: string) => void;
+  onLetterEntered: (inputIndex: number, letter: string, sentenceIndex: number) => void;
+  onCorrectLetterEntered: (wordIndex: number, letterIndex: number, sentenceIndex: number) => void;
   children: React.ReactNode;
 };
 
 export type ClozeSentenceContextType = {
-  onLetterEntered: (inputIndex: number, letter: string) => void;
-  onCorrectLetterEntered?: (inputIndex: number, letter: string) => void;
+  onLetterEntered: (inputIndex: number, letter: string, sentenceIndex: number) => void;
+  onCorrectLetterEntered: (wordIndex: number, letterIndex: number, sentenceIndex: number) => void;
+  sentenceIndex?: number;
+  wordIndex?: number;
 };
 
 export const ClozeSentenceContext = createContext<ClozeSentenceContextType | null>(null);
 
-const ClozeSentenceGroup = ({ children, onLetterEntered }: ClozeSentenceGroupProps) => {
+const ClozeSentenceGroup = ({ children, onLetterEntered, onCorrectLetterEntered }: ClozeSentenceGroupProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -44,7 +47,7 @@ const ClozeSentenceGroup = ({ children, onLetterEntered }: ClozeSentenceGroupPro
   }, []);
 
   return ( 
-    <ClozeSentenceContext.Provider value={{ onLetterEntered }}>
+    <ClozeSentenceContext.Provider value={{ onLetterEntered, onCorrectLetterEntered }}>
       <div
         ref={containerRef}
       >

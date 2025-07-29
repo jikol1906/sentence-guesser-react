@@ -98,7 +98,7 @@ const HelperDialog: React.FC<HelperDialog> = ({ isOpen, onClose, children }) => 
         <button
           onClick={onClose}
           aria-label="Close modal"
-          className="absolute top-2 right-2 p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="absolute top-2 right-2 p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           <CloseIcon />
         </button>

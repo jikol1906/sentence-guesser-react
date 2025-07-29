@@ -33,27 +33,10 @@ type ClozeApiResponse = {
   words: string[];
 };
 
-// Initial list of words. This will be the default state.
-const initialWordBank: WordData[] = [
-  {
-    word: "nachhaltig",
-    contextSentence: "Wir versuchen, nachhaltiger zu leben.",
-  },
-  {
-    word: "Herausforderung",
-    contextSentence: "Die neue Aufgabe ist eine große Herausforderung.",
-  },
-  {
-    word: "begeistert",
-    contextSentence: "Ich bin von dieser Idee begeistert.",
-  },
-];
-
 const App: React.FunctionComponent = () => {
   
-  const { setSentences, sentences, revealLetter } = useClozeSentence(
-    localStorage.getItem("clozeSentences") ? JSON.parse(localStorage.getItem("clozeSentences") || "[]") : [],
-    (sentences) => localStorage.setItem("clozeSentences", JSON.stringify(sentences))
+  const { setSentences, sentences, revealLetter, updateRevealedLetters } = useClozeSentence(
+    localStorage.getItem("clozeSentences") ? JSON.parse(localStorage.getItem("clozeSentences") || "[]") : []
   );
   const [mode] = useLocalStorageState<ChallengeMode>("challengeMode", "cloze");
   const [targetLanguage, setTargetLanguage] = useState<Language>("german");
@@ -156,10 +139,10 @@ const App: React.FunctionComponent = () => {
     setWordBankOrder([]);
   };
 
-  function renderClozeSentence(sentenceIdx: number, sentenceWords: WordType[]) {
-    return <div key={sentenceIdx} className="py-[125px] px-2 border-b-[1px] border-secondary flex justify-center">
-      <div className="space-y-10">
-        <ClozeSentence words={sentenceWords} />
+  function renderClozeSentence(sentenceWords: WordType[], sentenceIdx: number) {
+    return <div key={sentenceIdx} className="py-[125px] px-2 border-b border-secondary flex justify-center">
+      <div className="font-mono max-w-[60ch] text-base sm:text-2xl md:text-3xl space-y-10 flex-1 flex flex-col">
+        <ClozeSentence words={sentenceWords} sentenceIndex={sentenceIdx} />
         <ClozeSentenceRevealButtons
           words={sentenceWords}
           onRevealLetter={(wordIndex) => revealLetter(sentenceIdx, wordIndex)} />
@@ -181,33 +164,36 @@ const App: React.FunctionComponent = () => {
           />
         </Drawer>
       </div>
-      <ClozeSentenceGroup onLetterEntered={(i, l) => console.log(i, l)}>
-        {sentences.map((sentenceWords, sentenceIdx) => (
-          renderClozeSentence(sentenceIdx, sentenceWords)
-        ))}
+      <ClozeSentenceGroup 
+        onLetterEntered={() => {}} 
+        onCorrectLetterEntered={(wordIndex, letterIndex, sentenceIndex) => updateRevealedLetters(wordIndex, sentenceIndex, letterIndex)}
+      >
+        {sentences.map(renderClozeSentence)}
       </ClozeSentenceGroup>
 
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
-        <Button
-          className="bg-slate-500 p-4 m-auto flex items-center justify-center gap-2 mt-10"
-          onClick={fetchNewClozeSentence}
-        >
-          New challenge
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
+      <div className="p-4 h-50 grid place-items-center-safe">
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <Button
+            className="bg-slate-500 p-4 m-auto flex items-center justify-center gap-2"
+            onClick={fetchNewClozeSentence}
           >
-            <path
-              fill="currentColor"
-              d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
-            />
-          </svg>
-        </Button>
-      )}
+            New challenge
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
+              />
+            </svg>
+          </Button>
+        )}
+      </div>
 
       <Footer />
     </div>

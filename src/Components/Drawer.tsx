@@ -59,7 +59,7 @@ export const Drawer: React.FC<DrawerProps> = ({ children, title = "Menu" }) => {
       <button
         onClick={toggleDrawer}
         ref={hamburgerRef}
-        className="fixed top-4 right-4 z-50 p-2 rounded-md bg-gray-800 text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+        className="fixed top-4 right-4 z-50 p-2 rounded-md bg-gray-800 text-white hover:bg-gray-700 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white"
         aria-label="Open menu"
       >
         <svg
@@ -95,7 +95,7 @@ export const Drawer: React.FC<DrawerProps> = ({ children, title = "Menu" }) => {
       >
         <div className="flex flex-col h-full">
           {/* --- Drawer Content --- */}
-          <main className="flex-grow p-4 overflow-y-auto">
+          <main className="grow p-4 overflow-y-auto">
             {children}
           </main>
         </div>

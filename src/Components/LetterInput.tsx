@@ -14,20 +14,21 @@ const LetterInput = ({
 }: ILetterInputProps) => {
   const value = revealed ? { value: correctLetter } : {};
 
-  const { onLetterEntered } = React.useContext(ClozeSentenceContext) as ClozeSentenceContextType
+  const { onLetterEntered, sentenceIndex, onCorrectLetterEntered, wordIndex } = React.useContext(ClozeSentenceContext) as ClozeSentenceContextType
 
   const handleLetterEntered = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
 
     if (input.value.toLowerCase() === correctLetter.toLowerCase()) {
       input.disabled = true;
+      onCorrectLetterEntered(wordIndex!, parseInt(input.getAttribute('data-word-input-index') || '-1', 10), sentenceIndex!);
     }
 
     if (input.value.length !== 1 || (e.nativeEvent as InputEvent).isComposing) {
       return;
     }
 
-    onLetterEntered(parseInt(input.getAttribute('data-input-index') || '-1', 10), input.value);
+    onLetterEntered(parseInt(input.getAttribute('data-input-index') || '-1', 10), input.value, sentenceIndex!);
 
     focusNextAvailableInput(e, 'next');
   };
@@ -83,7 +84,7 @@ const LetterInput = ({
 
   const classes = `
     w-[1ch]
-    outline-none
+    outline-hidden
     transition-all
     duration-100
     bg-transparent

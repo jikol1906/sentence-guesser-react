@@ -54,7 +54,7 @@ const ExpandableWrapper = ({
         <div className="pt-4 text-center">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-slate-400 text-sm hover:text-slate-200 focus:outline-none transition-colors duration-200"
+            className="text-slate-400 text-sm hover:text-slate-200 focus:outline-hidden transition-colors duration-200"
           >
             {isExpanded ? 'Show Less' : 'Show More'}
           </button>

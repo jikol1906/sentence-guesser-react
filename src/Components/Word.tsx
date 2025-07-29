@@ -11,7 +11,7 @@ interface WordProps {
 const Word = ({ letters, shownIndexes, animationDelay }: WordProps) => {
   const classes = `
    grid
-   animate-fadeInTop 
+   animate-fade-in-top 
    justify-items-center 
    relative 
   `;
@@ -20,11 +20,11 @@ const Word = ({ letters, shownIndexes, animationDelay }: WordProps) => {
   relative 
   after:absolute 
   after:bg-slate-100 
-  after:h-[1px] 
+  after:h-px 
   after:w-full 
   after:-bottom-1 md:after:-bottom-2 
   after:left-0
-  has-[:not(:placeholder-shown)]:after:bg-green-500
+  has-not-placeholder-shown:after:bg-green-500
   has-[:not(:placeholder-shown):invalid]:after:bg-red-500
 `.replace(/\s+/g, " ");
 
@@ -40,6 +40,7 @@ const Word = ({ letters, shownIndexes, animationDelay }: WordProps) => {
         ) : (
           <LetterInput
             key={index}
+            data-word-input-index={index}
             revealed={shownIndexes.includes(index)}
             correctLetter={letter}
           />

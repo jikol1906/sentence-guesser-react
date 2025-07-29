@@ -20,7 +20,7 @@ const Button: React.FunctionComponent<IButtonProps> = (props) => {
 
     return (
         <button
-            className={`px-4 py-2 rounded-sm ${className} ${
+            className={`px-4 py-2 rounded-xs ${className} ${
                 active ? ButtonTypeActiveClasses[buttonType] : ButtonTypeClasses[buttonType]
             }`}
             {...rest}

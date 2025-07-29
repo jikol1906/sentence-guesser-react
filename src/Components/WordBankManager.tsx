@@ -67,7 +67,7 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
             type="text"
             value={newWord}
             onChange={(e) => setNewWord(e.target.value)}
-            className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
             placeholder="e.g., nachhaltig"
           />
         </div>
@@ -80,7 +80,7 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
             type="text"
             value={newContextSentence}
             onChange={(e) => setNewContextSentence(e.target.value)}
-            className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
             placeholder="e.g., Nachhaltig leben ist wichtig."
           />
         </div>
@@ -99,7 +99,7 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
             id="bulk-input"
             value={bulkInput}
             onChange={(e) => setBulkInput(e.target.value)}
-            className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
             rows={6}
           />
         </div>
@@ -112,7 +112,7 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
       <div className="flex justify-between mb-8">
         <button
           onClick={handleClearAll}
-          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
+          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-sm"
         >
           Clear All Words
         </button>
@@ -130,7 +130,7 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
           {words.map((wordData, index) => (
             <li
               key={index}
-              className="flex justify-between items-center bg-gray-700 p-4 rounded-lg shadow"
+              className="flex justify-between items-center bg-gray-700 p-4 rounded-lg shadow-sm"
             >
               <div>
                 <p className="font-bold">{wordData.word}</p>
@@ -140,7 +140,7 @@ export const WordBankManager: React.FC<WordBankManagerProps> = ({ words, onWords
               </div>
               <button
                 onClick={() => handleRemoveWord(index)}
-                className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded"
+                className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-sm"
               >
                 Remove
               </button>
