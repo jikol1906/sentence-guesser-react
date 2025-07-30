@@ -52,7 +52,8 @@ const initialWordBank: WordData[] = [
 const App: React.FunctionComponent = () => {
   
   const { setSentences, sentences, revealLetter, updateRevealedLetters } = useClozeSentence(
-    localStorage.getItem("clozeSentences") ? JSON.parse(localStorage.getItem("clozeSentences") || "[]") : []
+    localStorage.getItem("clozeSentences") ? JSON.parse(localStorage.getItem("clozeSentences") || "[]") : [],
+    (newSentences) => localStorage.setItem("clozeSentences", JSON.stringify(newSentences))
   );
   const [mode] = useLocalStorageState<ChallengeMode>("challengeMode", "cloze");
   const [targetLanguage, setTargetLanguage] = useState<Language>("german");
