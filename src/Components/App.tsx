@@ -33,6 +33,22 @@ type ClozeApiResponse = {
   words: string[];
 };
 
+// Initial list of words. This will be the default state.
+const initialWordBank: WordData[] = [
+  {
+    word: "nachhaltig",
+    contextSentence: "Wir versuchen, nachhaltiger zu leben.",
+  },
+  {
+    word: "Herausforderung",
+    contextSentence: "Die neue Aufgabe ist eine große Herausforderung.",
+  },
+  {
+    word: "begeistert",
+    contextSentence: "Ich bin von dieser Idee begeistert.",
+  },
+];
+
 const App: React.FunctionComponent = () => {
   
   const { setSentences, sentences, revealLetter, updateRevealedLetters } = useClozeSentence(
@@ -49,7 +65,7 @@ const App: React.FunctionComponent = () => {
 
   const [wordBank, setWordBank] = useLocalStorageState<WordData[]>(
     "wordBank",
-    []
+    initialWordBank
   );
 
   //If wordbankOrder is empty, reset it
@@ -141,7 +157,7 @@ const App: React.FunctionComponent = () => {
 
   function renderClozeSentence(sentenceWords: WordType[], sentenceIdx: number) {
     return <div key={sentenceIdx} className="py-[125px] px-2 border-b border-secondary flex justify-center">
-      <div className="font-mono max-w-[60ch] text-base sm:text-2xl md:text-3xl space-y-10 flex-1 flex flex-col">
+      <div className="font-mono max-w-[60ch] text-base sm:text-2xl md:text-3xl flex-1 flex flex-col gap-10">
         <ClozeSentence words={sentenceWords} sentenceIndex={sentenceIdx} />
         <ClozeSentenceRevealButtons
           words={sentenceWords}
