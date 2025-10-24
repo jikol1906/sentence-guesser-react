@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import {
   convertClozeApiResponseToWords,
   isCharacter,
@@ -19,6 +19,7 @@ import { Drawer } from "./Drawer";
 import useClozeSentence from "./ClozeSentence/useClozeSentence";
 import ClozeSentenceRevealButtons from "./ClozeSentence/ClozeSentenceRevealButtons";
 import { WordType } from "../types";
+import { ModalCtx } from "./ModalProvider";
 
 // The type for our array of words and context sentences
 export type WordData = {
@@ -63,6 +64,46 @@ const App: React.FunctionComponent = () => {
     []
   );
   const [error, setError] = useState<string | null>(null);
+  const { handleModal } = useContext(ModalCtx);
+  const [hasSeenIntroModal, setHasSeenIntroModal] = useLocalStorageState(
+    "hasSeenIntroModal",
+    false
+  );
+
+  const showIntroModal = useCallback(() => {
+    handleModal(
+      <div className="flex flex-col gap-4 text-left max-w-2xl">
+        <h2 className="text-2xl font-semibold">Welcome to Sentence Guesser</h2>
+        <p className="text-base">
+          Sentence Guesser helps you practise vocabulary by hiding target words inside
+          sentences. Each challenge gives you a sentence with missing letters so you can
+          recall the right word from context.
+        </p>
+        <div className="flex flex-col gap-2 text-base">
+          <h3 className="text-xl font-semibold">How to play</h3>
+          <ol className="list-decimal list-inside space-y-1">
+            <li>Click <strong>New challenge</strong> to load a fresh sentence.</li>
+            <li>Use the revealed letters and sentence context to guess the word.</li>
+            <li>
+              Reveal letters strategically or switch words in your bank to keep practising
+              difficult vocabulary.
+            </li>
+          </ol>
+        </div>
+        <p className="text-base">
+          Over time, you&apos;ll build intuition for how each word is used. Jump back into the
+          word bank to manage the vocabulary you want to focus on.
+        </p>
+      </div>
+    );
+  }, [handleModal]);
+
+  useEffect(() => {
+    if (!hasSeenIntroModal) {
+      showIntroModal();
+      setHasSeenIntroModal(true);
+    }
+  }, [hasSeenIntroModal, setHasSeenIntroModal, showIntroModal]);
 
   const [wordBank, setWordBank] = useLocalStorageState<WordData[]>(
     "wordBank",
@@ -171,6 +212,11 @@ const App: React.FunctionComponent = () => {
     <div className="relative min-h-screen bg-slate-800 text-white py-32">
       <div className="max-w-5xl m-auto flex flex-col gap-6">
         <SentenceGuesserHeader />
+        <div className="flex justify-end">
+          <Button onClick={showIntroModal} className="shadow-md">
+            What is Sentence Guesser?
+          </Button>
+        </div>
         <Drawer title="Manage word bank">
           {/* <LanguageSelector onLanguageChosen={setTargetLanguage} /> */}
           <WordBankManager
