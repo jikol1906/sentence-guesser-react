@@ -31,11 +31,11 @@ const useClozeSentence = (initialSentences: WordType[][], onSentencesChange?: (s
         });
     }
 
-    const updateRevealedLetters = (wordIndex: number, sentenceIndex: number, letterIndex: number) => {
+    const updateRevealedLetters = (wordIndex: number, letterIndex: number, sentenceIndex: number) => {
+
         setSentences((draft) => {
             const word = draft[sentenceIndex].filter((w) => typeof w === 'object')[wordIndex] as ClozeWord;
-
-            if(word?.shownIndexes?.includes(letterIndex)) {
+            if(!word?.shownIndexes?.includes(letterIndex)) {
                 word.shownIndexes.push(letterIndex);
             }
         });

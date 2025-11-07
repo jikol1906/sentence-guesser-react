@@ -183,7 +183,7 @@ const App: React.FunctionComponent = () => {
       </div>
       <ClozeSentenceGroup 
         onLetterEntered={() => {}} 
-        onCorrectLetterEntered={(wordIndex, letterIndex, sentenceIndex) => updateRevealedLetters(wordIndex, sentenceIndex, letterIndex)}
+        onCorrectLetterEntered={(wordIndex, letterIndex, sentenceIndex) => updateRevealedLetters(wordIndex, letterIndex, sentenceIndex)}
       >
         {sentences.map(renderClozeSentence)}
       </ClozeSentenceGroup>
