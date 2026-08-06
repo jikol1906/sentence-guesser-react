@@ -78,20 +78,40 @@ const App: React.FunctionComponent = () => {
   }, [wordBankOrder, wordBank.length]);
 
   const fetchNewClozeSentence = async () => {
+    if (wordBank.length === 0) {
+      setError("Add at least one word with a context sentence to generate a challenge.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
-    // 1. Get the index from the end of the array.
-    const nextIdx = wordBankOrder[wordBankOrder.length - 1];
+    const workingOrder =
+      wordBankOrder.length > 0
+        ? wordBankOrder
+        : shuffleArray(Array.from({ length: wordBank.length }, (_, i) => i));
 
-    // 2. Create a NEW array that contains all but the last element.
-    const newOrder = wordBankOrder.slice(0, -1);
+    const nextIdx = workingOrder[workingOrder.length - 1];
 
-    // 3. Update the state with the new array. This has a new reference,
+    if (nextIdx === undefined) {
+      setLoading(false);
+      setError("We couldn't determine which word to use. Try again in a moment.");
+      return;
+    }
+
+    const newOrder = workingOrder.slice(0, -1);
+
+    // Update the state with the new array. This has a new reference,
     // which WILL trigger the useEffect hook when the component rerenders.
     setWordBankOrder(newOrder);
 
     const randomWordData = wordBank[nextIdx];
+
+    if (!randomWordData) {
+      setLoading(false);
+      setError("The selected word could not be found. Please try again.");
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -188,13 +208,14 @@ const App: React.FunctionComponent = () => {
         {sentences.map(renderClozeSentence)}
       </ClozeSentenceGroup>
 
-      <div className="p-4 h-50 grid place-items-center-safe">
+      <div className="p-4 h-50 grid place-items-center-safe gap-4">
         {loading ? (
           <LoadingSpinner />
         ) : (
           <Button
             className="bg-slate-500 p-4 m-auto flex items-center justify-center gap-2"
             onClick={fetchNewClozeSentence}
+            disabled={wordBank.length === 0 || loading}
           >
             New challenge
             <svg
@@ -210,6 +231,11 @@ const App: React.FunctionComponent = () => {
             </svg>
           </Button>
         )}
+        {error ? (
+          <p className="text-center text-red-300 text-sm sm:text-base max-w-md">
+            {error}
+          </p>
+        ) : null}
       </div>
 
       <Footer />

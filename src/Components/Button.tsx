@@ -16,13 +16,19 @@ const ButtonTypeActiveClasses: Record<NonNullable<IButtonProps['buttonType']>, s
 };
 
 const Button: React.FunctionComponent<IButtonProps> = (props) => {
-    const { children, className, active, buttonType = 'primary', ...rest } = props;
+    const { children, className = '', active, buttonType = 'primary', ...rest } = props;
+    const isDisabled = rest.disabled;
+
+    const baseClasses = active
+        ? ButtonTypeActiveClasses[buttonType]
+        : ButtonTypeClasses[buttonType];
+
+    const disabledClasses = isDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
 
     return (
         <button
-            className={`px-4 py-2 rounded-xs ${className} ${
-                active ? ButtonTypeActiveClasses[buttonType] : ButtonTypeClasses[buttonType]
-            }`}
+            className={`px-4 py-2 rounded-xs ${baseClasses} ${disabledClasses} ${className}`.trim()}
+            {...(isDisabled ? { 'aria-disabled': true } : {})}
             {...rest}
         >
             {children}
